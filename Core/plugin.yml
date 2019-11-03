@@ -1,0 +1,74 @@
+main: com.Furnesse.core.Core
+author: 6u5t4v
+version: 1.2
+name: Core
+api-version: 1.14
+website: www.furnesse.com
+depend: [Vault, PlaceholderAPI]
+commands:
+  rank:
+    description: Rank managing
+    permission: core.rank.*
+  core:
+    description: Main command to view all Core's commands
+    permission: core.*
+  jellylegs:
+    description: Reduces the falldamage for the player
+    permission: core.jellylegs
+  nightvision:
+    aliases: 
+    - nv
+    - nightv
+    - nvision
+    description: Gives the player nightvision forever
+    permission: core.nightvision
+permissions:
+  core.reload:
+    description: allow /reload
+  core.*:
+    description: Wildcard permissions.
+    default: op
+    children:
+      core.jellylegs: true
+      core.rank.*: true
+      core.nightvision: true
+      core.deathchests.*: true
+      core.reload: true
+  core.deathchests.*:
+    description: wildcard for deathchests.
+    default: op
+    children:
+      core.deathchests.clear: true
+  core.deathchests.clear:
+    description: remove all active deathchests.
+  core.rank.*:
+    description: Wildcard for rank permissions.
+    default: op
+    children:
+      core.rank.ranks: true
+      core.rank.create: true
+      core.rank.user: true
+      core.rank.remove: true
+      core.rank.modify: true
+      core.rank.delete: true
+  core.rank.ranks:
+    description: View all ranks.
+  core.rank.create:
+    description: Create a new rank.
+    default: op
+  core.rank.player:
+    description: set,remove,modify player's rank.
+    default: op
+  core.rank.remove:
+    description: Remove a rank entirely.
+    default: op
+  core.rank.modify:
+    description: set prefix,suffix and add/remove permissions from a rank.
+    default: op
+  core.nightvision:
+    description: Allow player to turn on nightvision.
+    default: op
+  core.jellylegs:
+    description: Allow player to have a reduced falldamage.
+    default: op
+  

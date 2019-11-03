@@ -1,0 +1,7 @@
+Ranks:
+  default:
+    prefix: "&edefault"
+    suffix: ""
+    default: true
+    permissions: []
+    inheritance: []
