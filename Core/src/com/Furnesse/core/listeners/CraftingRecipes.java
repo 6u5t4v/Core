@@ -31,7 +31,7 @@ public class CraftingRecipes implements Listener {
 
 			Material itemType = e.getRecipe().getResult().getType();
 			if (itemType != null) {
-				if (plugin.disabledRecipes.contains(itemType)) {
+				if (Core.disabledRecipes.contains(itemType)) {
 					e.getInventory().setResult(new ItemStack(Material.AIR));
 					for (HumanEntity he : e.getViewers()) {
 						if (he instanceof Player) {

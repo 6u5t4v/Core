@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
-import com.Furnesse.core.utils.Scoreboard;
 
 public class CoreCMD implements CommandExecutor {
 
@@ -53,7 +52,7 @@ public class CoreCMD implements CommandExecutor {
 //						}
 
 						if (args[1].equalsIgnoreCase("toggle")) {
-							Scoreboard.toggleScoreboard(player);
+							plugin.getScoreboard().toggleScoreboard(player);
 						}
 					} else {
 						player.sendMessage(Lang.NO_PERMISSION);

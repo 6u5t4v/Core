@@ -1,5 +1,5 @@
 graceperiod: 30
-use-ranks: true
+use-ranks: false
 deathchests:
   enabled: true
   deathchest-min-items: 5
@@ -30,7 +30,10 @@ chat:
   enabled: true
   formats:
     default: 
-      format: '&7[&f%player_world%&7] %core_rank_prefix% &3%player_name% &e» &7%msg%'
+      prefix: '&8[&f%player_world%&8]'
+      displayname: '%core_rank_prefix% &7%player_name%'
+      suffix: ' &8» '
+      message: '&7'
       click-command: '/msg %player_name%'
 database:
   enabled: true

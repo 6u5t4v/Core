@@ -12,6 +12,9 @@ commands:
   core:
     description: Main command to view all Core's commands
     permission: core.*
+  items:
+    description: custom items.
+    permission: core.items
   jellylegs:
     description: Reduces the falldamage for the player
     permission: core.jellylegs
@@ -34,6 +37,20 @@ permissions:
       core.nightvision: true
       core.deathchests.*: true
       core.reload: true
+      core.items.*: true
+  core.items.*:
+    description: wildcard for custom items
+    default: op
+    children:
+      core.items.give: true
+      core.items.list: true
+      core.items.menu: true
+  core.items.give:
+    description: give players custom items
+  core.items.list:
+    description: view a list of all available custom items
+  core.items.menu:
+    description: open the custom items menu
   core.deathchests.*:
     description: wildcard for deathchests.
     default: op

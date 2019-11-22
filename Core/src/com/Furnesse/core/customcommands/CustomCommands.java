@@ -40,7 +40,7 @@ public class CustomCommands {
 					}
 				}
 			}
-			plugin.getLogger().info("Loaded " + amount + " custom commands");
+			plugin.getLogger().info("Loaded a total of: " + amount + " custom commands");
 		}
 	}
 	

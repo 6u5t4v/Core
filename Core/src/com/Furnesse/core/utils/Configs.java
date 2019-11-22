@@ -22,6 +22,8 @@ public class Configs {
 	private File cCommandsFile;
 	private FileConfiguration locs;
 	private File locsFile;
+	private FileConfiguration cItems;
+	private File cItemsFile;
 	
 	
 	private Core plugin;
@@ -37,6 +39,7 @@ public class Configs {
 		ranksFile = new File(plugin.getDataFolder(), "ranks.yml");
 		cCommandsFile = new File(plugin.getDataFolder(), "customcommands.yml");
 		locsFile = new File(plugin.getDataFolder(), "locations.yml");
+		cItemsFile = new File(plugin.getDataFolder(), "customitems.yml");
 		
 		if (!plugin.getDataFolder().exists()) {
 			plugin.getDataFolder().mkdirs();
@@ -65,18 +68,24 @@ public class Configs {
 		if (!locsFile.exists()) {
 			plugin.saveResource("locations.yml", false);
 		}
+		
+		if (!cItemsFile.exists()) {
+			plugin.saveResource("customitems.yml", false);
+		}
 
 		lang = new YamlConfiguration();
 		players = new YamlConfiguration();
 		ranks = new YamlConfiguration();
 		cCommands = new YamlConfiguration();
 		locs = new YamlConfiguration();
+		cItems = new YamlConfiguration();
 		try {
 			lang.load(langFile);
 			players.load(playersFile);
 			ranks.load(ranksFile);
 			cCommands.load(cCommandsFile);
 			locs.load(locsFile);
+			cItems.load(cItemsFile);
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Failed to load yml files!");
 			plugin.getLogger().log(Level.SEVERE, "Error: " + e.getMessage());
@@ -110,6 +119,11 @@ public class Configs {
 		} catch (IOException e) {
 			plugin.getLogger().log(Level.SEVERE, "Could not save locations.yml file!");
 		}
+		try {
+			cItems.save(cItemsFile);
+		} catch (IOException e) {
+			plugin.getLogger().log(Level.SEVERE, "Could not save customitems.yml file!");
+		}
 	}
 
 	public void reloadConfigs(CommandSender sender) {
@@ -119,6 +133,7 @@ public class Configs {
 			cCommands.load(cCommandsFile);
 			ranks.load(ranksFile);
 			locs.load(locsFile);
+			cItems.load(cItemsFile);
 			sender.sendMessage(Lang.RELOADED);
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Failed to reload yml files!");
@@ -144,5 +159,9 @@ public class Configs {
 	
 	public FileConfiguration getLocsConfig() {
 		return locs;
+	}
+	
+	public FileConfiguration getCItemsConfig() {
+		return cItems;
 	}
 }

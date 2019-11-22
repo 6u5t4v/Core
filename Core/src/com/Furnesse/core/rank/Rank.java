@@ -33,7 +33,6 @@ public class Rank {
 		return inherits;
 	}
 
-
 	public void setInherits(List<String> inherits) {
 		this.inherits = inherits;
 	}

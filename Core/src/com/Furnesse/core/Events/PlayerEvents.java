@@ -1,5 +1,7 @@
 package com.Furnesse.core.Events;
 
+import java.util.ArrayList;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,7 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.utils.Scoreboard;
+import com.Furnesse.core.utils.Debug;
 
 public class PlayerEvents implements Listener {
 
@@ -17,24 +19,13 @@ public class PlayerEvents implements Listener {
 
 	private void registerPlayer(Player player) {
 		String uuid = player.getUniqueId().toString();
-
-		if (!isRegistered(player)) {
+		if (!isRegistered(player) || hasChangedName(player)) {
 			plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".username", player.getName());
-			plugin.getRanks().setRank(player, plugin.getRanks().getDefaultRank());
+			if (plugin.usingRanks) {
+				plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".permissions", new ArrayList<String>());
+			}
 			plugin.getConfigs().saveConfigs();
 		}
-
-		if (hasChangedName(player)) {
-			plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".username", player.getName());
-			plugin.getConfigs().saveConfigs();
-		}
-	}
-
-	public boolean hasRank(Player player) {
-		if (plugin.getRanks().getPlayerRank(player) != null) {
-			return true;
-		}
-		return false;
 	}
 
 	public boolean isRegistered(Player player) {
@@ -56,25 +47,34 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
-		String uuid = player.getUniqueId().toString();
-		if (plugin.usingRanks) {
-			registerPlayer(player);
+//		String uuid = player.getUniqueId().toString();
 
-			plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".rank",
-					plugin.getRanks().getPlayerRank(player).getName());
-			plugin.getConfigs().saveConfigs();
+		registerPlayer(player);
+		if (plugin.usingRanks) {
+			plugin.getRanks().loadRank(player);
 			plugin.getRanks().loadPlayerPerms(player);
 		}
 
 		if (plugin.usingSb)
-			Scoreboard.setScoreboard(player);
+			plugin.getScoreboard().setScoreboard(player);
+
+		if (plugin.usingChat) {
+			plugin.chatFormat.initFormat(player);
+		}
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
+		if (plugin.usingSb)
+			plugin.getScoreboard().removeScoreboard(player);
 
-		Scoreboard.removeScoreboard(player);
+		if (plugin.usingRanks)
+			plugin.getRanks().saveRank(player);
+
+		if (plugin.usingChat)
+			if (plugin.chatFormat.getPlayerFormat(player) != null)
+				plugin.chatFormat.pFormat.remove(player.getName());
 	}
 
 	@EventHandler
@@ -85,7 +85,6 @@ public class PlayerEvents implements Listener {
 				if (plugin.dcEnabledWorlds.contains(player.getWorld().getName())) {
 					if (e.getDrops().size() >= plugin.minItems) {
 						ItemStack[] drops = e.getDrops().toArray(new ItemStack[0]);
-						player.sendMessage("how much:" + drops.length);
 						e.getDrops().clear();
 						plugin.getDeathChest().createDeathChest(player, drops);
 					}
