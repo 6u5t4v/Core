@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/jars/PlaceholderAPI-2.10.4.jar"/>
+	<classpathentry kind="lib" path="C:/jars/spigot-1.14.4.jar"/>
+	<classpathentry kind="lib" path="C:/jars/Vault.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
