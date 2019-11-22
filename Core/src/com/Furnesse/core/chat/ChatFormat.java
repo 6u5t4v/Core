@@ -47,5 +47,4 @@ public class ChatFormat {
 	public void setTooltip(List<String> tooltip) {
 		this.tooltip = tooltip;
 	}
-
 }
