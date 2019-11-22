@@ -249,6 +249,7 @@ public class DeathChests implements Listener {
 					return;
 				if (e.getCurrentItem().getType() == Material.AIR || e.getCurrentItem().getType() == null)
 					return;
+				
 				Debug.Log("click player inventory");
 				if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
 					Debug.Log("we out here");
@@ -282,6 +283,7 @@ public class DeathChests implements Listener {
 
 		if (dc == null)
 			return;
+		
 		Debug.Log("dc is not null");
 
 		ItemStack[] items = Stream.of(e.getInventory().getContents()).filter(Objects::nonNull)

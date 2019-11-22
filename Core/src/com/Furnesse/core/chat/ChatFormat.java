@@ -1,62 +1,35 @@
 package com.Furnesse.core.chat;
 
+import java.util.List;
+
 public class ChatFormat {
 
-	private String formatName;
-	private String prefix;
-	private String suffix;
-	private String displayname;
-	private String message;
+	private String name;
+	private String format;
 	private String clickCmd;
+	private List<String> tooltip;
 
-	public ChatFormat(String formatName, String prefix, String suffix, String displayname, String message,
-			String clickCmd) {
-		this.formatName = formatName;
-		this.prefix = prefix;
-		this.suffix = suffix;
-		this.displayname = displayname;
-		this.message = message;
+	public ChatFormat(String name, String format, String clickCmd, List<String> tooltip) {
+		this.name = name;
+		this.format = format;
 		this.clickCmd = clickCmd;
+		this.tooltip = tooltip;
 	}
 
-	public String getFormatName() {
-		return formatName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFormatName(String formatName) {
-		this.formatName = formatName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public String getFormat() {
+		return format;
 	}
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-
-	public String getSuffix() {
-		return suffix;
-	}
-
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
-
-	public String getDisplayname() {
-		return displayname;
-	}
-
-	public void setDisplayname(String displayname) {
-		this.displayname = displayname;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public String getClickCmd() {
@@ -65,6 +38,14 @@ public class ChatFormat {
 
 	public void setClickCmd(String clickCmd) {
 		this.clickCmd = clickCmd;
+	}
+
+	public List<String> getTooltip() {
+		return tooltip;
+	}
+
+	public void setTooltip(List<String> tooltip) {
+		this.tooltip = tooltip;
 	}
 
 }

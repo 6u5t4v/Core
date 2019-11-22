@@ -9,9 +9,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.utils.Lang;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class ChatFormats {
 
@@ -30,20 +33,18 @@ public class ChatFormats {
 		chatFormats.clear();
 		int amount = 0;
 		if (availableChatFormats != null) {
-			for (String format : availableChatFormats.getKeys(false)) {
-				if (format != null) {
+			for (String cFormat : availableChatFormats.getKeys(false)) {
+				if (cFormat != null) {
 					try {
-						String formatName = format.toString();
-						String prefix = plugin.getConfig().getString("chat.formats." + format + ".prefix");
-						String displayname = plugin.getConfig().getString("chat.formats." + format + ".displayname");
-						String suffix = plugin.getConfig().getString("chat.formats." + format + ".suffix");
-						String message = plugin.getConfig().getString("chat.formats." + format + ".message");
-						String clickCmd = plugin.getConfig().getString("chat.formats." + format + ".click-command");
-
-						ChatFormat chatformat = new ChatFormat(formatName, prefix, suffix, displayname, message,
-								clickCmd);
-						System.out.println("0: " + chatformat.getFormatName());
+						String name = cFormat.toString();
+						String format = plugin.getConfig().getString("chat.formats." + cFormat + ".format");
+						String clickCmd = plugin.getConfig().getString("chat.formats." + cFormat + ".click-command");
+						List<String> tooltip = plugin.getConfig().getStringList("chat.formats." + cFormat + ".tooltip");
+						
+						ChatFormat chatformat = new ChatFormat(name, format, clickCmd, tooltip);
 						chatFormats.add(chatformat);
+						
+						System.out.println("0: " + chatformat.getName());
 						amount++;
 
 					} catch (Exception e) {
@@ -65,7 +66,7 @@ public class ChatFormats {
 
 	public ChatFormat getDefaultFormat() {
 		for (ChatFormat format : chatFormats) {
-			if (format.getFormatName().equals("default")) {
+			if (format.getName().equals("default")) {
 				return format;
 			}
 		}
@@ -73,48 +74,49 @@ public class ChatFormats {
 	}
 
 	public void createDefaultFormat() {
-		String prefix = "&7[&f%player_world%&7]";
-		String displayname = "%core_rank_prefix% &7%player_name%";
-		String suffix = " &8» ";
-		String message = "&f";
+		String format = "&8[&f%player_world%&8] %core_rank_prefix% &7%player_name% &8» &7%msg%";
 		String clickCmd = "/msg %player%";
-		plugin.getConfig().set("chat.formats.default.prefix", prefix);
-		plugin.getConfig().set("chat.formats.default.displayname", displayname);
-		plugin.getConfig().set("chat.formats.default.suffix", suffix);
-		plugin.getConfig().set("chat.formats.default.message", message);
+		List<String> tooltip = new ArrayList<String>();
+		tooltip.add("sdfgsdfg");
+		tooltip.add("sdfgsdfg");
+		
+		plugin.getConfig().set("chat.formats.default.format", format);
 		plugin.getConfig().set("chat.formats.default.click-command", clickCmd);
+		plugin.getConfig().set("chat.formats.default.tooltip", tooltip);
 		plugin.saveConfig();
 
-		chatFormats.add(new ChatFormat("default", prefix, suffix, displayname, message, clickCmd));
+		chatFormats.add(new ChatFormat("default", format, clickCmd, tooltip));
 	}
 
-	public void setFormat(Player player, ChatFormat format) {
-		String displayname = format.getDisplayname();
-		String prefix = format.getPrefix();
-		String suffix = format.getSuffix();
+	public TextComponent create(ChatFormat format) {
+		
+		
+		TextComponent textComp = new TextComponent();
+		textComp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to message player").create()));
+		textComp.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, format.getClickCmd()));
+		return null;
+		
+	}
+	
+	public void setFormat(Player player, ChatFormat chat) {
+		String format = chat.getFormat();
+		
+		format = PlaceholderAPI.setPlaceholders(player, format);
 
-		displayname = PlaceholderAPI.setPlaceholders(player, displayname);
-		prefix = PlaceholderAPI.setPlaceholders(player, prefix);
-		suffix = PlaceholderAPI.setPlaceholders(player, suffix);
-
-		plugin.getChat().setPlayerPrefix(player, prefix);
-		plugin.getChat().setPlayerSuffix(player, suffix + format.getMessage());
-
-		player.setDisplayName(Lang.chat(displayname));
-		pFormat.put(player.getName(), format);
+		pFormat.put(player.getName(), chat);
 
 	}
 
 	public void initFormat(Player player) {
 		for (ChatFormat format : chatFormats) {
 			if (format != null) {
-				if (player.hasPermission("core.chat." + format.getFormatName())) {
+				if (player.hasPermission("core.chat." + format.getName())) {
 					setFormat(player, format);
 					return;
 				}
-
 			}
 		}
+		
 		setFormat(player, getDefaultFormat());
 		System.out.println("1: default");
 	}

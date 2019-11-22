@@ -1,8 +1,6 @@
 package com.Furnesse.core.listeners;
 
-import org.bukkit.event.Listener;
-
-public class ChatFormat implements Listener {
+//public class ChatFormat implements Listener {
 
 //	Core plugin = Core.instance;
 //
@@ -25,4 +23,4 @@ public class ChatFormat implements Listener {
 //			}
 //		}
 //	}
-}
+//}

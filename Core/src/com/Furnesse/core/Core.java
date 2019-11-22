@@ -80,8 +80,6 @@ public class Core extends JavaPlugin {
 			return;
 		}
 		setupEconomy();
-//		setupChat();
-		setupPermissions();
 		serverOptions();
 		registerListeners();
 		registerPlaceholders();
@@ -154,11 +152,11 @@ public class Core extends JavaPlugin {
 		return econ != null;
 	}
 
-//	private boolean setupChat() {
-//		RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-//		chat = rsp.getProvider();
-//		return chat != null;
-//	}
+	private boolean setupChat() {
+		RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+		chat = rsp.getProvider();
+		return chat != null;
+	}
 
 	private boolean setupPermissions() {
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
@@ -212,12 +210,14 @@ public class Core extends JavaPlugin {
 
 		if (usingChat) {
 			this.getLogger().info("Using CORE Chat");
+			setupChat();
 			chatFormat.loadChatFormats();
 		}
 
 		if (usingRanks) {
 			this.getLogger().info("Using CORE Ranks");
 			rankMan.loadRanks();
+			setupPermissions();
 		}
 
 		if (usingSb) {

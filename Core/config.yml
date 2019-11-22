@@ -30,11 +30,13 @@ chat:
   enabled: true
   formats:
     default: 
-      prefix: '&8[&f%player_world%&8]'
-      displayname: '%core_rank_prefix% &7%player_name%'
-      suffix: ' &8» '
-      message: '&7'
+      format: '&8[&f%player_world%&8] %core_rank_prefix% &7%player_name% &8» &7%msg%'
       click-command: '/msg %player_name%'
+      tooltip:
+        - 'haiosudf'
+        - 'asdfhbgfd'
+        - 'sgdsfbvds'
+        - 'fgbgfdsgb'
 database:
   enabled: true
   mysql:
