@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.utils.Debug;
 
 public class PlayerEvents implements Listener {
 
@@ -88,6 +87,8 @@ public class PlayerEvents implements Listener {
 						e.getDrops().clear();
 						plugin.getDeathChest().createDeathChest(player, drops);
 					}
+				}else{
+					player.sendMessage("§cNo deathchest has spawned as deathchests are disabled in this world");
 				}
 			}
 		}
