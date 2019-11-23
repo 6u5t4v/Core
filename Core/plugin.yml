@@ -8,13 +8,10 @@ depend: [Vault, PlaceholderAPI]
 commands:
   rank:
     description: Rank managing
-    permission: core.rank.*
   core:
     description: Main command to view all Core's commands
-    permission: core.*
   items:
     description: custom items.
-    permission: core.items
   jellylegs:
     description: Reduces the falldamage for the player
     permission: core.jellylegs
@@ -38,6 +35,11 @@ permissions:
       core.deathchests.*: true
       core.reload: true
       core.items.*: true
+      core.help: true
+      core.reload: true
+      core.sb.toggle: true
+      core.dc.clear: true
+      core.dc.load: true
   core.items.*:
     description: wildcard for custom items
     default: op

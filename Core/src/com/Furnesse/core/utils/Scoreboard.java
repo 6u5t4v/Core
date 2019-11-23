@@ -9,8 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import com.Furnesse.core.Core;
 
@@ -45,15 +45,21 @@ public class Scoreboard implements Listener {
 			for (String line : plugin.lines) {
 				val--;
 				line = PlaceholderAPI.setPlaceholders(player, line);
-				if (line.length() > 40) {
-					plugin.getLogger().severe("Couldn't load: " + line
-							+ " Make sure you have the placeholder installed, if not do /papi ecloud download <placeholder>");
+				
+				Team lineTeam = board.registerNewTeam(line);
+				lineTeam.addEntry(line);
+				
+				if (line.length() <= 16) {
+					lineTeam.setPrefix(Lang.chat(line));
 					continue;
 				}
-				Score name = obj.getScore(Lang.chat(line));
-				name.setScore(val);
-				obj.getScore(line).setScore(val);
+				
+				if(line.length() > 32) {
+					line = line.substring(32);
+				}	
 
+				lineTeam.setPrefix(Lang.chat(line).substring(0, 16));
+				lineTeam.setSuffix(Lang.chat(line).substring(16));
 			}
 		}
 		player.setScoreboard(board);
@@ -68,7 +74,7 @@ public class Scoreboard implements Listener {
 
 				updateScoreboard(player);
 			}
-		}.runTaskTimer(plugin, 10, 100);
+		}.runTaskTimer(plugin, 20 * 4, 20);
 
 	}
 
@@ -94,16 +100,23 @@ public class Scoreboard implements Listener {
 			return;
 		}
 
-		for (String str : player.getScoreboard().getEntries()) {
-			player.sendMessage("test: " + str);
-			player.getScoreboard().resetScores(str);
-		}
-
 		org.bukkit.scoreboard.Scoreboard score = player.getScoreboard();
 		int val = plugin.lines.size() + 1;
 		for (String line : plugin.lines) {
 			val--;
-			score.getObjective(DisplaySlot.SIDEBAR).getScore(line).setScore(val);
+			line = PlaceholderAPI.setPlaceholders(player, line);
+			
+			if (line.length() <= 16) {
+				score.getTeam(line).setPrefix(Lang.chat(line));
+				continue;
+			}
+			
+			if(line.length() > 32) {
+				line = line.substring(32);
+			}	
+
+			score.getTeam(line).setPrefix(Lang.chat(line).substring(0, 16));
+			score.getTeam(line).setSuffix(Lang.chat(line).substring(16));
 		}
 
 	}

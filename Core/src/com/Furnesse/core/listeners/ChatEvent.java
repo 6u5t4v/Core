@@ -20,9 +20,7 @@ public class ChatEvent implements Listener {
 		String format = plugin.chatFormat.getPlayerFormat(e.getPlayer()).getFormat();
 		
 		format = PlaceholderAPI.setPlaceholders(e.getPlayer(), format);
-
-		msg.replace("%", "%%");
-		e.setFormat(Lang.chat(format).replace("%msg%", msg));
+		e.setFormat(Lang.chat(format.replace("%msg%", msg)).replace("%", "%%"));
 		e.setMessage(e.getFormat());
 	}
 }

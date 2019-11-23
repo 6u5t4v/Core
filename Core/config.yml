@@ -30,7 +30,7 @@ chat:
   enabled: true
   formats:
     default: 
-      format: '&8[&f%player_world%&8] %core_rank_prefix% &7%player_name% &8» &7%msg%'
+      format: '&8[&f%player_world%&8] %core_rank_prefix% &7%player_name% &8» &f%msg%'
       click-command: '/msg %player_name%'
       tooltip:
         - 'haiosudf'
@@ -38,7 +38,7 @@ chat:
         - 'sgdsfbvds'
         - 'fgbgfdsgb'
 database:
-  enabled: true
+  enabled: false
   mysql:
     host: 'localhost'
     port: 3306
