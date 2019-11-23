@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -40,10 +39,10 @@ public class ChatFormats {
 						String format = plugin.getConfig().getString("chat.formats." + cFormat + ".format");
 						String clickCmd = plugin.getConfig().getString("chat.formats." + cFormat + ".click-command");
 						List<String> tooltip = plugin.getConfig().getStringList("chat.formats." + cFormat + ".tooltip");
-						
+
 						ChatFormat chatformat = new ChatFormat(name, format, clickCmd, tooltip);
 						chatFormats.add(chatformat);
-						
+
 						System.out.println("0: " + chatformat.getName());
 						amount++;
 
@@ -79,7 +78,7 @@ public class ChatFormats {
 		List<String> tooltip = new ArrayList<String>();
 		tooltip.add("sdfgsdfg");
 		tooltip.add("sdfgsdfg");
-		
+
 		plugin.getConfig().set("chat.formats.default.format", format);
 		plugin.getConfig().set("chat.formats.default.click-command", clickCmd);
 		plugin.getConfig().set("chat.formats.default.tooltip", tooltip);
@@ -89,35 +88,27 @@ public class ChatFormats {
 	}
 
 	public TextComponent create(ChatFormat format) {
-		
-		
+
 		TextComponent textComp = new TextComponent();
-		textComp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to message player").create()));
+		textComp.setHoverEvent(
+				new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to message player").create()));
 		textComp.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, format.getClickCmd()));
 		return null;
-		
-	}
-	
-	public void setFormat(Player player, ChatFormat chat) {
-		String format = chat.getFormat();
-		
-		format = PlaceholderAPI.setPlaceholders(player, format);
-
-		pFormat.put(player.getName(), chat);
 
 	}
 
 	public void initFormat(Player player) {
 		for (ChatFormat format : chatFormats) {
 			if (format != null) {
-				if (player.hasPermission("core.chat." + format.getName())) {
-					setFormat(player, format);
+				if (player.hasPermission("core.chat." + format.getName()) || format.getName().equals("default")) {
+					System.out.println("permission");
+					pFormat.put(player.getName(), format);
 					return;
 				}
 			}
 		}
-		
-		setFormat(player, getDefaultFormat());
+		System.out.println("test");
+		pFormat.put(player.getName(), getDefaultFormat());
 		System.out.println("1: default");
 	}
 }

@@ -29,6 +29,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.database.MySQLDeathchest;
 import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.Lang;
 import com.google.common.collect.BiMap;
@@ -185,6 +186,7 @@ public class DeathChests implements Listener {
 			}
 			locations.set("Locations." + uuid + ".drops", items);
 			plugin.getConfigs().saveConfigs();
+
 		}
 	}
 
@@ -249,7 +251,7 @@ public class DeathChests implements Listener {
 					return;
 				if (e.getCurrentItem().getType() == Material.AIR || e.getCurrentItem().getType() == null)
 					return;
-				
+
 				Debug.Log("click player inventory");
 				if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
 					Debug.Log("we out here");
@@ -278,12 +280,12 @@ public class DeathChests implements Listener {
 		Debug.Log("location is not null");
 		DeathChest dc = getDeathChestByLoc(location);
 		Debug.Log("dc made");
-		
-		Player player = (Player) e.getPlayer();		
+
+		Player player = (Player) e.getPlayer();
 
 		if (dc == null)
 			return;
-		
+
 		Debug.Log("dc is not null");
 
 		ItemStack[] items = Stream.of(e.getInventory().getContents()).filter(Objects::nonNull)
@@ -292,10 +294,10 @@ public class DeathChests implements Listener {
 
 		if (items.length > 0) {
 			Debug.Log("out here 4");
-			
+
 			if (!items.equals(dc.getDrops())) {
 				Debug.Log("out here 5");
-				
+
 				dc.setDrops(items);
 				plugin.getConfigs().getDchestsConfig().set("Locations." + dc.getUuid() + ".drops", items);
 				plugin.getConfigs().saveConfigs();

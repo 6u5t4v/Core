@@ -74,20 +74,27 @@ public class Core extends JavaPlugin {
 
 	public Map<Material, Integer> matTimeout = new HashMap<Material, Integer>();
 
-	final boolean usingMySQL = getConfig().getBoolean("database.enabled");
 	public String host, database, username, password;
 	public String playerTable = "player_data", deathchestTable = "stored_deathchests";
 	public int port;
 	private Connection connection;
 	
+	public boolean usingMySQL;
+	
+	public boolean usingSb;
+	public boolean usingDc;
+	public int minItems;
+	public boolean usingRanks;
+	public boolean usingChat;
+	public List<String> lines = new ArrayList<>();
+	public String boardName;
+	
 	public void onEnable() {
+		this.getLogger().info("<------<< Furnesse CORE >>------>");
 		instance = this;
+		
 		configs.createCustomConfig();
 		configs.saveConfigs();
-		
-		if (usingMySQL) {
-			setupMySQL();
-		}
 
 		if (!setupEconomy()) {
 			log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -103,18 +110,9 @@ public class Core extends JavaPlugin {
 		cItemMan.loadCustomItems();
 		disableRecipes();
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
+		this.getLogger().info("<------------------------------->");
 	}
-
-	public boolean usingSb = true;
-	public boolean usingDc;
-	public boolean usingRanks;
-	public boolean usingChat;
-	public List<String> lines = new ArrayList<>();
-
-	public int minItems;
-
-	public String boardName;
-
+	
 	private void setupMySQL() {
 		host = getConfig().getString("database.mysql.host");
 		port = getConfig().getInt("database.mysql.port");
@@ -143,7 +141,7 @@ public class Core extends JavaPlugin {
 	
 	private void setupTables() {
 		String table1 = "CREATE TABLE IF NOT EXISTS " + this.playerTable + "(uuid VARCHAR(200), username VARCHAR(16))";
-		String table2 = "CREATE TABLE IF NOT EXISTS  " + this.deathchestTable + "(owner VARCHAR(16), location VARCHAR(64))";
+		String table2 = "CREATE TABLE IF NOT EXISTS  " + this.deathchestTable + "(uuid VARCHAR(200), owner VARCHAR(16), location VARCHAR(64))";
 		try {
 			PreparedStatement playerStmt = connection.prepareStatement(table1);
 			PreparedStatement deathchestsStmt = connection.prepareStatement(table2);
@@ -199,8 +197,10 @@ public class Core extends JavaPlugin {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new CraftingRecipes(), this);
 		pm.registerEvents(new PlayerEvents(), this);
-		pm.registerEvents(new ChatEvent(), this);
-		pm.registerEvents(new DeathChests(this), this);
+		if(usingChat)
+			pm.registerEvents(new ChatEvent(), this);
+		if(usingDc)
+			pm.registerEvents(new DeathChests(this), this);
 	}
 
 	private boolean setupEconomy() {
@@ -263,33 +263,38 @@ public class Core extends JavaPlugin {
 	}
 
 	public void serverOptions() {
+		usingMySQL = getConfig().getBoolean("database.enabled");
 		usingSb = getConfig().getBoolean("scoreboard.enabled");
 		usingDc = getConfig().getBoolean("deathchests.enabled");
 		usingRanks = getConfig().getBoolean("use-ranks");
-		usingChat = getConfig().getBoolean("chat.enabled");
-
+		usingChat = getConfig().getBoolean("chat.enabled");		
 		lines = getConfig().getStringList("scoreboard.lines");
 		minItems = getConfig().getInt("deathchests.deathchest-min-items");
 		boardName = getConfig().getString("scoreboard.title");
 
+		if(usingMySQL) {
+			this.getLogger().info("Enabling MySQL");
+			setupMySQL();
+		}
+		
 		if (usingChat) {
-			this.getLogger().info("Using CORE Chat");
+			this.getLogger().info("Enabling Chat");
 //			setupChat();
 			chatFormat.loadChatFormats();
 		}
 
 		if (usingRanks) {
-			this.getLogger().info("Using CORE Ranks");
+			this.getLogger().info("Enabling Ranks");
 			rankMan.loadRanks();
 			setupPermissions();
 		}
 
 		if (usingSb) {
-			this.getLogger().info("Using CORE Scoreboard");
+			this.getLogger().info("Enabling Scoreboard");
 		}
 
 		if (usingDc) {
-			this.getLogger().info("Using CORE DeathChests");
+			this.getLogger().info("Enabling DeathChests");
 			for (String world : getConfig().getStringList("deathchests.enabled-worlds")) {
 				if (world != null) {
 					dcEnabledWorlds.add(world);

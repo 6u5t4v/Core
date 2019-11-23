@@ -19,6 +19,11 @@ public class PlayerEvents implements Listener {
 
 	private void registerPlayer(Player player) {
 		String uuid = player.getUniqueId().toString();
+		if (plugin.usingMySQL) {
+			MySQLPlayer.createPlayer(player.getUniqueId(), player);
+			return;
+		}
+		
 		if (!isRegistered(player) || hasChangedName(player)) {
 			plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".username", player.getName());
 			if (plugin.usingRanks) {
@@ -26,8 +31,7 @@ public class PlayerEvents implements Listener {
 			}
 			plugin.getConfigs().saveConfigs();
 		}
-		
-		MySQLPlayer.createPlayer(player.getUniqueId(), player);
+
 	}
 
 	public boolean isRegistered(Player player) {
@@ -52,6 +56,7 @@ public class PlayerEvents implements Listener {
 //		String uuid = player.getUniqueId().toString();
 
 		registerPlayer(player);
+		
 		if (plugin.usingRanks) {
 			plugin.getRanks().loadRank(player);
 			plugin.getRanks().loadPlayerPerms(player);
@@ -90,7 +95,7 @@ public class PlayerEvents implements Listener {
 						e.getDrops().clear();
 						plugin.getDeathChest().createDeathChest(player, drops);
 					}
-				}else{
+				} else {
 					player.sendMessage("§cNo deathchest has spawned as deathchests are disabled in this world");
 				}
 			}
