@@ -76,7 +76,7 @@ public class Core extends JavaPlugin {
 
 	final boolean usingMySQL = getConfig().getBoolean("database.enabled");
 	public String host, database, username, password;
-	public String playerTable, deathchestTable;
+	public String playerTable = "player_data", deathchestTable = "stored_deathchests";
 	public int port;
 	private Connection connection;
 	
@@ -142,11 +142,11 @@ public class Core extends JavaPlugin {
 	}
 	
 	private void setupTables() {
-		playerTable = "CREATE TABLE IF NOT EXISTS player_data(uuid VARCHAR(200), username VARCHAR(16))";
-		deathchestTable = "CREATE TABLE IF NOT EXISTS stored_deathchests(owner VARCHAR(16), location VARCHAR(64))";
+		String table1 = "CREATE TABLE IF NOT EXISTS " + this.playerTable + "(uuid VARCHAR(200), username VARCHAR(16))";
+		String table2 = "CREATE TABLE IF NOT EXISTS  " + this.deathchestTable + "(owner VARCHAR(16), location VARCHAR(64))";
 		try {
-			PreparedStatement playerStmt = connection.prepareStatement(playerTable);
-			PreparedStatement deathchestsStmt = connection.prepareStatement(deathchestTable);
+			PreparedStatement playerStmt = connection.prepareStatement(table1);
+			PreparedStatement deathchestsStmt = connection.prepareStatement(table2);
 			
 			playerStmt.executeUpdate();
 			deathchestsStmt.executeUpdate();
