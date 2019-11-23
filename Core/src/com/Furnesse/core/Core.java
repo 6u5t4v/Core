@@ -3,6 +3,9 @@ package com.Furnesse.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +34,6 @@ import com.Furnesse.core.commands.RankCMD;
 import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
-import com.Furnesse.core.database.MySQL;
 import com.Furnesse.core.deathchest.DeathChests;
 import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.rank.RankManager;
@@ -41,6 +43,7 @@ import com.Furnesse.core.utils.Utils;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -57,7 +60,6 @@ public class Core extends JavaPlugin {
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
 	private Scoreboard sb = new Scoreboard(this);
-	private MySQL mysql = new MySQL(this);
 	private DeathChests deathChests = new DeathChests(this);
 
 	public CItemManager cItemMan = new CItemManager(this);
@@ -70,10 +72,20 @@ public class Core extends JavaPlugin {
 
 	public Map<Material, Integer> matTimeout = new HashMap<Material, Integer>();
 
+	final boolean usingMySQL = getConfig().getBoolean("database.enabled");
+	public String host, database, username, password;
+	public int port;
+	private Connection connection;
+	
 	public void onEnable() {
 		instance = this;
 		configs.createCustomConfig();
 		configs.saveConfigs();
+		
+		if (usingMySQL) {
+			setupMySQL();
+		}
+
 		if (!setupEconomy()) {
 			log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
@@ -99,6 +111,39 @@ public class Core extends JavaPlugin {
 	public int minItems;
 
 	public String boardName;
+
+	private void setupMySQL() {
+		host = getConfig().getString("database.mysql.host");
+		port = getConfig().getInt("database.mysql.port");
+		database = getConfig().getString("database.mysql.database");
+		username = getConfig().getString("database.mysql.username");
+		password = getConfig().getString("database.mysql.password");
+		
+		try {
+			synchronized(this) {
+				if(getConnection() != null && !getConnection().isClosed()) {
+					return;
+				}
+				Class.forName("com.mysql.jdbc.Driver");
+				setConnection(DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, username, password));
+				
+				this.getLogger().info(ChatColor.GREEN + " Succesfully loaded MySQL");
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
 
 	private void registerCommands() {
 		if (usingRanks)
@@ -288,9 +333,5 @@ public class Core extends JavaPlugin {
 
 	public DeathChests getDeathChest() {
 		return deathChests;
-	}
-
-	public MySQL getMysql() {
-		return mysql;
 	}
 }
