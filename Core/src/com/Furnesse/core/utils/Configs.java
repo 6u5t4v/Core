@@ -20,8 +20,8 @@ public class Configs {
 	private File ranksFile;
 	private FileConfiguration cCommands;
 	private File cCommandsFile;
-	private FileConfiguration locs;
-	private File locsFile;
+	private FileConfiguration deathchests;
+	private File deathchestsFile;
 	private FileConfiguration cItems;
 	private File cItemsFile;
 	
@@ -38,7 +38,7 @@ public class Configs {
 		playersFile = new File(plugin.getDataFolder(), "players.yml");
 		ranksFile = new File(plugin.getDataFolder(), "ranks.yml");
 		cCommandsFile = new File(plugin.getDataFolder(), "customcommands.yml");
-		locsFile = new File(plugin.getDataFolder(), "locations.yml");
+		deathchestsFile = new File(plugin.getDataFolder(), "deathchests.yml");
 		cItemsFile = new File(plugin.getDataFolder(), "customitems.yml");
 		
 		if (!plugin.getDataFolder().exists()) {
@@ -65,8 +65,8 @@ public class Configs {
 			plugin.saveResource("customcommands.yml", false);
 		}
 		
-		if (!locsFile.exists()) {
-			plugin.saveResource("locations.yml", false);
+		if (!deathchestsFile.exists()) {
+			plugin.saveResource("deathchests.yml", false);
 		}
 		
 		if (!cItemsFile.exists()) {
@@ -77,14 +77,14 @@ public class Configs {
 		players = new YamlConfiguration();
 		ranks = new YamlConfiguration();
 		cCommands = new YamlConfiguration();
-		locs = new YamlConfiguration();
+		deathchests = new YamlConfiguration();
 		cItems = new YamlConfiguration();
 		try {
 			lang.load(langFile);
 			players.load(playersFile);
 			ranks.load(ranksFile);
 			cCommands.load(cCommandsFile);
-			locs.load(locsFile);
+			deathchests.load(deathchestsFile);
 			cItems.load(cItemsFile);
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Failed to load yml files!");
@@ -115,9 +115,9 @@ public class Configs {
 			plugin.getLogger().log(Level.SEVERE, "Could not save customcommands.yml file!");
 		}
 		try {
-			locs.save(locsFile);
+			deathchests.save(deathchestsFile);
 		} catch (IOException e) {
-			plugin.getLogger().log(Level.SEVERE, "Could not save locations.yml file!");
+			plugin.getLogger().log(Level.SEVERE, "Could not save deathchests.yml file!");
 		}
 		try {
 			cItems.save(cItemsFile);
@@ -132,7 +132,7 @@ public class Configs {
 			players.load(playersFile);
 			cCommands.load(cCommandsFile);
 			ranks.load(ranksFile);
-			locs.load(locsFile);
+			deathchests.load(deathchestsFile);
 			cItems.load(cItemsFile);
 			sender.sendMessage(Lang.RELOADED);
 		} catch (Exception e) {
@@ -157,8 +157,8 @@ public class Configs {
 		return cCommands;
 	}
 	
-	public FileConfiguration getLocsConfig() {
-		return locs;
+	public FileConfiguration getDchestsConfig() {
+		return deathchests;
 	}
 	
 	public FileConfiguration getCItemsConfig() {

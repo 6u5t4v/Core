@@ -47,7 +47,7 @@ public class DeathChests implements Listener {
 	public List<DeathChest> deathChests = new ArrayList<DeathChest>();
 
 	public void loadDeathChests() {
-		FileConfiguration locsConfig = plugin.getConfigs().getLocsConfig();
+		FileConfiguration locsConfig = plugin.getConfigs().getDchestsConfig();
 		droppedChests.clear();
 		deathChests.clear();
 
@@ -57,7 +57,7 @@ public class DeathChests implements Listener {
 			for (String uuid : locations.getKeys(false)) {
 				if (uuid != null) {
 					try {
-						String worldName = plugin.getConfigs().getLocsConfig()
+						String worldName = plugin.getConfigs().getDchestsConfig()
 								.getString("Locations." + uuid + ".location.world");
 						World world = Bukkit.getWorld(worldName);
 						int x, y, z;
@@ -92,7 +92,7 @@ public class DeathChests implements Listener {
 	}
 
 	public void removeOldDeathChest(OfflinePlayer victim) {
-		FileConfiguration locations = plugin.getConfigs().getLocsConfig();
+		FileConfiguration locations = plugin.getConfigs().getDchestsConfig();
 		String uuid = victim.getUniqueId().toString();
 
 		DeathChest dc = getDeathChestByOwner(victim.getName());
@@ -125,7 +125,7 @@ public class DeathChests implements Listener {
 	}
 
 	public boolean hasDeathChest(Player player) {
-		FileConfiguration locations = plugin.getConfigs().getLocsConfig();
+		FileConfiguration locations = plugin.getConfigs().getDchestsConfig();
 		if (locations.contains("Locations." + player.getUniqueId().toString())) {
 			return true;
 		}
@@ -154,7 +154,7 @@ public class DeathChests implements Listener {
 	}
 
 	public void createDeathChest(Player victim, ItemStack[] drops) {
-		FileConfiguration locations = plugin.getConfigs().getLocsConfig();
+		FileConfiguration locations = plugin.getConfigs().getDchestsConfig();
 		Block block = victim.getLocation().getBlock();
 		Location loc = block.getLocation();
 
@@ -297,7 +297,7 @@ public class DeathChests implements Listener {
 				Debug.Log("out here 5");
 				
 				dc.setDrops(items);
-				plugin.getConfigs().getLocsConfig().set("Locations." + dc.getUuid() + ".drops", items);
+				plugin.getConfigs().getDchestsConfig().set("Locations." + dc.getUuid() + ".drops", items);
 				plugin.getConfigs().saveConfigs();
 				Debug.Log("out here 6");
 			}
@@ -326,7 +326,7 @@ public class DeathChests implements Listener {
 	public void removeAll() {
 		plugin.utils.resetDcLocs();
 
-		plugin.getConfigs().getLocsConfig().set("Locations", null);
+		plugin.getConfigs().getDchestsConfig().set("Locations", null);
 		plugin.getConfigs().saveConfigs();
 
 		Bukkit.broadcastMessage("Removed " + deathChests.size() + " has been removed");

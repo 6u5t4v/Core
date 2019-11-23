@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.database.MySQLPlayer;
 
 public class PlayerEvents implements Listener {
 
@@ -25,6 +26,8 @@ public class PlayerEvents implements Listener {
 			}
 			plugin.getConfigs().saveConfigs();
 		}
+		
+		MySQLPlayer.createPlayer(player.getUniqueId(), player);
 	}
 
 	public boolean isRegistered(Player player) {

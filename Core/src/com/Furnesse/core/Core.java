@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
 import com.Furnesse.core.deathchest.DeathChests;
+import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.rank.RankManager;
 import com.Furnesse.core.utils.Configs;
@@ -74,6 +76,7 @@ public class Core extends JavaPlugin {
 
 	final boolean usingMySQL = getConfig().getBoolean("database.enabled");
 	public String host, database, username, password;
+	public String playerTable, deathchestTable;
 	public int port;
 	private Connection connection;
 	
@@ -127,12 +130,28 @@ public class Core extends JavaPlugin {
 				Class.forName("com.mysql.jdbc.Driver");
 				setConnection(DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, username, password));
 				
-				this.getLogger().info(ChatColor.GREEN + " Succesfully loaded MySQL");
+				setupTables();
+				this.getLogger().info("§aSuccesfully loaded MySQL");
 			}
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void setupTables() {
+		playerTable = "CREATE TABLE IF NOT EXISTS player_data(uuid VARCHAR(200), username VARCHAR(16))";
+		deathchestTable = "CREATE TABLE IF NOT EXISTS stored_deathchests(owner VARCHAR(16), location VARCHAR(64))";
+		try {
+			PreparedStatement playerStmt = connection.prepareStatement(playerTable);
+			PreparedStatement deathchestsStmt = connection.prepareStatement(deathchestTable);
+			
+			playerStmt.executeUpdate();
+			deathchestsStmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}
@@ -180,7 +199,7 @@ public class Core extends JavaPlugin {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new CraftingRecipes(), this);
 		pm.registerEvents(new PlayerEvents(), this);
-//		pm.registerEvents(new ChatEvent(), this);
+		pm.registerEvents(new ChatEvent(), this);
 		pm.registerEvents(new DeathChests(this), this);
 	}
 
@@ -255,7 +274,7 @@ public class Core extends JavaPlugin {
 
 		if (usingChat) {
 			this.getLogger().info("Using CORE Chat");
-			setupChat();
+//			setupChat();
 			chatFormat.loadChatFormats();
 		}
 
