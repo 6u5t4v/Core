@@ -1,5 +1,8 @@
 package com.Furnesse.core.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,13 +32,17 @@ public class ItemsCMD implements CommandExecutor {
 
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("help")) {
-					for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
-						player.sendMessage(message);
-					}
+					player.sendMessage("/items give <player> <Item> [amount]");
+					player.sendMessage("/items list");
 				}
 
 				if (args[0].equalsIgnoreCase("list")) {
-					player.sendMessage(Lang.chat("&aAvailable Items: &7" + plugin.cItemMan.customItems.toString()));
+					List<String> cItems = new ArrayList<String>();
+					for (CItem cItem : plugin.cItemMan.customItems) {
+						cItems.add(cItem.getName());
+					}
+
+					player.sendMessage(Lang.chat("&a&lAvailable Items: &7" + cItems.toString()));
 				}
 
 				if (args[0].equalsIgnoreCase("give")) {

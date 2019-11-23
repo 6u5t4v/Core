@@ -69,11 +69,6 @@ public class Core extends JavaPlugin {
 
 	public Utils utils = new Utils(this);
 
-	public List<String> enabledWorlds = new ArrayList<String>();
-	public List<String> dcEnabledWorlds = new ArrayList<String>();
-
-	public Map<Material, Integer> matTimeout = new HashMap<Material, Integer>();
-
 	public String host, database, username, password;
 	public String playerTable = "player_data", deathchestTable = "stored_deathchests";
 	public int port;
@@ -81,6 +76,9 @@ public class Core extends JavaPlugin {
 	
 	public boolean usingMySQL;
 	
+	public List<String> enabledWorlds = new ArrayList<String>();
+	public List<String> dcEnabledWorlds = new ArrayList<String>();
+	public Map<Material, Integer> matTimeout = new HashMap<Material, Integer>();
 	public boolean usingSb;
 	public boolean usingDc;
 	public int minItems;
@@ -102,13 +100,15 @@ public class Core extends JavaPlugin {
 			return;
 		}
 		setupEconomy();
-		serverOptions();
+		setupConfigurations();
 		registerListeners();
 		registerPlaceholders();
 		registerCommands();
+		
 		commands.loadCustomCommands();
 		cItemMan.loadCustomItems();
 		disableRecipes();
+		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
@@ -163,12 +163,12 @@ public class Core extends JavaPlugin {
 	}
 
 	private void registerCommands() {
+		registerCustomCommands();
+		
 		if (usingRanks)
 			getCommand("rank").setExecutor(new RankCMD());
 		getCommand("core").setExecutor(new CoreCMD());
 		getCommand("items").setExecutor(new ItemsCMD());
-
-		registerCustomCommands();
 	}
 
 	private void registerCustomCommands() {
@@ -262,7 +262,7 @@ public class Core extends JavaPlugin {
 		});
 	}
 
-	public void serverOptions() {
+	public void setupConfigurations() {
 		usingMySQL = getConfig().getBoolean("database.enabled");
 		usingSb = getConfig().getBoolean("scoreboard.enabled");
 		usingDc = getConfig().getBoolean("deathchests.enabled");
