@@ -301,7 +301,6 @@ public class Core extends JavaPlugin {
 					dcEnabledWorlds.add(world);
 				}
 			}
-			deathChests.loadDeathChests();
 		}
 	}
 
@@ -320,12 +319,14 @@ public class Core extends JavaPlugin {
 			}
 		}
 		this.getLogger().info("Disabled " + amount + " recipe(s)");
+		
 	}
 
 	public void onDisable() {
 		utils.resetDcLocs();
 
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
+		this.getLogger().info("<------------------------------->");
 	}
 
 	public Economy getEconomy() {

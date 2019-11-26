@@ -87,22 +87,22 @@ public class PlayerEvents implements Listener {
 				plugin.chatFormat.pFormat.remove(player.getName());
 	}
 
-	@EventHandler
-	public void onPlayerDeath(PlayerDeathEvent e) {
-		if (e.getEntity() instanceof Player) {
-			Player player = e.getEntity();
-			if (plugin.usingDc) {
-				if (plugin.dcEnabledWorlds.contains(player.getWorld().getName())) {
-					if (e.getDrops().size() >= plugin.minItems) {
-						ItemStack[] drops = e.getDrops().toArray(new ItemStack[0]);
-						e.getDrops().clear();
-						plugin.getDeathChest().createDeathChest(player, drops);
-					}
-				} else {
-					player.sendMessage("§cNo deathchest has spawned as deathchests are disabled in this world");
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	public void onPlayerDeath(PlayerDeathEvent e) {
+//		if (e.getEntity() instanceof Player) {
+//			Player player = e.getEntity();
+//			if (plugin.usingDc) {
+//				if (plugin.dcEnabledWorlds.contains(player.getWorld().getName())) {
+//					if (e.getDrops().size() >= plugin.minItems) {
+//						ItemStack[] drops = e.getDrops().toArray(new ItemStack[0]);
+//						e.getDrops().clear();
+//						plugin.getDeathChest().createDeathChest(player, drops);
+//					}
+//				} else {
+//					player.sendMessage("§cNo deathchest has spawned as deathchests are disabled in this world");
+//				}
+//			}
+//		}
+//	}
 
 }

@@ -62,7 +62,7 @@ public class CoreCMD implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("dc")) {
 					if (args[1].equalsIgnoreCase("clear")) {
 						if (player.hasPermission("core.dc.clear")) {
-							plugin.getDeathChest().removeAll();
+//							plugin.getDeathChest().removeAll();
 						} else {
 							player.sendMessage(Lang.NO_PERMISSION);
 						}
@@ -70,7 +70,7 @@ public class CoreCMD implements CommandExecutor {
 
 					if (args[1].equalsIgnoreCase("reload")) {
 						if (player.hasPermission("core.dc.load")) {
-							plugin.getDeathChest().loadDeathChests();
+//							plugin.getDeathChest().loadDeathChests();
 						} else {
 							player.sendMessage(Lang.NO_PERMISSION);
 						}
@@ -98,11 +98,11 @@ public class CoreCMD implements CommandExecutor {
 
 		if (args.length == 2) {
 			if (args[1].equalsIgnoreCase("clear")) {
-				plugin.getDeathChest().removeAll();
+//				plugin.getDeathChest().removeAll();
 			}
 
 			if (args[1].equalsIgnoreCase("reload")) {
-				plugin.getDeathChest().loadDeathChests();
+//				plugin.getDeathChest().loadDeathChests();
 
 			}
 		}

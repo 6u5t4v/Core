@@ -43,7 +43,7 @@ public class ChatFormats {
 						ChatFormat chatformat = new ChatFormat(name, format, clickCmd, tooltip);
 						chatFormats.add(chatformat);
 
-						System.out.println("0: " + chatformat.getName());
+//						System.out.println("0: " + chatformat.getName());
 						amount++;
 
 					} catch (Exception e) {

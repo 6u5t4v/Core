@@ -15,3 +15,9 @@ boolean:
   'true': 'yes'
   'false': 'no'
 date_format: MM/dd/yy HH:mm:ss
+expansions:
+  player:
+    ping_color:
+      medium: '&e'
+      high: '&a'
+      low: '&c'

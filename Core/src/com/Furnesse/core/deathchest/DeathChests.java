@@ -2,24 +2,19 @@ package com.Furnesse.core.deathchest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -29,310 +24,184 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.database.MySQLDeathchest;
 import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.Lang;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 public class DeathChests implements Listener {
-
 	Core plugin;
 
 	public DeathChests(Core plugin) {
 		this.plugin = plugin;
 	}
 
-	public static BiMap<Location, Inventory> droppedChests = HashBiMap.create();
-//	public Map<Location, Inventory> droppedChests = new HashMap<>();
+	public BiMap<Location, DeathChest> droppedChests = HashBiMap.create();
+//	public Map<Location, DeathChest> droppedChests = new HashMap<>();
 	public List<DeathChest> deathChests = new ArrayList<DeathChest>();
 
-	public void loadDeathChests() {
-		FileConfiguration locsConfig = plugin.getConfigs().getDchestsConfig();
-		droppedChests.clear();
-		deathChests.clear();
+	@EventHandler
+	public void onPlayerDeath(PlayerDeathEvent e) {
+		Player player = e.getEntity();
+		World world = player.getWorld();
 
-		ConfigurationSection locations = locsConfig.getConfigurationSection("Locations");
-		int loaded = 0;
-		if (locations != null) {
-			for (String uuid : locations.getKeys(false)) {
-				if (uuid != null) {
-					try {
-						String worldName = plugin.getConfigs().getDchestsConfig()
-								.getString("Locations." + uuid + ".location.world");
-						World world = Bukkit.getWorld(worldName);
-						int x, y, z;
-						x = locsConfig.getInt("Locations." + uuid + ".location.x");
-						y = locsConfig.getInt("Locations." + uuid + ".location.y");
-						z = locsConfig.getInt("Locations." + uuid + ".location.z");
-						List<?> list = locsConfig.getList("Locations." + uuid + ".drops");
-						List<ItemStack> items = new ArrayList<>();
-						for (int i = 0; i < list.size(); i++) {
-							ItemStack item = (ItemStack) list.get(i);
-							if (item == null) {
-								continue;
-							}
-//							System.out.println("Current item:" + item.getType() + " " + item.getAmount());
-							items.add(item);
-						}
-						ItemStack[] drops = items.toArray(new ItemStack[0]);
-						String owner = locsConfig.getString("Locations." + uuid + ".owner");
-						if (world != null) {
-							Location loc = new Location(world, x, y, z);
-							setupDeathChest(null, uuid, owner, drops, loc);
-							loaded++;
-						}
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
+		if (plugin.usingDc) {
+//			Debug.Log("dc is enabled");
+			if (plugin.dcEnabledWorlds.contains(world.getName())) {
+//				Debug.Log("this world is using dcs");
+				int numDrops = e.getDrops().size();
+
+				if (numDrops >= plugin.minItems) {
+//					Debug.Log("player has min amount of items");
+					Inventory dcInv;
+					dcInv = Bukkit.createInventory(null, numDrops <= 27 ? 27 : numDrops <= 45 ? 45 : 54,
+							Lang.chat("&c" + player.getName() + "'s &8Death chest"));
+
+//					Debug.Log("created the dc inventory");
+
+					for (ItemStack item : e.getDrops()) {
+						dcInv.addItem(item);
 					}
+
+//					Debug.Log("successfully added all drops to dc inv");
+
+					e.getDrops().clear();
+
+//					Debug.Log("cleared drops");				
+
+					Block block = world.getBlockAt(player.getLocation());
+
+					if (block.getType() != Material.AIR) {
+						plugin.utils.getPlaceholders().put(block.getLocation(), block.getType());
+//						Debug.Log("saved previous block");
+					}
+
+					block.setType(Material.PLAYER_HEAD);
+
+					Skull skull = (Skull) block.getState();
+					skull.setOwner(player.getName());
+					skull.update();
+//					Debug.Log("block set");
+
+					DeathChest deathchest = new DeathChest(player.getUniqueId().toString(), player.getName(),
+							block.getLocation(), dcInv.getContents(), dcInv);
+
+					droppedChests.put(block.getLocation(), deathchest);
+					deathChests.add(deathchest);
+
+					player.sendMessage("§c§lYou died at §e" + player.getLocation().getBlockX() + ", "
+							+ player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ());
+				} else {
+					player.sendMessage(
+							"§cNot enough items to generate deathchest (min itemstacks = 5) \n§cHurry up and retrieve them!");
+					return;
 				}
 			}
-			plugin.getLogger().info("Loaded: " + loaded + " deathchests");
 		}
 	}
 
-	public void removeOldDeathChest(OfflinePlayer victim) {
-		FileConfiguration locations = plugin.getConfigs().getDchestsConfig();
-		String uuid = victim.getUniqueId().toString();
-
-		DeathChest dc = getDeathChestByOwner(victim.getName());
-
-		plugin.utils.resetDcLoc(victim);
-
-		locations.set("Locations." + uuid, null);
-		plugin.getConfigs().saveConfigs();
-
+	public void removeDeathChest(DeathChest dc) {
 		droppedChests.remove(dc.getLoc());
 		deathChests.remove(dc);
+
 	}
 
-	public DeathChest getDeathChestByOwner(String name) {
-		for (DeathChest dc : deathChests) {
-			if (dc.getOwner().equals(name)) {
-				return dc;
-			}
-		}
-		return null;
-	}
-
-	public DeathChest getDeathChestByLoc(Location loc) {
-		for (DeathChest dc : deathChests) {
-			if (dc.getLoc().equals(loc)) {
-				return dc;
-			}
-		}
-		return null;
-	}
-
-	public boolean hasDeathChest(Player player) {
-		FileConfiguration locations = plugin.getConfigs().getDchestsConfig();
-		if (locations.contains("Locations." + player.getUniqueId().toString())) {
-			return true;
-		}
-		return false;
-	}
-
-	public void setupDeathChest(Player player, String dcUuid, String name, ItemStack[] drops, Location loc) {
-		Block block = loc.getBlock();
-		Location bLoc = block.getLocation();
-		if (block.getType() != Material.AIR || block.getType() != null)
-			plugin.utils.getPlaceholders().put(bLoc, block.getType());
-
-		block.setType(Material.CHEST);
-
-		Inventory inventory = Bukkit.createInventory(null, drops.length <= 27 ? 27 : drops.length <= 45 ? 45 : 54,
-				Lang.chat("&c" + name + "'s &8Death chest"));
-
-		inventory.setContents(drops);
-
-		if (player != null) {
-			player.getInventory().clear();
-		}
-
-		droppedChests.put(bLoc, inventory);
-		deathChests.add(new DeathChest(dcUuid, name, bLoc, drops));
-	}
-
-	public void createDeathChest(Player victim, ItemStack[] drops) {
-		FileConfiguration locations = plugin.getConfigs().getDchestsConfig();
-		Block block = victim.getLocation().getBlock();
-		Location loc = block.getLocation();
-
-//		ItemStack[] drops = Stream.of(victim.getInventory().getContents()).filter(Objects::nonNull)
-//				.toArray(ItemStack[]::new);
-
-		if (drops.length >= plugin.minItems) {
-			if (hasDeathChest(victim)) {
-				removeOldDeathChest(victim);
-				victim.sendMessage("Your new deathchest has replaced your old one.");
-			}
-
-			setupDeathChest(victim, victim.getUniqueId().toString(), victim.getName(), drops, loc);
-
-			victim.sendMessage("§7You can find your deathchest at: §ax" + loc.getBlockX() + "§7, §ay" + loc.getBlockY()
-					+ "§7, §az" + loc.getBlockZ() + "§7. §cIf you die again this chest will be removed");
-
-			String uuid = victim.getUniqueId().toString();
-
-			locations.set("Locations." + uuid + ".location.world", loc.getWorld().getName());
-			locations.set("Locations." + uuid + ".location.x", loc.getX());
-			locations.set("Locations." + uuid + ".location.y", loc.getY());
-			locations.set("Locations." + uuid + ".location.z", loc.getZ());
-			locations.set("Locations." + uuid + ".owner", victim.getName());
-			List<ItemStack> items = new ArrayList<ItemStack>();
-			for (ItemStack item : drops) {
-				items.add(item);
-			}
-			locations.set("Locations." + uuid + ".drops", items);
-			plugin.getConfigs().saveConfigs();
-
-		}
-	}
-
-//	  Events has been disabled COMING SOON NEEDS TO BE FIXED
-
-	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent e) {
-		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Block block = e.getClickedBlock();
-			if (block.getType() == Material.CHEST) {
-				Inventory deathChest = droppedChests.get(block.getLocation());
-				if (deathChest == null) {
-					return;
-				}
-				e.setCancelled(true);
-				if (deathChest.getViewers().size() == 0) {
-					e.getPlayer().openInventory(deathChest);
-
-				} else {
-					for (HumanEntity viewer : deathChest.getViewers()) {
-						e.getPlayer().sendMessage("This chest is currently occupied by " + viewer.getName());
-					}
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent e) {
-		Block block = e.getBlock();
-		if (block.getType() == Material.CHEST) {
-			Inventory deathChest = droppedChests.get(block.getLocation());
-			if (deathChest != null) {
-				e.getPlayer().sendMessage(Lang.chat("&cYou cant break deathchests"));
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void onMoveItems(InventoryClickEvent e) {
-		Location location = droppedChests.inverse().get(e.getInventory());
-		if (location == null) {
-			return;
-		}
-
-		// THE Debug above gave this
-
-//		HOTBAR_SWAP
-//		[16:24:18 INFO]: NUMBER_KEY getClick
-//		[16:24:18 INFO]: CHEST inv
-
-		// meaning now we have top check for the hotbar swap in the chest inventory and
-		// make sure its the chest that we need to (deathchest)
-		if (e.getInventory().equals(droppedChests.get(location))) {
-
-			if (e.getClickedInventory() == null)
-				return;
-
-			if (e.getClickedInventory().getType() == InventoryType.PLAYER) {
-				if (e.getCurrentItem() == null)
-					return;
-				if (e.getCurrentItem().getType() == Material.AIR || e.getCurrentItem().getType() == null)
-					return;
-
-				Debug.Log("click player inventory");
-				if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
-					Debug.Log("we out here");
-					return;
-				}
-				e.setCancelled(true);
-			}
-
-			if (e.getClickedInventory().equals(droppedChests.get(location))) {
-				Debug.Log("click player deathchest inv");
-				if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
-					Debug.Log("click player inventory");
-					e.setCancelled(true);
-				}
-
-			}
-		}
-	}
-
-	@EventHandler
-	public void onDeathChestClose(InventoryCloseEvent e) {
-		Location location = droppedChests.inverse().get(e.getInventory());
-		if (location == null)
+	public void clearDeathChests() {
+		if (deathChests == null || droppedChests == null)
 			return;
 
-		Debug.Log("location is not null");
-		DeathChest dc = getDeathChestByLoc(location);
-		Debug.Log("dc made");
-
-		Player player = (Player) e.getPlayer();
-
-		if (dc == null)
-			return;
-
-		Debug.Log("dc is not null");
-
-		ItemStack[] items = Stream.of(e.getInventory().getContents()).filter(Objects::nonNull)
-				.toArray(ItemStack[]::new);
-		Debug.Log("Successully loaded chest contents");
-
-		if (items.length > 0) {
-			Debug.Log("out here 4");
-
-			if (!items.equals(dc.getDrops())) {
-				Debug.Log("out here 5");
-
-				dc.setDrops(items);
-				plugin.getConfigs().getDchestsConfig().set("Locations." + dc.getUuid() + ".drops", items);
-				plugin.getConfigs().saveConfigs();
-				Debug.Log("out here 6");
-			}
-		}
-
-		if (items.length == 0) {
-			Debug.Log("out here 7");
-			try {
-				Player chestOwner = Bukkit.getServer().getPlayer(UUID.fromString(dc.getUuid()));
-				if (Bukkit.getPlayer(dc.getOwner()) != null) {
-					if (!chestOwner.equals(player)) {
-						chestOwner.sendMessage("Your deathchest has been claimed by " + player.getName());
-					}
-				}
-				Debug.Log("out here 9");
-				removeOldDeathChest(chestOwner);
-				Debug.Log("out here 10");
-			} catch (Exception e2) {
-				// TODO: handle exception
-				e2.printStackTrace();
-			}
-		}
-
-	}
-
-	public void removeAll() {
 		plugin.utils.resetDcLocs();
 
-		plugin.getConfigs().getDchestsConfig().set("Locations", null);
-		plugin.getConfigs().saveConfigs();
-
-		Bukkit.broadcastMessage("Removed " + deathChests.size() + " has been removed");
 		deathChests.clear();
 		droppedChests.clear();
+	}
+
+	@EventHandler
+	public void onDcInteract(PlayerInteractEvent e) {
+		Block block = e.getClickedBlock();
+		Location bLoc = block.getLocation();
+
+		if (droppedChests.get(bLoc) != null) {
+			e.setCancelled(true);
+			DeathChest dc = droppedChests.get(bLoc);
+			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				Player player = e.getPlayer();
+
+				player.openInventory(dc.getInv());
+			}
+
+			if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+				Player player = e.getPlayer();
+
+				player.sendMessage("Owner of deatchest: " + dc.getOwner());
+				player.sendMessage("Amount of items: " + dc.getDrops().length);
+			}
+		}
+	}
+
+	@EventHandler
+	public void onDcBreakBlock(BlockBreakEvent e) {
+		Block block = e.getBlock();
+
+		if (droppedChests.get(block.getLocation()) != null) {
+			e.setCancelled(true);
+			if (e.getPlayer() != null) {
+				Player player = e.getPlayer();
+				player.sendMessage("§cYou cannont destroy han active");
+			}
+		}
+	}
+
+	@EventHandler
+	public void onDcInvMove(InventoryClickEvent e) {
+		Inventory inventory = e.getClickedInventory();
+		Location loc = inventory.getLocation();
+		
+		if (droppedChests.get(loc) != null) {
+			DeathChest dc = droppedChests.get(loc);
+			Debug.Log("test: " + dc.getOwner());
+			
+			
+			if (e.getClickedInventory() != null) {
+				if (e.getCurrentItem() == null)
+					return;
+				if (e.getCurrentItem().getType() == null || e.getCurrentItem().getType() == Material.AIR)
+					return;
+
+				if (e.getAction() == InventoryAction.HOTBAR_SWAP)
+					return;
+
+				if (e.getAction() == InventoryAction.CLONE_STACK)
+					return;
+
+				if (e.getClickedInventory().getType() == InventoryType.PLAYER) {
+					e.setCancelled(true);
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onDcExit(InventoryCloseEvent e) {
+		DeathChest dc = droppedChests.get(e.getInventory().getLocation());
+
+		if (dc != null) {
+//			DeathChest dc = droppedChests.get(loc);
+			Inventory inv = dc.getInv();
+			int oldItemAmount = dc.getDrops().length;
+
+			Debug.Log("old amount: " + oldItemAmount);
+			if (inv.getContents().length != oldItemAmount) {
+				// Update items in config
+				dc.setDrops(inv.getContents());
+				Debug.Log("NEW AMOUNT:" + dc.getDrops().length);
+			}
+
+			if (inv.getContents().length == 0) {
+				// Send message to owner of chest as this dc has been claimed
+				
+				removeDeathChest(dc);
+			}
+		}
 	}
 }

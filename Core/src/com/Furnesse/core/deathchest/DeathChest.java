@@ -1,6 +1,7 @@
 package com.Furnesse.core.deathchest;
 
 import org.bukkit.Location;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class DeathChest {
@@ -9,12 +10,22 @@ public class DeathChest {
 	private String owner;
 	private Location loc;
 	private ItemStack[] drops;
+	private Inventory inv;
 
-	public DeathChest(String uuid, String owner, Location loc, ItemStack[] drops) {
+	public DeathChest(String uuid, String owner, Location loc, ItemStack[] drops, Inventory inv) {
 		this.uuid = uuid;
 		this.owner = owner;
 		this.loc = loc;
 		this.drops = drops;
+		this.inv = inv;
+	}
+
+	public Inventory getInv() {
+		return inv;
+	}
+
+	public void setInv(Inventory inv) {
+		this.inv = inv;
 	}
 
 	public String getUuid() {
