@@ -51,10 +51,6 @@ public class CoreCMD implements CommandExecutor {
 			if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("sb")) {
 					if (player.hasPermission("core.sb.toggle")) {
-						if (args[1].equalsIgnoreCase("scoreboard")) {
-							player.sendMessage("/core sb toggle");
-						}
-
 						if (args[1].equalsIgnoreCase("toggle")) {
 							plugin.getScoreboard().toggleScoreboard(player);
 						}
@@ -82,9 +78,7 @@ public class CoreCMD implements CommandExecutor {
 				}
 			}
 		}
-		if (args.length == 0)
-
-		{
+		if (args.length == 0) {
 			for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
 				sender.sendMessage(message);
 			}

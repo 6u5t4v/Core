@@ -1,8 +1,3 @@
-Graceperiod
-Leaderboard
-  most kills
-  most deaths
-  most playtime
 Implement WarzonPlugin
   Add own currency (warcoins)
 Implement Titles
@@ -15,7 +10,6 @@ Add /nightvision
   Enables nightvision for player
 Add /staffmode
   Give player staff items
-Add /playtime
 Implement PlaceholderAPI DONE
 CustomCommands System DONE
 Scoreboard 

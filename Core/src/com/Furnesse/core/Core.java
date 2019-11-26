@@ -45,7 +45,6 @@ import com.Furnesse.core.utils.Utils;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
-import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -186,6 +185,7 @@ public class Core extends JavaPlugin {
 				pluginCommand.setPermissionMessage(Lang.NO_PERMISSION);
 				commandMap.register(getDescription().getName(), pluginCommand);
 				getCommand(ccmd.getCmd()).setExecutor(new CustomCMD());
+				System.out.println("loaded custom command: " + ccmd.getCmd());
 			}
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException
 				| NoSuchMethodException | InstantiationException | InvocationTargetException e) {
@@ -216,6 +216,7 @@ public class Core extends JavaPlugin {
 		return econ != null;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean setupChat() {
 		RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
 		chat = rsp.getProvider();

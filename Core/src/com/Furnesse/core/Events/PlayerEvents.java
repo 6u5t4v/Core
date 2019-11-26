@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.database.MySQLPlayer;
+import com.Furnesse.core.utils.ScoreboardOLD;
 
 public class PlayerEvents implements Listener {
 
@@ -62,8 +63,10 @@ public class PlayerEvents implements Listener {
 			plugin.getRanks().loadPlayerPerms(player);
 		}
 
-		if (plugin.usingSb)
+		if (plugin.usingSb) {
 			plugin.getScoreboard().setScoreboard(player);
+		}
+			
 
 		if (plugin.usingChat) {
 			plugin.chatFormat.initFormat(player);

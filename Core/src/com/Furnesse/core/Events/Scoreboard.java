@@ -34,14 +34,14 @@ public class Scoreboard {
 
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		org.bukkit.scoreboard.Scoreboard board = manager.getNewScoreboard();
-
-		plugin.boardName = PlaceholderAPI.setPlaceholders(player, plugin.boardName);
+		String boardName = plugin.boardName;
+		boardName = PlaceholderAPI.setPlaceholders(player, boardName);
 		@SuppressWarnings("deprecation")
 		Objective obj = board.registerNewObjective("Server", "dummy");
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		if (plugin.boardName == "" || plugin.boardName == null)
-			plugin.boardName = " ";
-		obj.setDisplayName(Lang.chat(plugin.boardName));
+		if (boardName == "" || boardName == null)
+			boardName = " ";
+		obj.setDisplayName(Lang.chat(boardName));
 
 		if (plugin.lines != null) {
 
@@ -50,7 +50,7 @@ public class Scoreboard {
 				val--;
 				line = PlaceholderAPI.setPlaceholders(player, line);
 
-				Score score = obj.getScore("&c");
+				Score score = obj.getScore(line);
 				score.setScore(val);
 
 				player.sendMessage(Lang.chat(line));
