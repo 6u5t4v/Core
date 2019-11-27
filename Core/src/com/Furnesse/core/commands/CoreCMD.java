@@ -97,13 +97,48 @@ public class CoreCMD implements CommandExecutor {
 		}
 
 		if (args.length == 2) {
-			if (args[1].equalsIgnoreCase("clear")) {
+			if (args[0].equalsIgnoreCase("dc")) {
+				if (args[1].equalsIgnoreCase("clear")) {
 //				plugin.getDeathChest().removeAll();
-			}
+				}
 
-			if (args[1].equalsIgnoreCase("reload")) {
+				if (args[1].equalsIgnoreCase("reload")) {
 //				plugin.getDeathChest().loadDeathChests();
 
+				}
+			}
+
+		}
+
+		if (args.length == 3) {
+			if (args[0].equalsIgnoreCase("dc")) {
+//				if (args[1].equalsIgnoreCase("debug")) {
+//					Player target = Bukkit.getPlayer(args[2]);
+//					if (target == null || !target.isOnline()) {
+//						sender.sendMessage(
+//								"Cant seem to find player §c" + args[2] + "§7 make sure the player is online");
+//						return true;
+//					}
+//
+//					List<ItemStack> drops = new ArrayList<>();
+//					for (ItemStack item : target.getInventory().getContents()) {
+//						if (item == null) {
+//							continue;
+//						}
+//
+//						if (item.getType() == Material.AIR) {
+//							continue;
+//						}
+//
+//						Debug.Log("current item: " + item.getType());
+//						drops.add(item);
+//					}
+//
+//					Debug.Log("items: " + drops.size());
+//					plugin.getDeathChest().spawnDeathChest(target, drops, target.getWorld());
+//
+//				}
+				return true;
 			}
 		}
 
