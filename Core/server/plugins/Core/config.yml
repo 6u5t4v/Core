@@ -2,9 +2,24 @@ graceperiod: 30
 use-ranks: false
 deathchests:
   enabled: true
-  deathchest-min-items: 5
-  enabled-worlds:
+  spawn_chest_on_highest_block: true
+  deathchest_inv_title: '&7%player%''s DeathChest'
+  void_spawning: true
+  auto_equip_armor: true
+  spawn_in_lava: true
+  drop_items_after_expire: false
+  use_timer: true
+  expire_time: 60
+  enabled_worlds:
   - world
+  gui:
+    deathchest_item:
+      material: PLAYER_HEAD
+      amount: 1
+      displayname: '&c%player%'
+      lore:
+      - '&7World: &a%world%'
+      - '&7X&a%xloc% &7Y&a%yloc% &7Z&a%zloc%'
 scoreboard:
   enabled: false
   title: '&b&l%player_world%'

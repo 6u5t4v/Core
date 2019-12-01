@@ -35,7 +35,7 @@ import com.Furnesse.core.commands.RankCMD;
 import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
-import com.Furnesse.core.deathchest.DeathChestEvents;
+import com.Furnesse.core.deathchest.DeathChestListener;
 import com.Furnesse.core.deathchest.DeathChests;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
@@ -62,7 +62,7 @@ public class Core extends JavaPlugin {
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
 	private Scoreboard sb = new Scoreboard(this);
-	private DeathChests deathChests = new DeathChests(this);
+//	private DeathChests deathChests = new DeathChests(this);
 
 	public CItemManager cItemMan = new CItemManager(this);
 	public ChatFormats chatFormat = new ChatFormats(this);
@@ -81,7 +81,7 @@ public class Core extends JavaPlugin {
 	public Map<Material, Integer> matTimeout = new HashMap<Material, Integer>();
 	public boolean usingSb;
 	public boolean usingDc;
-	public int minItems;
+//	public int minItems;
 	public boolean usingRanks;
 	public boolean usingChat;
 	public List<String> lines = new ArrayList<>();
@@ -199,7 +199,7 @@ public class Core extends JavaPlugin {
 		if(usingChat)
 			pm.registerEvents(new ChatEvent(), this);
 		if(usingDc)
-			pm.registerEvents(new DeathChestEvents(this), this);
+			pm.registerEvents(new DeathChestListener(), this);
 	}
 
 	private boolean setupEconomy() {
@@ -269,7 +269,7 @@ public class Core extends JavaPlugin {
 		usingRanks = getConfig().getBoolean("use-ranks");
 		usingChat = getConfig().getBoolean("chat.enabled");		
 		lines = getConfig().getStringList("scoreboard.lines");
-		minItems = getConfig().getInt("deathchests.deathchest-min-items");
+//		minItems = getConfig().getInt("deathchests.deathchest-min-items");
 		boardName = getConfig().getString("scoreboard.title");
 
 		if(usingMySQL) {
@@ -295,12 +295,7 @@ public class Core extends JavaPlugin {
 
 		if (usingDc) {
 			this.getLogger().info("Enabling DeathChests");
-			for (String world : getConfig().getStringList("deathchests.enabled-worlds")) {
-				if (world != null) {
-					dcEnabledWorlds.add(world);
-				}
-			}
-			deathChests.loadDeathChests();
+			DeathChests.setupDcVariables();
 		}
 		
 		commands.loadCustomCommands();
@@ -358,9 +353,5 @@ public class Core extends JavaPlugin {
 
 	public Scoreboard getScoreboard() {
 		return sb;
-	}
-
-	public DeathChests getDeathChest() {
-		return deathChests;
 	}
 }
