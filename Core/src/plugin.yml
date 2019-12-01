@@ -28,6 +28,8 @@ commands:
     description: Gives the player nightvision forever
     permission: core.nightvision
 permissions:
+  deathcoords:
+    description: get coords for where you died.
   core.reload:
     default: false
     description: allow /reload

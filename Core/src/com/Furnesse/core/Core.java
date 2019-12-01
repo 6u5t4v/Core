@@ -35,6 +35,7 @@ import com.Furnesse.core.commands.RankCMD;
 import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
+import com.Furnesse.core.deathchest.DeathChestEvents;
 import com.Furnesse.core.deathchest.DeathChests;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
@@ -100,12 +101,10 @@ public class Core extends JavaPlugin {
 		}
 		setupEconomy();
 		setupConfigurations();
+		
 		registerListeners();
 		registerPlaceholders();
-		registerCommands();
-		
-		commands.loadCustomCommands();
-		cItemMan.loadCustomItems();
+		registerCommands();		
 		disableRecipes();
 		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
@@ -161,7 +160,7 @@ public class Core extends JavaPlugin {
 		this.connection = connection;
 	}
 
-	private void registerCommands() {
+	private void registerCommands() {		
 		registerCustomCommands();
 		
 		if (usingRanks)
@@ -200,7 +199,7 @@ public class Core extends JavaPlugin {
 		if(usingChat)
 			pm.registerEvents(new ChatEvent(), this);
 		if(usingDc)
-			pm.registerEvents(new DeathChests(this), this);
+			pm.registerEvents(new DeathChestEvents(this), this);
 	}
 
 	private boolean setupEconomy() {
@@ -301,7 +300,11 @@ public class Core extends JavaPlugin {
 					dcEnabledWorlds.add(world);
 				}
 			}
+			deathChests.loadDeathChests();
 		}
+		
+		commands.loadCustomCommands();
+		cItemMan.loadCustomItems();
 	}
 
 	public static List<Material> disabledRecipes = new ArrayList<>();

@@ -6,7 +6,7 @@ deathchests:
   enabled-worlds:
   - world
 scoreboard:
-  enabled: true
+  enabled: false
   title: '&b&l%player_world%'
   lines:
   - '&8&m                        '

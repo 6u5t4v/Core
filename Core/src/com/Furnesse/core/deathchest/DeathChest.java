@@ -1,18 +1,24 @@
 package com.Furnesse.core.deathchest;
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.Furnesse.core.Core;
+
 public class DeathChest {
 
+	Core plugin = Core.instance;
+	
 	private String uuid;
 	private String owner;
 	private Location loc;
-	private ItemStack[] drops;
+	private List<ItemStack> drops;
 	private Inventory inv;
 
-	public DeathChest(String uuid, String owner, Location loc, ItemStack[] drops, Inventory inv) {
+	public DeathChest(String uuid, String owner, Location loc, List<ItemStack> drops, Inventory inv) {
 		this.uuid = uuid;
 		this.owner = owner;
 		this.loc = loc;
@@ -42,6 +48,8 @@ public class DeathChest {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+		plugin.getConfigs().getDchestsConfig().set("Deathchests." + this.getUuid() + ".Owner", owner);
+		plugin.getConfigs().saveConfigs();
 	}
 
 	public Location getLoc() {
@@ -50,13 +58,22 @@ public class DeathChest {
 
 	public void setLoc(Location loc) {
 		this.loc = loc;
+		String worldName = loc.getWorld().getName();
+		
+		plugin.getConfigs().getDchestsConfig().set("Deathchests." + this.getUuid() + "." + worldName + ".X", loc.getBlockX());
+		plugin.getConfigs().getDchestsConfig().set("Deathchests." + this.getUuid() + "." + worldName + ".Y", loc.getBlockY());
+		plugin.getConfigs().getDchestsConfig().set("Deathchests." + this.getUuid() + "." + worldName + ".Z", loc.getBlockZ());
+		plugin.getConfigs().saveConfigs();
 	}
 
-	public ItemStack[] getDrops() {
+	public List<ItemStack> getDrops() {
 		return drops;
 	}
 
-	public void setDrops(ItemStack[] drops) {
+	public void setDrops(List<ItemStack> drops) {
 		this.drops = drops;
+		
+		plugin.getConfigs().getDchestsConfig().set("Deathchests." + this.getUuid() + ".Drops", drops);
+		plugin.getConfigs().saveConfigs();
 	}
 }
