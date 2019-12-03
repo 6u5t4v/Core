@@ -162,7 +162,7 @@ public class DeathChest {
 		removeChests(closeInventories);
 
 		if (this.player.isOnline()) {
-			this.player.getPlayer().sendMessage("Your deathchest has been removed");
+			this.player.getPlayer().sendMessage(Lang.DEATHCHEST_DISSAPEARED);
 		}
 
 		DeathChestManager.getInstance().removeDeathChest(this);
@@ -181,17 +181,21 @@ public class DeathChest {
 			return;
 		}
 
-		this.player.getPlayer().sendMessage("You died at, some coords here");
+		this.player.getPlayer().sendMessage(Lang.DEATHCOORDS
+				.replace("%xloc%", String.valueOf(location.getBlockX()))
+				.replace("%yloc%", String.valueOf(location.getBlockY()))
+				.replace("%xloc%", String.valueOf(location.getBlockZ()))
+				.replace("%world%", location.getWorld().getName()));
 
 		if (this.timeLeft != -1) {
-			this.player.getPlayer().sendMessage("You deathchest will be removed in: " + String.valueOf(this.timeLeft));
+			this.player.getPlayer().sendMessage(Lang.DEATHCHEST_EXPIRE_TIME.replace("%time%", String.valueOf(this.timeLeft)));
 		}
 
 		this.announced = true;
 	}
 
 	public void fastLoot(Player p) {
-		if (p.hasPermission("deathchest.fastloot")) {
+		if (p.hasPermission("core.dc.fastloot")) {
 			for (ItemStack i : this.chestInventory.getContents()) {
 				if (i != null) {
 					if (p.getInventory().firstEmpty() == -1) {
@@ -217,7 +221,7 @@ public class DeathChest {
 			if (isChestEmpty()) {
 				removeDeathChest(true);
 			} else {
-				p.sendMessage("Successfully fastlooted a deathchest");
+				p.sendMessage(Lang.DEATHCHEST_FASTLOOT_COMPLETE);
 			}
 		} else {
 

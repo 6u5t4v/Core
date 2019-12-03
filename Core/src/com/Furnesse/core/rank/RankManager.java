@@ -78,7 +78,7 @@ public class RankManager {
 
 			Rank rank = new Rank(name, prefix, suffix, defaultRank, perms, inherits);
 			ranks.add(rank);
-			sender.sendMessage(Lang.CREATED_RANK.replaceAll("%rank%", rank.getName()));
+			sender.sendMessage(Lang.RANK_CREATED.replaceAll("%rank%", rank.getName()));
 		}
 	}
 
@@ -88,8 +88,8 @@ public class RankManager {
 			plugin.getConfigs().getRanksConfig().set("Ranks." + name, null);
 			plugin.getConfigs().saveConfigs();
 
+			sender.sendMessage(Lang.RANK_DELETED.replaceAll("%rank%", rank.getName()));
 			ranks.remove(rank);
-			sender.sendMessage(Lang.DELETED_RANK);
 		} else {
 			sender.sendMessage(name + " This rank doesnt exist");
 			return;
@@ -104,7 +104,7 @@ public class RankManager {
 			plugin.getConfigs().saveConfigs();
 
 			sender.sendMessage(
-					Lang.SETPREFIX.replaceAll("%prefix%", rank.getPrefix()).replaceAll("%rank%", rank.getName()));
+					Lang.RANK_SETPREFIX.replaceAll("%prefix%", rank.getPrefix()).replaceAll("%rank%", rank.getName()));
 		} else {
 			sender.sendMessage(name + " is not a valid rank");
 			return;
@@ -119,7 +119,7 @@ public class RankManager {
 			plugin.getConfigs().saveConfigs();
 
 			sender.sendMessage(
-					Lang.SETSUFFIX.replaceAll("%suffix%", rank.getSuffix()).replaceAll("%rank%", rank.getName()));
+					Lang.RANK_SETSUFFIX.replaceAll("%suffix%", rank.getSuffix()).replaceAll("%rank%", rank.getName()));
 		} else {
 			sender.sendMessage(name + " is not a valid rank");
 			return;
@@ -158,7 +158,7 @@ public class RankManager {
 		plugin.getConfigs().saveConfigs();
 
 		pRank.put(player.getUniqueId(), rank);
-		player.sendMessage(Lang.RECEIVED_RANK.replace("%rank%", rank.getName()));
+		player.sendMessage(Lang.USER_RANK_RECEIVED.replace("%rank%", rank.getName()));
 
 	}
 
@@ -195,7 +195,7 @@ public class RankManager {
 		plugin.getConfigs().getRanksConfig().set("Ranks." + rank.getName() + ".permissions", rank.getPermissions());
 		plugin.getConfigs().saveConfigs();
 
-		sender.sendMessage(Lang.ADDED_PERM.replace("%perm%", perm).replace("%rank%", rank.getName()));
+		sender.sendMessage(Lang.RANK_PERM_ADDED.replace("%perm%", perm).replace("%rank%", rank.getName()));
 	}
 
 	public void removeRankPerm(CommandSender sender, Rank rank, String perm) {
@@ -205,7 +205,7 @@ public class RankManager {
 		plugin.getConfigs().getRanksConfig().set("Ranks." + rank.getName() + ".permissions", rank.getPermissions());
 		plugin.getConfigs().saveConfigs();
 
-		sender.sendMessage(Lang.REMOVED_PERM.replace("%perm%", perm).replace("%rank%", rank.getName()));
+		sender.sendMessage(Lang.RANK_PERM_REMOVED.replace("%perm%", perm).replace("%rank%", rank.getName()));
 	}
 
 	public void addPlayerPerm(Player player, String perm) {
@@ -217,7 +217,7 @@ public class RankManager {
 		plugin.getConfigs().saveConfigs();
 
 //		perms.playerAdd(player, perm);
-		player.sendMessage(Lang.RECEIVED_PERM.replace("%perm%", perm));
+		player.sendMessage(Lang.USER_PERM_RECEIVED.replace("%perm%", perm));
 	}
 
 	public void removePlayerPerm(Player player, String perm) {
@@ -228,7 +228,7 @@ public class RankManager {
 
 //		perms.playerRemove(player, perm);
 
-		player.sendMessage(Lang.LOSTED_PERM.replace("%perm%", perm));
+		player.sendMessage(Lang.USER_PERM_REMOVED.replace("%perm%", perm));
 	}
 
 	public void loadPlayerPerms(Player player) {

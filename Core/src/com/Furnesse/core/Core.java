@@ -30,6 +30,7 @@ import com.Furnesse.core.Events.Scoreboard;
 import com.Furnesse.core.chat.ChatFormats;
 import com.Furnesse.core.commands.CoreCMD;
 import com.Furnesse.core.commands.CustomCMD;
+import com.Furnesse.core.commands.DeathChestCMD;
 import com.Furnesse.core.commands.ItemsCMD;
 import com.Furnesse.core.commands.RankCMD;
 import com.Furnesse.core.customcommands.CustomCommand;
@@ -107,6 +108,8 @@ public class Core extends JavaPlugin {
 		registerCommands();		
 		disableRecipes();
 		
+		DeathChests.setupDcVariables();
+		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
@@ -163,6 +166,10 @@ public class Core extends JavaPlugin {
 	private void registerCommands() {		
 		registerCustomCommands();
 		
+		if(usingDc) {
+			getCommand("deathchests").setExecutor(new DeathChestCMD());
+		}
+		
 		if (usingRanks)
 			getCommand("rank").setExecutor(new RankCMD());
 		getCommand("core").setExecutor(new CoreCMD());
@@ -184,7 +191,7 @@ public class Core extends JavaPlugin {
 				pluginCommand.setPermissionMessage(Lang.NO_PERMISSION);
 				commandMap.register(getDescription().getName(), pluginCommand);
 				getCommand(ccmd.getCmd()).setExecutor(new CustomCMD());
-				System.out.println("loaded custom command: " + ccmd.getCmd());
+//				System.out.println("loaded custom command: " + ccmd.getCmd());
 			}
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException
 				| NoSuchMethodException | InstantiationException | InvocationTargetException e) {

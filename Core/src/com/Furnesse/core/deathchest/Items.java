@@ -13,7 +13,7 @@ public enum Items
 
 	Items(String path) {
 		this.path = path;
-		this.itemStack = ItemUtil.loadItemFromConfig("items.yml", path);
+		this.itemStack = ItemUtil.loadItemFromConfig("config.yml", path);
 	}
 
 	public ItemStack getItemStack() {
@@ -22,7 +22,7 @@ public enum Items
 
 	public static void reload() {
 		for (Items i : values()) {
-			i.setItemStack(ItemUtil.loadItemFromConfig("items.yml", i.path));
+			i.setItemStack(ItemUtil.loadItemFromConfig("config.yml", i.path));
 		}
 	}
 

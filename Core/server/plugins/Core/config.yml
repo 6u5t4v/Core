@@ -8,10 +8,9 @@ deathchests:
   auto_equip_armor: true
   spawn_in_lava: true
   drop_items_after_expire: false
-  use_timer: true
-  expire_time: 60
-  enabled_worlds:
-  - world
+  expire_time: -1
+  disabled_worlds:
+  - warzone
   gui:
     deathchest_item:
       material: PLAYER_HEAD

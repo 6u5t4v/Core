@@ -114,7 +114,7 @@ public class RankCMD implements CommandExecutor {
 							// set rank to target
 							plugin.getRanks().setRank(target, rankToSet);
 
-							player.sendMessage(Lang.SET_USER_RANK);
+							player.sendMessage(Lang.USER_SET_RANK);
 						} else {
 							player.sendMessage(args[3] + " is not a valid rank! see /rank list");
 						}
@@ -202,7 +202,7 @@ public class RankCMD implements CommandExecutor {
 				if (rank != null) {
 					if (!rank.getPermissions().contains(perm)) {
 						plugin.getRanks().addRankPerm(sender, rank, perm);
-						sender.sendMessage(Lang.ADDED_PERM);
+						sender.sendMessage(Lang.RANK_PERM_ADDED);
 					} else {
 						sender.sendMessage(rank.getName() + " Already have access to the permission " + perm);
 					}
@@ -219,7 +219,7 @@ public class RankCMD implements CommandExecutor {
 				if (rank != null) {
 					if (rank.getPermissions().contains(perm)) {
 						plugin.getRanks().removeRankPerm(sender, rank, perm);
-						sender.sendMessage(Lang.REMOVED_PERM);
+						sender.sendMessage(Lang.RANK_PERM_REMOVED);
 					} else {
 						sender.sendMessage(rank.getName() + " Dont have the permission " + perm);
 					}
@@ -239,7 +239,7 @@ public class RankCMD implements CommandExecutor {
 						// set rank to target
 						plugin.getRanks().setRank(target, rankToSet);
 
-						sender.sendMessage(Lang.SET_USER_RANK);
+						sender.sendMessage(Lang.USER_SET_RANK);
 					} else {
 						sender.sendMessage(args[3] + " is not a valid rank! see /rank list");
 					}
@@ -251,7 +251,7 @@ public class RankCMD implements CommandExecutor {
 					if (!target.hasPermission(perm)) {
 						plugin.getRanks().addPlayerPerm(target, perm);
 						
-						sender.sendMessage(Lang.ADD_USER_PERM);
+						sender.sendMessage(Lang.USER_ADDED_PERM);
 					} else {
 						sender.sendMessage(target.getName() + " Already have access to this permission");
 					}
@@ -264,7 +264,7 @@ public class RankCMD implements CommandExecutor {
 					if (perms.contains(perm) && target.hasPermission(perm)) {
 						plugin.getRanks().removePlayerPerm(target, perm);
 						
-						sender.sendMessage(Lang.REMOVE_USER_PERM);
+						sender.sendMessage(Lang.USER_REMOVED_PERM);
 					} else {
 						sender.sendMessage(target.getName() + " Dont have this permission");
 					}

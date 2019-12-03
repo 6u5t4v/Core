@@ -8,10 +8,9 @@ deathchests:
   auto_equip_armor: true
   spawn_in_lava: true
   drop_items_after_expire: false
-  use_timer: true
   expire_time: 60
-  enabled_worlds:
-    - 'world'
+  disabled_worlds:
+  - 'warzone'
   gui:
     prev_item:
     next_item:

@@ -24,6 +24,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
+import com.Furnesse.core.utils.Lang;
+
 public class DeathChestListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -61,7 +63,7 @@ public class DeathChestListener implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
 		if (!DeathChests.getDisabledworlds().contains(p.getLocation().getWorld().getName())
-				 && e.getDrops().size() > 0) {
+				&& e.getDrops().size() > 0) {
 
 			if ((e.getEntity().getLastDamageCause() != null
 					&& e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID
@@ -70,8 +72,7 @@ public class DeathChestListener implements Listener {
 				return;
 			}
 
-			if (DeathChestManager.getInstance().createDeathChest(p, new ArrayList(e.getDrops()))) {
-
+			if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
 				e.getDrops().clear();
 				e.setKeepInventory(true);
 				p.getInventory().setArmorContents(null);
@@ -83,7 +84,7 @@ public class DeathChestListener implements Listener {
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		if (DeathChests.isUsingTimer()) {
+		if (!(DeathChests.getExpireTime() == 0)) {
 			return;
 		}
 
@@ -106,7 +107,7 @@ public class DeathChestListener implements Listener {
 			DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
 			if (dc != null) {
 				e.setCancelled(true);
-				p.sendMessage("§cYou cant destroy deathchests");
+				p.sendMessage(Lang.DEATHCHEST_CANNOT_BREAK);
 
 			}
 		}

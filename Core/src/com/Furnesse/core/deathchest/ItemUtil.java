@@ -82,6 +82,8 @@ public class ItemUtil {
 	}
 
 	public static ItemStack create(Material material, int amount, String displayName, List<String> lore) {
+		if(material == null)
+			return null;
 		ItemStack item = new ItemStack(material, amount);
 		ItemMeta meta = item.getItemMeta();
 		if (displayName != null) {

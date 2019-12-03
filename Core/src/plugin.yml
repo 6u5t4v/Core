@@ -6,6 +6,11 @@ api-version: 1.14
 website: www.furnesse.com
 depend: [Vault, PlaceholderAPI]
 commands:
+  deathchests:
+    description: Deathchests managing
+    aliases:
+    - dc
+    - deathchest
   rank:
     description: Rank managing
     permissions:

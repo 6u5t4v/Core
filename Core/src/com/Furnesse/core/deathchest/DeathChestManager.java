@@ -102,7 +102,7 @@ public class DeathChestManager {
 		this.deathChests.put(p.getUniqueId(), currentChests);
 		this.deathChestsByUUID.put(dc.getChestUUID(), dc);
 
-		if (DeathChests.isUsingTimer()) {
+		if (DeathChests.getExpireTime() != -1) {
 			dc.announce();
 			dc.runRemoveTask();
 		}

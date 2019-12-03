@@ -1,15 +1,15 @@
 lastAccountName: 6gustav9
 timestamps:
-  login: 1574893471639
+  login: 1575381421857
   logout: 1574888359858
 ipAddress: 127.0.0.1
 lastlocation:
   world: world
-  x: -258.63856811937984
-  y: 66.0
-  z: 131.15863395132172
-  yaw: 11.699994
-  pitch: 31.049948
+  x: -251.5455645962609
+  y: 68.0
+  z: 79.36143943607946
+  yaw: -40.64891
+  pitch: 30.749949
 logoutlocation:
   world: world
   x: -252.9686939448265
@@ -17,3 +17,4 @@ logoutlocation:
   z: 84.36960729642952
   yaw: -100.7999
   pitch: 24.149984
+afk: false
