@@ -1,13 +1,12 @@
 package com.Furnesse.core.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.deathchest.DeathChestManager;
+import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.utils.Lang;
 
 public class DeathChestCMD implements CommandExecutor {
@@ -18,6 +17,10 @@ public class DeathChestCMD implements CommandExecutor {
 			Player player = (Player) sender;
 			// Player commands
 			if (args.length == 0) {
+				player.openInventory(DeathChestsGUI.dcMenu(player));
+			}
+			
+			if (args.length == 1) {
 				if(args[0].equalsIgnoreCase("help")) {
 					if(player.hasPermission("core.dc.help")){
 						for(String str : plugin.getConfigs().getLangConfig().getStringList("deathchest.help")) {
@@ -25,9 +28,7 @@ public class DeathChestCMD implements CommandExecutor {
 						}
 					}
 				}
-				return true;
-			}
-			if (args.length == 1) {
+
 				if (args[0].equalsIgnoreCase("clear")) {
 					if (player.hasPermission("core.dc.clear")) {
 //						plugin.getDeathChest().removeAll();
@@ -48,7 +49,7 @@ public class DeathChestCMD implements CommandExecutor {
 //					if(player.hasPermission("core.dc.gui")) {
 //						
 //					}
-					player.sendMessage("open gui");
+					player.openInventory(DeathChestsGUI.dcMenu(player));
 				}
 			}
 			return true;

@@ -13,7 +13,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,8 +42,7 @@ public class DeathChest {
 		this.announced = false;
 	}
 
-	public DeathChest(UUID chestUuid, OfflinePlayer p, Location loc, int timeLeft,
-			List<ItemStack> items) {
+	public DeathChest(UUID chestUuid, OfflinePlayer p, Location loc, int timeLeft, List<ItemStack> items) {
 		this.chestUUID = chestUuid;
 		this.player = p;
 		this.timeLeft = timeLeft;
@@ -54,9 +53,10 @@ public class DeathChest {
 		runRemoveTask();
 	}
 
-	private ItemStack createListItem() {
+	public ItemStack createListItem() {
 		ItemStack returnItem = Items.DEATHCHEST_LIST_ITEM.getItemStack().clone();
-		ItemMeta meta = returnItem.getItemMeta();
+		SkullMeta meta = (SkullMeta) returnItem.getItemMeta();
+		meta.setOwner(this.player.getName());
 		meta.setDisplayName(meta.getDisplayName().replaceAll("%player%", this.player.getName()));
 		List<String> lore = meta.getLore();
 		for (int i = 0; i < lore.size(); i++) {
@@ -98,7 +98,7 @@ public class DeathChest {
 		this.location = loc.getBlock().getLocation();
 
 		this.chestInventory = Bukkit.createInventory(null, (items.size() > 27) ? 54 : 27,
-				DeathChests.getDeathChestInvTitle().replaceAll("%player%", this.player.getName()));
+				Lang.chat(DeathChests.getDeathChestInvTitle().replaceAll("%player%", this.player.getName())));
 
 		for (ItemStack i : items) {
 			if (i == null)
@@ -181,14 +181,15 @@ public class DeathChest {
 			return;
 		}
 
-		this.player.getPlayer().sendMessage(Lang.DEATHCOORDS
-				.replace("%xloc%", String.valueOf(location.getBlockX()))
-				.replace("%yloc%", String.valueOf(location.getBlockY()))
-				.replace("%xloc%", String.valueOf(location.getBlockZ()))
-				.replace("%world%", location.getWorld().getName()));
+		this.player.getPlayer()
+				.sendMessage(Lang.DEATHCOORDS.replace("%xloc%", String.valueOf(location.getBlockX()))
+						.replace("%yloc%", String.valueOf(location.getBlockY()))
+						.replace("%zloc%", String.valueOf(location.getBlockZ()))
+						.replace("%world%", location.getWorld().getName()));
 
 		if (this.timeLeft != -1) {
-			this.player.getPlayer().sendMessage(Lang.DEATHCHEST_EXPIRE_TIME.replace("%time%", String.valueOf(this.timeLeft)));
+			this.player.getPlayer()
+					.sendMessage(Lang.DEATHCHEST_EXPIRE_TIME.replace("%time%", String.valueOf(this.timeLeft)));
 		}
 
 		this.announced = true;
@@ -221,10 +222,10 @@ public class DeathChest {
 			if (isChestEmpty()) {
 				removeDeathChest(true);
 			} else {
-				p.sendMessage(Lang.DEATHCHEST_FASTLOOT_COMPLETE);
+				p.sendMessage(Lang.DEATHCHEST_FASTLOOT_COMPLETE.replace("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(this.chestInventory))));
 			}
 		} else {
-
+			
 			p.sendMessage(Lang.NO_PERMISSION);
 		}
 	}

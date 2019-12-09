@@ -86,8 +86,8 @@ public class PlayerEvents implements Listener {
 			if (plugin.chatFormat.getPlayerFormat(player) != null)
 				plugin.chatFormat.pFormat.remove(player.getName());
 	}
-
-//	@EventHandler
+	
+	//	@EventHandler
 //	public void onPlayerDeath(PlayerDeathEvent e) {
 //		if (e.getEntity() instanceof Player) {
 //			Player player = e.getEntity();

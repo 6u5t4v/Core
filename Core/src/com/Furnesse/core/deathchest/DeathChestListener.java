@@ -84,7 +84,7 @@ public class DeathChestListener implements Listener {
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		if (!(DeathChests.getExpireTime() == 0)) {
+		if (!(DeathChests.getExpireTime() == -1)) {
 			return;
 		}
 

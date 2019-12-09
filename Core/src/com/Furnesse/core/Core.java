@@ -38,6 +38,7 @@ import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
 import com.Furnesse.core.deathchest.DeathChestListener;
 import com.Furnesse.core.deathchest.DeathChests;
+import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.rank.RankManager;
@@ -105,10 +106,8 @@ public class Core extends JavaPlugin {
 		
 		registerListeners();
 		registerPlaceholders();
-		registerCommands();		
+		registerCommands();
 		disableRecipes();
-		
-		DeathChests.setupDcVariables();
 		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
@@ -205,8 +204,10 @@ public class Core extends JavaPlugin {
 		pm.registerEvents(new PlayerEvents(), this);
 		if(usingChat)
 			pm.registerEvents(new ChatEvent(), this);
-		if(usingDc)
+		if(usingDc) {
 			pm.registerEvents(new DeathChestListener(), this);
+			pm.registerEvents(new DeathChestsGUI(), this);
+		}
 	}
 
 	private boolean setupEconomy() {
@@ -331,7 +332,6 @@ public class Core extends JavaPlugin {
 		utils.resetDcLocs();
 
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
-		this.getLogger().info("<------------------------------->");
 	}
 
 	public Economy getEconomy() {

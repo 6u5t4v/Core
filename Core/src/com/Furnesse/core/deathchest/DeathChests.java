@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.utils.Lang;
 
 public class DeathChests {
 	static Core plugin = Core.instance;
@@ -20,7 +19,7 @@ public class DeathChests {
 	private static boolean autoEquipArmor = true;
 	private static boolean lavaSpawning = true;
 //	private static boolean debugMode = true;
-	private static String deathChestInvTitle = "&7%player%'s DeathChest";
+	private static String deathChestInvTitle = "&c%player%'s &8Deathchest";
 
 	public static void setupDcVariables() {
 		expireTime = plugin.getConfig().getInt("deathchests.expire_time");
@@ -30,7 +29,7 @@ public class DeathChests {
 		voidSpawning = plugin.getConfig().getBoolean("deathchests.void_spawning");
 		autoEquipArmor = plugin.getConfig().getBoolean("deathchests.auto_equip_armor");
 		lavaSpawning = plugin.getConfig().getBoolean("deathchests.spawn_in_lava");
-		deathChestInvTitle = Lang.chat(plugin.getConfig().getString("deathchests.deathchest_inv_title"));
+		deathChestInvTitle = plugin.getConfig().getString("deathchests.deathchest_inv_title");
 
 		plugin.getLogger().info("loaded settings for deathchests");
 	}

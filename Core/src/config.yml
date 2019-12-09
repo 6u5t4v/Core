@@ -3,17 +3,27 @@ use-ranks: false
 deathchests:
   enabled: true
   spawn_chest_on_highest_block: true
-  deathchest_inv_title: "&7%player%'s DeathChest"
+  deathchest_inv_title: "&c%player%'s &8Deathchest"
   void_spawning: true
   auto_equip_armor: true
   spawn_in_lava: true
   drop_items_after_expire: false
-  expire_time: 60
+  expire_time: -1
   disabled_worlds:
   - 'warzone'
   gui:
     prev_item:
+      material: STONE_BUTTON
+      amount: 1
+      displayname: "&a<----"
+      lore:
+      - "&7Return to previous page"
     next_item:
+      material: STONE_BUTTON
+      amount: 1
+      displayname: "&a---->"
+      lore:
+      - "&7Continue to next page"
     deathchest_item:
       material: PLAYER_HEAD
       amount: 1
@@ -51,8 +61,6 @@ chat:
       tooltip:
         - 'haiosudf'
         - 'asdfhbgfd'
-        - 'sgdsfbvds'
-        - 'fgbgfdsgb'
 database:
   enabled: false
   mysql:
