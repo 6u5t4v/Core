@@ -37,6 +37,7 @@ import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
 import com.Furnesse.core.deathchest.DeathChestListener;
+import com.Furnesse.core.deathchest.DeathChestManager;
 import com.Furnesse.core.deathchest.DeathChests;
 import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
@@ -108,6 +109,8 @@ public class Core extends JavaPlugin {
 		registerPlaceholders();
 		registerCommands();
 		disableRecipes();
+		
+		DeathChestManager.getInstance().loadDeathChests();
 		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
@@ -329,8 +332,7 @@ public class Core extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		utils.resetDcLocs();
-
+		
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
 	}
 

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +33,25 @@ public class DeathChestManager {
 		return this.deathChests.get(p.getUniqueId());
 	}
 
+	public void loadDeathChests() {
+		FileConfiguration file = Core.instance.getConfigs().getDchestsConfig();
+		
+		int loaded = 0;
+		for(String chestUuid : Core.instance.getConfigs().getDchestsConfig().getConfigurationSection("chests").getKeys(false)) {
+			if(chestUuid != null) {
+				OfflinePlayer player = file.getOfflinePlayer("chests." + chestUuid + ".player"); 
+				Location loc = file.getLocation("chests." + chestUuid + ".location");
+				List<ItemStack> items = (List<ItemStack>) file.get("chests." + chestUuid + ".items");
+				int timeleft = file.getInt("chests." + chestUuid + ".timeleft");
+				
+				createDeathChest(UUID.fromString(chestUuid), player, loc, timeleft, items);
+				loaded++;
+			}
+		}
+		
+		Core.instance.getLogger().info("loaded " + loaded + " deathchests");
+	}
+	
 	public void removeDeathChest(DeathChest dc) {
 		ArrayList<DeathChest> list = this.deathChests.get(dc.getOwner().getUniqueId());
 		list.remove(dc);

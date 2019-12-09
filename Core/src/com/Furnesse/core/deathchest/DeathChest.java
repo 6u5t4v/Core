@@ -105,6 +105,7 @@ public class DeathChest {
 				continue;
 			this.chestInventory.addItem(new ItemStack[] { i });
 		}
+		save();
 	}
 
 	public void runRemoveTask() {
@@ -222,10 +223,11 @@ public class DeathChest {
 			if (isChestEmpty()) {
 				removeDeathChest(true);
 			} else {
-				p.sendMessage(Lang.DEATHCHEST_FASTLOOT_COMPLETE.replace("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(this.chestInventory))));
+				p.sendMessage(Lang.DEATHCHEST_FASTLOOT_COMPLETE.replace("%amount%",
+						String.valueOf(DeathChestManager.getAmountOfItems(this.chestInventory))));
 			}
 		} else {
-			
+
 			p.sendMessage(Lang.NO_PERMISSION);
 		}
 	}
