@@ -15,26 +15,28 @@ public class DeathChestsGUI implements Listener{
 
 	static Core plugin = Core.instance;
 
-	public static Inventory dcMenu(Player p) {
-		Inventory inv = Bukkit.createInventory(null, 45, "Deathchests menu");
+	public static Inventory dcMenu = Bukkit.createInventory(null, 45, "Deathchests menu");
+	
+	public static void openDcMenu(Player p) {
+		
 
 		if (DeathChestManager.getInstance().getPlayerDeathChests(p) != null) {
 			int slot = 0;
 			for (DeathChest dc : DeathChestManager.getInstance().getPlayerDeathChests(p)) {
 				if (slot <= 26) {
-					inv.setItem(slot, dc.createListItem());
+					dcMenu.setItem(slot, dc.createListItem());
 					slot++;
 				}
 			}
 		}
 		for (int i = 0; i < 9; i++) {
-			inv.setItem(27 + i, borderItem());
+			dcMenu.setItem(27 + i, borderItem());
 		}
 
-		inv.setItem(37, Items.PREV_ITEM.getItemStack().clone());
-		inv.setItem(43, Items.NEXT_ITEM.getItemStack().clone());
+		dcMenu.setItem(37, Items.PREV_ITEM.getItemStack().clone());
+		dcMenu.setItem(43, Items.NEXT_ITEM.getItemStack().clone());
 
-		return inv;
+		p.openInventory(dcMenu);
 	}
 
 	private static ItemStack borderItem() {
@@ -48,7 +50,7 @@ public class DeathChestsGUI implements Listener{
 	public void onMenuInteract(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		
-		if(e.getClickedInventory().equals(dcMenu(p))) {
+		if(e.getClickedInventory().equals(dcMenu)) {
 			e.setCancelled(true);
 		}
 	}

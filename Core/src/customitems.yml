@@ -1,7 +1,7 @@
 spikedclub:
   enabled: true
   canBeRepaired: true
-  name: "&eSpiked Club"
+  displayname: "&eSpiked Club"
   material: WOODEN_SWORD
   type: weapon
   lore:
@@ -21,10 +21,10 @@ spikedclub:
 excalibur:
   enabled: true
   canBeRepaired: true
-  name: "&dExcalibur"
+  displayname: "&dExcalibur"
   material: WOODEN_SWORD
   type: weapon
-  enchants:
+  enchantments:
   - "sharpness:6"
   - "knockback:3"
   lore:

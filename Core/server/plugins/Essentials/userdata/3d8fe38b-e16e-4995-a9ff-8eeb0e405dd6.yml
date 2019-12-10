@@ -1,7 +1,7 @@
 lastAccountName: 6u5t4v
 timestamps:
-  login: 1575912092342
-  logout: 1575408759608
+  login: 1576006914936
+  logout: 1576005390238
 ipAddress: 127.0.0.1
 lastlocation:
   world: world
@@ -12,9 +12,9 @@ lastlocation:
   pitch: 16.649984
 logoutlocation:
   world: world
-  x: -257.30522518299995
+  x: -255.35777289978114
   y: 68.0
-  z: 86.01417885059976
-  yaw: -5.7000027
-  pitch: 16.049984
+  z: 79.89339568536226
+  yaw: -129.00038
+  pitch: 31.799946
 afk: false

@@ -24,9 +24,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
+import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
+import com.Furnesse.core.utils.Settings;
 
 public class DeathChestListener implements Listener {
+
+	Core plugin = Core.instance;
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onExplode(EntityExplodeEvent e) {
@@ -52,7 +56,7 @@ public class DeathChestListener implements Listener {
 		DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
 		if (dc != null) {
 			if (dc.isChestEmpty()) {
-				dc.removeDeathChest(false);
+				dc.removeDeathChest(true);
 			} else {
 				p.playSound(p.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5F, 1.0F);
 			}
@@ -62,29 +66,37 @@ public class DeathChestListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
-		if (!DeathChests.getDisabledworlds().contains(p.getLocation().getWorld().getName())
-				&& e.getDrops().size() > 0) {
+		if (plugin.usingDc) {
+			if (!Settings.getDisabledworlds().contains(p.getLocation().getWorld().getName())
+					&& e.getDrops().size() > 0) {
 
-			if ((e.getEntity().getLastDamageCause() != null
-					&& e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID
-					&& !DeathChests.isVoidSpawning())
-					|| (p.getLocation().getBlock().getType() == Material.LAVA && !DeathChests.isLavaSpawning())) {
-				return;
-			}
+				if ((e.getEntity().getLastDamageCause() != null
+						&& e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID
+						&& !Settings.isVoidSpawning())
+						|| (p.getLocation().getBlock().getType() == Material.LAVA && !Settings.isLavaSpawning())) {
+					return;
+				}
 
-			if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
-				e.getDrops().clear();
-				e.setKeepInventory(true);
-				p.getInventory().setArmorContents(null);
-				p.getInventory().clear();
-				p.updateInventory();
+				if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
+					e.getDrops().clear();
+					e.setKeepInventory(true);
+					p.getInventory().setArmorContents(null);
+					p.getInventory().clear();
+					p.updateInventory();
+				}
 			}
+		} else {
+			p.sendMessage(Lang.DEATHCOORDS
+					.replace("%xloc%", String.valueOf(p.getLocation().getBlockX()))
+					.replace("%yloc%", String.valueOf(p.getLocation().getBlockY()))
+					.replace("%zloc%", String.valueOf(p.getLocation().getBlockZ()))
+					.replace("%world%", p.getLocation().getWorld().getName()));
 		}
 	}
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		if (!(DeathChests.getExpireTime() == -1)) {
+		if (!(Settings.getExpireTime() == -1)) {
 			return;
 		}
 

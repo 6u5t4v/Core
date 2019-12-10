@@ -30,7 +30,7 @@ public class ScoreboardOLD implements Listener {
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		org.bukkit.scoreboard.Scoreboard board = manager.getNewScoreboard();
 
-		String boardName = plugin.getConfig().getString("scoreboard.title");
+		String boardName = Settings.getBoardName();
 		boardName = PlaceholderAPI.setPlaceholders(player, boardName);
 		@SuppressWarnings("deprecation")
 		Objective obj = board.registerNewObjective("Server", "dummy");
@@ -38,19 +38,19 @@ public class ScoreboardOLD implements Listener {
 		if (boardName == "" || boardName == null)
 			boardName = " ";
 		obj.setDisplayName(Lang.chat(boardName));
-		if (plugin.lines != null) {
+		if (Settings.getLines() != null) {
 
-			int val = plugin.lines.size() + 1;
-			for (String line : plugin.lines) {
+			int val = Settings.getLines().size() + 1;
+			for (String line : Settings.getLines()) {
 				val--;
 				line = PlaceholderAPI.setPlaceholders(player, line);
 
 				if (line.length() > 16) {
 					line = line.substring(16);
-					
+
 					Team lineTeam = board.registerNewTeam(line);
 					lineTeam.addEntry(line);
-					
+
 					lineTeam.setPrefix(Lang.chat(line).substring(0, 8));
 					lineTeam.setSuffix(Lang.chat(line).substring(8));
 					continue;
@@ -101,8 +101,8 @@ public class ScoreboardOLD implements Listener {
 		}
 
 		org.bukkit.scoreboard.Scoreboard score = player.getScoreboard();
-		int val = plugin.lines.size() + 1;
-		for (String line : plugin.lines) {
+		int val = Settings.getLines().size() + 1;
+		for (String line : Settings.getLines()) {
 			val--;
 			line = PlaceholderAPI.setPlaceholders(player, line);
 

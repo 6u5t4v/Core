@@ -3,6 +3,8 @@ package com.Furnesse.core.deathchest;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import com.Furnesse.core.utils.ItemUtil;
+
 public enum Items
 {
 	PREV_ITEM("deathchests.gui.prev_item"), NEXT_ITEM("deathchests.gui.next_item"),

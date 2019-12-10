@@ -17,7 +17,7 @@ public class DeathChestCMD implements CommandExecutor {
 			Player player = (Player) sender;
 			// Player commands
 			if (args.length == 0) {
-				player.openInventory(DeathChestsGUI.dcMenu(player));
+				player.openInventory(DeathChestsGUI.dcMenu);
 			}
 			
 			if (args.length == 1) {
@@ -38,7 +38,7 @@ public class DeathChestCMD implements CommandExecutor {
 				}
 
 				if (args[0].equalsIgnoreCase("reload")) {
-					if (player.hasPermission("core.dc.load")) {
+					if (player.hasPermission("core.dc.reload")) {
 //						plugin.getDeathChest().loadDeathChests();
 					} else {
 						player.sendMessage(Lang.NO_PERMISSION);
@@ -49,7 +49,7 @@ public class DeathChestCMD implements CommandExecutor {
 //					if(player.hasPermission("core.dc.gui")) {
 //						
 //					}
-					player.openInventory(DeathChestsGUI.dcMenu(player));
+					player.openInventory(DeathChestsGUI.dcMenu);
 				}
 			}
 			return true;

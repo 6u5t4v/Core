@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
+import com.Furnesse.core.utils.Settings;
 
 public class DeathChest {
 
@@ -35,7 +36,7 @@ public class DeathChest {
 	public DeathChest(Player p, List<ItemStack> items) {
 		this.chestUUID = UUID.randomUUID();
 		this.player = (OfflinePlayer) p;
-		this.timeLeft = DeathChests.getExpireTime();
+		this.timeLeft = Settings.getExpireTime();
 
 		setupChest(p.getLocation(), items);
 
@@ -76,7 +77,7 @@ public class DeathChest {
 	}
 
 	private void setupChest(Location loc, List<ItemStack> items) {
-		if (DeathChests.isSpawnChestOnHighestBlock() || loc.getY() <= 0.0D) {
+		if (Settings.isSpawnChestOnHighestBlock() || loc.getY() <= 0.0D) {
 			loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
 		}
 
@@ -98,14 +99,13 @@ public class DeathChest {
 		this.location = loc.getBlock().getLocation();
 
 		this.chestInventory = Bukkit.createInventory(null, (items.size() > 27) ? 54 : 27,
-				Lang.chat(DeathChests.getDeathChestInvTitle().replaceAll("%player%", this.player.getName())));
+				Lang.chat(Settings.getDeathChestInvTitle().replaceAll("%player%", this.player.getName())));
 
 		for (ItemStack i : items) {
 			if (i == null)
 				continue;
 			this.chestInventory.addItem(new ItemStack[] { i });
 		}
-		save();
 	}
 
 	public void runRemoveTask() {
@@ -138,11 +138,13 @@ public class DeathChest {
 	private void removeChests(boolean closeInventories) {
 		if (closeInventories) {
 			for (HumanEntity entity : this.chestInventory.getViewers()) {
-				entity.closeInventory();
+				if(entity != null) {
+					entity.closeInventory();
+				}
 			}
 		}
 
-		if (DeathChests.isDropItemsAfterExpire()) {
+		if (Settings.isDropItemsAfterExpire()) {
 			for (ItemStack item : this.chestInventory.getContents()) {
 				if (item != null) {
 					this.location.getWorld().dropItemNaturally(this.location, item);
@@ -204,7 +206,7 @@ public class DeathChest {
 						break;
 					}
 
-					if (DeathChests.isAutoEquipArmor()
+					if (Settings.isAutoEquipArmor()
 							&& (Items.isHelmet(i.getType()) || Items.isChestPlate(i.getType())
 									|| Items.isLeggings(i.getType()) || Items.isBoots(i.getType()))) {
 						if (!autoEquip(p, i)) {

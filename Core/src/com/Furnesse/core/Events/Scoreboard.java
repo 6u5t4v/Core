@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.Team;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
+import com.Furnesse.core.utils.Settings;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -34,7 +35,7 @@ public class Scoreboard {
 
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		org.bukkit.scoreboard.Scoreboard board = manager.getNewScoreboard();
-		String boardName = plugin.boardName;
+		String boardName = Settings.getBoardName();
 		boardName = PlaceholderAPI.setPlaceholders(player, boardName);
 		@SuppressWarnings("deprecation")
 		Objective obj = board.registerNewObjective("Server", "dummy");
@@ -43,10 +44,10 @@ public class Scoreboard {
 			boardName = " ";
 		obj.setDisplayName(Lang.chat(boardName));
 
-		if (plugin.lines != null) {
+		if (Settings.getLines() != null) {
 
-			int val = plugin.lines.size() + 1;
-			for (String line : plugin.lines) {
+			int val = Settings.getLines().size() + 1;
+			for (String line : Settings.getLines()) {
 				val--;
 				line = PlaceholderAPI.setPlaceholders(player, line);
 
@@ -113,7 +114,7 @@ public class Scoreboard {
 
 		org.bukkit.scoreboard.Scoreboard board = player.getScoreboard();
 
-		for (String line : plugin.lines) {
+		for (String line : Settings.getLines()) {
 			line = PlaceholderAPI.setPlaceholders(player, line);
 
 			if (line.length() < 40) {

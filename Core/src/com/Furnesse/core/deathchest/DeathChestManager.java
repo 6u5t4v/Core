@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.utils.Settings;
 
 public class DeathChestManager {
 	private static DeathChestManager ourInstance = new DeathChestManager();
@@ -33,25 +34,26 @@ public class DeathChestManager {
 		return this.deathChests.get(p.getUniqueId());
 	}
 
-	public void loadDeathChests() {
-		FileConfiguration file = Core.instance.getConfigs().getDchestsConfig();
-		
-		int loaded = 0;
-		for(String chestUuid : Core.instance.getConfigs().getDchestsConfig().getConfigurationSection("chests").getKeys(false)) {
-			if(chestUuid != null) {
-				OfflinePlayer player = file.getOfflinePlayer("chests." + chestUuid + ".player"); 
-				Location loc = file.getLocation("chests." + chestUuid + ".location");
-				List<ItemStack> items = (List<ItemStack>) file.get("chests." + chestUuid + ".items");
-				int timeleft = file.getInt("chests." + chestUuid + ".timeleft");
-				
-				createDeathChest(UUID.fromString(chestUuid), player, loc, timeleft, items);
-				loaded++;
-			}
-		}
-		
-		Core.instance.getLogger().info("loaded " + loaded + " deathchests");
-	}
-	
+//	public void loadDeathChests() {
+//		FileConfiguration file = Core.instance.getConfigs().getDchestsConfig();
+//
+//		int loaded = 0;
+//		for (String chestUuid : Core.instance.getConfigs().getDchestsConfig().getConfigurationSection("chests")
+//				.getKeys(false)) {
+//			if (chestUuid != null) {
+//				OfflinePlayer player = file.getOfflinePlayer("chests." + chestUuid + ".player");
+//				Location loc = file.getLocation("chests." + chestUuid + ".location");
+//				List<ItemStack> items = (List<ItemStack>) file.get("chests." + chestUuid + ".items");
+//				int timeleft = file.getInt("chests." + chestUuid + ".timeleft");
+//
+//				createDeathChest(UUID.fromString(chestUuid), player, loc, timeleft, items);
+//				loaded++;
+//			}
+//		}
+//
+//		Core.instance.getLogger().info("loaded " + loaded + " deathchests");
+//	}
+
 	public void removeDeathChest(DeathChest dc) {
 		ArrayList<DeathChest> list = this.deathChests.get(dc.getOwner().getUniqueId());
 		list.remove(dc);
@@ -61,10 +63,18 @@ public class DeathChestManager {
 			this.deathChests.put(dc.getOwner().getUniqueId(), list);
 		}
 		this.deathChestsByUUID.remove(dc.getChestUUID());
-		Core.instance.getConfigs().getDchestsConfig().set("chests." + dc.getChestUUID().toString(), null);
-		Core.instance.getConfigs().saveConfigs();
+//		Core.instance.getConfigs().getDchestsConfig().set("chests." + dc.getChestUUID().toString(), null);
+//		Core.instance.getConfigs().saveConfigs();
 	}
 
+	public void clearDeathChests() {
+		for(ArrayList<DeathChest> list : deathChests.values()) {
+			for(DeathChest dc : list) {
+				dc.removeDeathChest(false);
+			}
+		}
+	}
+	
 	public DeathChest getDeathChestByInventory(Inventory inv) {
 		for (ArrayList<DeathChest> list : this.deathChests.values()) {
 			for (DeathChest dc : list) {
@@ -122,7 +132,7 @@ public class DeathChestManager {
 		this.deathChests.put(p.getUniqueId(), currentChests);
 		this.deathChestsByUUID.put(dc.getChestUUID(), dc);
 
-		if (DeathChests.getExpireTime() != -1) {
+		if (Settings.getExpireTime() != -1) {
 			dc.announce();
 			dc.runRemoveTask();
 		}

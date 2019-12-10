@@ -2,30 +2,16 @@ prefix: '&8『 &6&lCORE &8』 &7'
 no_permission: '&cYou dont have permission to use this command'
 reloaded: '&aAll configs as successfully reloaded'
 help:
-  '1':
   - /core - shows this
   - /dc help - Manage deathchests
   - /rank help - Manage ranks
   - /core reload - Reload configs
-  - See /core 2
-  '2':
   - /nightvision - Enabled night-vision
   - /jellylegs - Reduce fall damage
   - /nightvision - Enabled night-vision
   - /bless - Remove all negative potion effects
   - /staff - Enabled staffmode
   - /sb toggle - Toggle your scoreboard on/off
-  - See /core 3
-  '3':
-  - /apply - Get application link
-  - /discord - Get link to our discord server
-  - /facebook - Get link to our facebook page
-  - /forum - Get link to our forums
-  - /host - Check out what host the server is using
-  - /report - Get link to the report page
-  - /store - Get link to the store
-  - /website - Get link to our website
-  - /youtube - Get link to our youtube channel
 rank:
   help:
   - /rank help - Shows this
@@ -53,9 +39,9 @@ rank:
   user_perm_removed: '&7You lost perm -> &d&n%perm%&7.'
 deathchest:
   help:
-  - /dc gui - Open gui showing all active deathchests
+  - /dc - Open gui showing all active deathchests
+  - /dc help - View this
   - /dc reload - Reloads deathchests
-  - /dc debug <player> - Kill player
   - /dc clear - clear ALL active deathchests
   deathchest_expire_time: '&aYour chest will disappear in &n%time%&r &aseconds !'
   deathchest_disappeared: '&cYour DeathChest disappeared !'

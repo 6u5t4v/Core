@@ -1,7 +1,7 @@
 graceperiod: 30
-use-ranks: false
+use_ranks: false
 deathchests:
-  enabled: true
+  enabled: false
   spawn_chest_on_highest_block: true
   deathchest_inv_title: "&c%player%'s &8Deathchest"
   void_spawning: true
@@ -11,6 +11,7 @@ deathchests:
   expire_time: -1
   disabled_worlds:
   - 'warzone'
+  - 'spawn_world'
   gui:
     prev_item:
       material: STONE_BUTTON
