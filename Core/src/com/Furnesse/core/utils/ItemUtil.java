@@ -71,7 +71,7 @@ public class ItemUtil {
 		}
 
 		ItemStack is = m != null ? new ItemStack(m)
-				: plugin.getHeadAPI().getItemHead(plugin.getConfig().getString(path + ".material"));
+				: plugin.getHeadAPI().getItemHead(plugin.getConfigs().getCItemsConfig().getString(path + ".material"));
 
 		String displayName = plugin.getConfig().getString(path + ".displayname");
 
@@ -139,8 +139,10 @@ public class ItemUtil {
 
 		if (hasDurability && durability != -1) {
 			item.setDurability((short) durability);
+		}else {
+			meta.setUnbreakable(true);
+			meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		}
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
 		if (glowing) {
 			meta.addEnchant(Enchantment.DURABILITY, 1, true);

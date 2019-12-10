@@ -19,6 +19,8 @@ public class Lang {
 	public static String PREFIX = msg(plugin.getConfigs().getLangConfig().getString("prefix"));
 	public static String NO_PERMISSION = PREFIX +  msg("" + plugin.getConfigs().getLangConfig().getString("no_permission"));
 	public static String RELOADED = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("reloaded"));
+	public static String INVALID_PLAYER = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("invalid_player"));
+	public static String FULL_INVENTORY = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("full_inventory"));
 	// RANK
 	public static String RANK_CREATED = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("rank.rank_created"));
 	public static String RANK_DELETED = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("rank.rank_deleted"));
@@ -39,4 +41,8 @@ public class Lang {
 	public static String DEATHCHEST_CANNOT_BREAK = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("deathchest.deathchest_cannot_break"));
 	public static String DEATHCHEST_CANNOT_OPEN = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("deathchest.deathchest_cannot_open"));
 	public static String DEATHCHEST_FASTLOOT_COMPLETE = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("deathchest.deathchest_fastloot_complete"));
+	// CUSTOMITEMS
+	public static String ITEMS_INVALID_ITEM = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("citems.items_invalid_item"));
+	public static String ITEMS_PLAYER_RECEIVED = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("citems.items_player_received"));
+	public static String ITEMS_SUCCESFULL_RECEIVED = PREFIX + msg("" + plugin.getConfigs().getLangConfig().getString("citems.items_succesfull_received"));
 }

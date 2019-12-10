@@ -2,16 +2,16 @@ prefix: '&8『 &6&lCORE &8』 &7'
 no_permission: '&cYou dont have permission to use this command'
 reloaded: '&aAll configs as successfully reloaded'
 help:
-  - /core - shows this
-  - /dc help - Manage deathchests
-  - /rank help - Manage ranks
-  - /core reload - Reload configs
-  - /nightvision - Enabled night-vision
-  - /jellylegs - Reduce fall damage
-  - /nightvision - Enabled night-vision
-  - /bless - Remove all negative potion effects
-  - /staff - Enabled staffmode
-  - /sb toggle - Toggle your scoreboard on/off
+- /core - shows this
+- /dc help - Manage deathchests
+- /rank help - Manage ranks
+- /core reload - Reload configs
+- /nightvision - Enabled night-vision
+- /jellylegs - Reduce fall damage
+- /nightvision - Enabled night-vision
+- /bless - Remove all negative potion effects
+- /staff - Enabled staffmode
+- /sb toggle - Toggle your scoreboard on/off
 rank:
   help:
   - /rank help - Shows this

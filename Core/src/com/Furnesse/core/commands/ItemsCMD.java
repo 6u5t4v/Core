@@ -26,53 +26,52 @@ public class ItemsCMD implements CommandExecutor {
 				if (args.length == 0) {
 					// Open the gui containing all custom items
 				}
+
+				if (args.length > 0) {
+					if (args[0].equalsIgnoreCase("help")) {
+
+						for (String str : plugin.getConfigs().getLangConfig().getStringList("citems.help")) {
+							player.sendMessage(Lang.chat(str));
+						}
+
+					}
+
+					if (args[0].equalsIgnoreCase("list")) {
+						List<String> cItems = new ArrayList<String>();
+						for (CItem cItem : plugin.cItemMan.customItems) {
+							cItems.add(cItem.getName());
+						}
+
+						player.sendMessage(Lang.chat("&a&lAvailable Items: &7" + cItems.toString()));
+					}
+
+					if (args[0].equalsIgnoreCase("give")) {
+						Player target = Bukkit.getPlayer(args[1]);
+
+						if (target == null) {
+							player.sendMessage(Lang.INVALID_PLAYER.replace("%player%", args[1]));
+						}
+
+						if (plugin.cItemMan.getCItem(args[2]) != null) {
+							CItem cItem = plugin.cItemMan.getCItem(args[2]);
+							if (args.length == 4) {
+								int amount = Integer.parseInt(args[3]);
+								plugin.cItemMan.giveCItem(sender, target, cItem, amount);
+								player.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED.replace("%player%",
+										target.getName().replace("%amount%", String.valueOf(amount)).replace("%item%",
+												cItem.getName())));
+							}
+
+						} else {
+							player.sendMessage(Lang.ITEMS_INVALID_ITEM.replace("%item%", args[2]));
+						}
+					}
+
+				}
 			} else {
 				player.sendMessage(Lang.NO_PERMISSION);
 			}
 
-			if (args.length > 0) {
-				if (args[0].equalsIgnoreCase("help")) {
-					player.sendMessage("/items give <player> <Item> [amount]");
-					player.sendMessage("/items list");
-				}
-
-				if (args[0].equalsIgnoreCase("list")) {
-					List<String> cItems = new ArrayList<String>();
-					for (CItem cItem : plugin.cItemMan.customItems) {
-						cItems.add(cItem.getName());
-					}
-
-					player.sendMessage(Lang.chat("&a&lAvailable Items: &7" + cItems.toString()));
-				}
-
-				if (args[0].equalsIgnoreCase("give")) {
-					if (args.length == 1 || args.length == 2) {
-						player.sendMessage("Usage: /items give <player> <Item> [amount]");
-						return true;
-					}
-
-					Player target = Bukkit.getPlayer(args[1]);
-					if (target == null) {
-						player.sendMessage(args[1] + " is not online");
-					}
-
-					if (plugin.cItemMan.getCItem(args[2]) != null) {
-						CItem cItem = plugin.cItemMan.getCItem(args[2]);
-						if (args.length == 4) {
-							int amount = Integer.parseInt(args[3]);
-							plugin.cItemMan.giveCItem(sender, target, cItem, amount);
-							return true;
-						}
-
-						int amount = 64;
-						plugin.cItemMan.giveCItem(sender, target, cItem, amount);
-
-					} else {
-						player.sendMessage(args[2] + " is not a valid item, try /items list");
-					}
-				}
-
-			}
 			return true;
 		}
 

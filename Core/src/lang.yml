@@ -44,7 +44,9 @@ citems:
   help:
   - "/items give <player> <item> [amount] - Give player a custom item"
   - "/items list - See all available custom items"
-  items_invalid_item: "&c%baditem% &7is not a valid item, try &e/items list"
+  items_invalid_item: "&c%item% &7is not a valid item, try &e/items list&7."
+  items_player_received: "&7You have received &ax%amount% %item%&7."
+  items_succesfull_received: "&a%player% &7has received &ax%amount% %item%&7."
 deathchest:
   help:
   - "/dc - Open gui showing all active deathchests"

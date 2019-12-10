@@ -7,20 +7,12 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class CItemManager {
 
@@ -43,20 +35,35 @@ public class CItemManager {
 				boolean cItemEnabled = plugin.getConfigs().getCItemsConfig().getBoolean(cItem + ".enabled");
 				if (cItemEnabled) {
 					String id = cItem.toString();
-					boolean canBeRepaired = plugin.getConfigs().getCItemsConfig().getBoolean(cItem + ".canBeRepaired");
-					int durability = plugin.getConfigs().getCItemsConfig().getInt(cItem + ".durability");
-					CItemTypes type = CItemTypes
-							.valueOf(plugin.getConfigs().getCItemsConfig().getString(cItem + ".type"));
+//					CItemTypes type = CItemTypes
+//							.valueOf(plugin.getConfigs().getCItemsConfig().getString(cItem + ".type"));
 
-					if (type == null) {
-						plugin.getLogger().severe(ChatColor.RED + "Make sure you are using a valid type for " + cItem);
-						continue;
-					}
+//					if (type == null) {
+//						plugin.getLogger().severe(ChatColor.RED + "Make sure you are using a valid type for " + cItem);
+//						continue;
+//					}
 
 					boolean hasRecipe = plugin.getConfigs().getCItemsConfig().getBoolean(cItem + ".recipe.enabled");
+					CRecipe recipe = null;
+					if(hasRecipe) {
+						List<String> list = plugin.getConfigs().getCItemsConfig().getStringList(cItem + ".recipe.pattern");
+						String[] pattern = list.toArray(new String[0]);
+						List<Map<Character, Material>> ingredients = null;
+						for(String str : plugin.getConfigs().getCItemsConfig().getConfigurationSection(cItem + ".recipe.ingredients").getKeys(false)) {
+							Map<Character, Material> ingred = new HashMap<>();
+							Character val = str.charAt(0);
+							Material mat = Material.getMaterial(plugin.getConfigs().getCItemsConfig().getString(cItem + ".recipe.ingredients." + str));
+							ingred.put(val, mat);
+						}
+						recipe = new CRecipe(pattern, ingredients);
+					}
+					
+					CItem customItem = new CItem(id, recipe);
 
-					CItem customItem = new CItem(id, type, canBeRepaired, hasRecipe);
-
+					if(customItem.getcRecipe() != null) {
+						customItem.initRecipe();
+					}
+					
 					customItems.add(customItem);
 					loaded++;
 				}
@@ -81,7 +88,7 @@ public class CItemManager {
 				Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName));
 				enchant.put(enchantment, enchantlvl);
 				enchants.add(enchant);
-			}else {
+			} else {
 				System.out.println("Make sure you are using the vanilla enchantments & lowercase.");
 				continue;
 			}
@@ -148,10 +155,11 @@ public class CItemManager {
 //	}
 
 	public void giveCItem(CommandSender sender, Player target, CItem cItem, int amount) {
-		if(target.getInventory().getSize() == -1) {
+		if (target.getInventory().getSize() == -1) {
 			return;
 		}
-		
+
 		cItem.give(target, amount);
+		target.sendMessage(Lang.ITEMS_PLAYER_RECEIVED.replace("%amount%", String.valueOf(amount)).replace("%item%", cItem.getName()));
 	}
 }
