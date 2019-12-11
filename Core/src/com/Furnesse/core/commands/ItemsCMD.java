@@ -30,7 +30,7 @@ public class ItemsCMD implements CommandExecutor {
 				if (args.length > 0) {
 					if (args[0].equalsIgnoreCase("help")) {
 
-						for (String str : plugin.getConfigs().getLangConfig().getStringList("citems.help")) {
+						for (String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("citems.help")) {
 							player.sendMessage(Lang.chat(str));
 						}
 
@@ -54,13 +54,17 @@ public class ItemsCMD implements CommandExecutor {
 
 						if (plugin.cItemMan.getCItem(args[2]) != null) {
 							CItem cItem = plugin.cItemMan.getCItem(args[2]);
+							
+							int amount = 1;
 							if (args.length == 4) {
-								int amount = Integer.parseInt(args[3]);
-								plugin.cItemMan.giveCItem(sender, target, cItem, amount);
-								player.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED.replace("%player%",
-										target.getName().replace("%amount%", String.valueOf(amount)).replace("%item%",
-												cItem.getName())));
+								amount = Integer.parseInt(args[3]);
 							}
+							
+							plugin.cItemMan.giveCItem(sender, target, cItem, amount);
+							player.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
+									.replace("%player%", target.getName()
+									.replace("%amount%", String.valueOf(amount))
+									.replace("%item%", cItem.getName())));
 
 						} else {
 							player.sendMessage(Lang.ITEMS_INVALID_ITEM.replace("%item%", args[2]));
@@ -76,14 +80,14 @@ public class ItemsCMD implements CommandExecutor {
 		}
 
 		if (args.length == 0) {
-			for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
+			for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
 				sender.sendMessage(message);
 			}
 		}
 
 		if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("help")) {
-				for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
+				for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
 					sender.sendMessage(message);
 				}
 			}

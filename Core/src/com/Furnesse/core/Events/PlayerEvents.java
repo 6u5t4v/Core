@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.database.MySQLPlayer;
-import com.Furnesse.core.utils.ScoreboardOLD;
 
 public class PlayerEvents implements Listener {
 
@@ -24,26 +21,28 @@ public class PlayerEvents implements Listener {
 			MySQLPlayer.createPlayer(player.getUniqueId(), player);
 			return;
 		}
-		
+
 		if (!isRegistered(player) || hasChangedName(player)) {
-			plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".username", player.getName());
+			plugin.fileManager.getConfig("players.yml").get().set("Players." + uuid + ".username", player.getName());
 			if (plugin.usingRanks) {
-				plugin.getConfigs().getPlayersConfig().set("Players." + uuid + ".permissions", new ArrayList<String>());
+				plugin.fileManager.getConfig("players.yml").get().set("Players." + uuid + ".permissions",
+						new ArrayList<String>());
 			}
-			plugin.getConfigs().saveConfigs();
+
+			plugin.fileManager.saveConfig("players.yml");
 		}
 
 	}
 
-	public boolean isRegistered(Player player) {
-		if (plugin.getConfigs().getPlayersConfig().contains("Players." + player.getUniqueId())) {
+	private boolean isRegistered(Player player) {
+		if (plugin.fileManager.getConfig("players.yml").get().contains("Players." + player.getUniqueId())) {
 			return true;
 		}
 		return false;
 	}
 
-	public boolean hasChangedName(Player player) {
-		String oldName = plugin.getConfigs().getPlayersConfig()
+	private boolean hasChangedName(Player player) {
+		String oldName = plugin.fileManager.getConfig("players.yml").get()
 				.getString("Players." + player.getUniqueId() + ".username");
 		if (!oldName.equals(player.getName())) {
 			return true;
@@ -54,19 +53,17 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
-//		String uuid = player.getUniqueId().toString();
 
-		registerPlayer(player);
-		
-		if (plugin.usingRanks) {
-			plugin.getRanks().loadRank(player);
-			plugin.getRanks().loadPlayerPerms(player);
-		}
+//		registerPlayer(player);
+
+//		if (plugin.usingRanks) {
+//			plugin.getRanks().loadRank(player);
+//			plugin.getRanks().loadPlayerPerms(player);
+//		}
 
 		if (plugin.usingSb) {
 			plugin.getScoreboard().setScoreboard(player);
 		}
-			
 
 		if (plugin.usingChat) {
 			plugin.chatFormat.initFormat(player);
@@ -79,30 +76,11 @@ public class PlayerEvents implements Listener {
 		if (plugin.usingSb)
 			plugin.getScoreboard().removeScoreboard(player);
 
-		if (plugin.usingRanks)
-			plugin.getRanks().saveRank(player);
+//		if (plugin.usingRanks)
+//			plugin.getRanks().saveRank(player);
 
 		if (plugin.usingChat)
 			if (plugin.chatFormat.getPlayerFormat(player) != null)
 				plugin.chatFormat.pFormat.remove(player.getName());
 	}
-	
-	//	@EventHandler
-//	public void onPlayerDeath(PlayerDeathEvent e) {
-//		if (e.getEntity() instanceof Player) {
-//			Player player = e.getEntity();
-//			if (plugin.usingDc) {
-//				if (plugin.dcEnabledWorlds.contains(player.getWorld().getName())) {
-//					if (e.getDrops().size() >= plugin.minItems) {
-//						ItemStack[] drops = e.getDrops().toArray(new ItemStack[0]);
-//						e.getDrops().clear();
-//						plugin.getDeathChest().createDeathChest(player, drops);
-//					}
-//				} else {
-//					player.sendMessage("§cNo deathchest has spawned as deathchests are disabled in this world");
-//				}
-//			}
-//		}
-//	}
-
 }

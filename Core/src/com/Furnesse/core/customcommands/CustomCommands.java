@@ -18,7 +18,7 @@ public class CustomCommands {
 	private List<CustomCommand> customCommands = new ArrayList<CustomCommand>();
 	
 	public void loadCustomCommands() {
-		ConfigurationSection availableCmds = plugin.getConfigs().getCmdsConfig().getConfigurationSection("Commands");
+		ConfigurationSection availableCmds = plugin.fileManager.getConfig("customcommands.yml").get().getConfigurationSection("Commands");
 		customCommands.clear();
 		int amount = 0;
 		if(availableCmds != null) {
@@ -26,9 +26,9 @@ public class CustomCommands {
 				if(cmd != null) {
 					try {
 						String name = cmd.toString();
-						String perm = plugin.getConfigs().getCmdsConfig().getString("Commands." + cmd + ".permission");
-						List<String> msg = plugin.getConfigs().getCmdsConfig().getStringList("Commands." + cmd + ".message");
-						List<String> aliases = plugin.getConfigs().getCmdsConfig().getStringList("Commands." + cmd + ".aliases");
+						String perm = plugin.fileManager.getConfig("customcommands.yml").get().getString("Commands." + cmd + ".permission");
+						List<String> msg = plugin.fileManager.getConfig("customcommands.yml").get().getStringList("Commands." + cmd + ".message");
+						List<String> aliases = plugin.fileManager.getConfig("customcommands.yml").get().getStringList("Commands." + cmd + ".aliases");
 						
 						CustomCommand customCommand = new CustomCommand(name, perm, msg, aliases);
 						customCommands.add(customCommand);

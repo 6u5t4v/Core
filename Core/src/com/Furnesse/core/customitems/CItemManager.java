@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
@@ -28,11 +26,11 @@ public class CItemManager {
 		customItems.clear();
 
 		int loaded = 0;
-		for (String cItem : plugin.getConfigs().getCItemsConfig().getKeys(false)) {
+		for (String cItem : plugin.fileManager.getConfig("customitems.yml").get().getKeys(false)) {
 			if (cItem == null)
 				return;
 			try {
-				boolean cItemEnabled = plugin.getConfigs().getCItemsConfig().getBoolean(cItem + ".enabled");
+				boolean cItemEnabled = plugin.fileManager.getConfig("customitems.yml").get().getBoolean(cItem + ".enabled");
 				if (cItemEnabled) {
 					String id = cItem.toString();
 //					CItemTypes type = CItemTypes
@@ -43,16 +41,16 @@ public class CItemManager {
 //						continue;
 //					}
 
-					boolean hasRecipe = plugin.getConfigs().getCItemsConfig().getBoolean(cItem + ".recipe.enabled");
+					boolean hasRecipe = plugin.fileManager.getConfig("customitems.yml").get().getBoolean(cItem + ".recipe.enabled");
 					CRecipe recipe = null;
 					if(hasRecipe) {
-						List<String> list = plugin.getConfigs().getCItemsConfig().getStringList(cItem + ".recipe.pattern");
+						List<String> list = plugin.fileManager.getConfig("customitems.yml").get().getStringList(cItem + ".recipe.pattern");
 						String[] pattern = list.toArray(new String[0]);
 						List<Map<Character, Material>> ingredients = null;
-						for(String str : plugin.getConfigs().getCItemsConfig().getConfigurationSection(cItem + ".recipe.ingredients").getKeys(false)) {
+						for(String str : plugin.fileManager.getConfig("customitems.yml").get().getConfigurationSection(cItem + ".recipe.ingredients").getKeys(false)) {
 							Map<Character, Material> ingred = new HashMap<>();
 							Character val = str.charAt(0);
-							Material mat = Material.getMaterial(plugin.getConfigs().getCItemsConfig().getString(cItem + ".recipe.ingredients." + str));
+							Material mat = Material.getMaterial(plugin.fileManager.getConfig("customitems.yml").get().getString(cItem + ".recipe.ingredients." + str));
 							ingred.put(val, mat);
 						}
 						recipe = new CRecipe(pattern, ingredients);
@@ -60,7 +58,7 @@ public class CItemManager {
 					
 					CItem customItem = new CItem(id, recipe);
 
-					if(customItem.getcRecipe() != null) {
+					if(hasRecipe && customItem.getcRecipe() != null) {
 						customItem.initRecipe();
 					}
 					
@@ -76,25 +74,6 @@ public class CItemManager {
 
 		plugin.getLogger().info("Loaded: " + loaded + " custom items");
 
-	}
-
-	public List<Map<Enchantment, Integer>> getEnchantments(String item) {
-		Map<Enchantment, Integer> enchant = new HashMap<>();
-		List<Map<Enchantment, Integer>> enchants = new ArrayList<>();
-		for (String str : plugin.getConfigs().getCItemsConfig().getStringList(item + ".enchants")) {
-			String enchantName = str.split(":")[0];
-			int enchantlvl = Integer.parseInt(str.split(":")[1]);
-			if (Enchantment.getByKey(NamespacedKey.minecraft(enchantName)) != null) {
-				Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName));
-				enchant.put(enchantment, enchantlvl);
-				enchants.add(enchant);
-			} else {
-				System.out.println("Make sure you are using the vanilla enchantments & lowercase.");
-				continue;
-			}
-		}
-
-		return enchants;
 	}
 
 	public CItem getCItem(String str) {
@@ -154,12 +133,33 @@ public class CItemManager {
 //		return item;
 //	}
 
+//	public List<Map<Enchantment, Integer>> getEnchantments(String item) {
+//		Map<Enchantment, Integer> enchant = new HashMap<>();
+//		List<Map<Enchantment, Integer>> enchants = new ArrayList<>();
+//		for (String str : plugin.fileManager.getConfig("customitems.yml").get().getStringList(item + ".enchants")) {
+//			String enchantName = str.split(":")[0];
+//			int enchantlvl = Integer.parseInt(str.split(":")[1]);
+//			if (Enchantment.getByKey(NamespacedKey.minecraft(enchantName)) != null) {
+//				Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName));
+//				enchant.put(enchantment, enchantlvl);
+//				enchants.add(enchant);
+//			} else {
+//				System.out.println("Make sure you are using the vanilla enchantments & lowercase.");
+//				continue;
+//			}
+//		}
+//
+//		return enchants;
+//	}
+	
 	public void giveCItem(CommandSender sender, Player target, CItem cItem, int amount) {
 		if (target.getInventory().getSize() == -1) {
 			return;
 		}
 
 		cItem.give(target, amount);
-		target.sendMessage(Lang.ITEMS_PLAYER_RECEIVED.replace("%amount%", String.valueOf(amount)).replace("%item%", cItem.getName()));
+		target.sendMessage(Lang.ITEMS_PLAYER_RECEIVED
+				.replace("%amount%", String.valueOf(amount))
+				.replace("%item%", cItem.getName()));
 	}
 }

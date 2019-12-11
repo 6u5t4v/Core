@@ -267,15 +267,15 @@ public class DeathChest {
 	}
 
 	public void save() {
-		Core.instance.getConfigs().getDchestsConfig().set("chests." + this.chestUUID.toString() + ".location",
+		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".location",
 				this.location.serialize());
-		Core.instance.getConfigs().getDchestsConfig().set("chests." + this.chestUUID.toString() + ".player",
+		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".player",
 				getOwner().getUniqueId().toString());
-		Core.instance.getConfigs().getDchestsConfig().set("chests." + this.chestUUID.toString() + ".items",
+		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".items",
 				this.chestInventory.getContents());
-		Core.instance.getConfigs().getDchestsConfig().set("chests." + this.chestUUID.toString() + ".timeleft",
+		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".timeleft",
 				Integer.valueOf(this.timeLeft));
-		Core.instance.getConfigs().saveConfigs();
+		Core.instance.fileManager.saveConfig("deathchests.yml");
 	}
 
 	public Player getPlayer() {

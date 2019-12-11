@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -15,7 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.Furnesse.core.Core;
-
 
 public class ItemUtil {
 	static Core plugin = Core.instance;
@@ -61,40 +60,41 @@ public class ItemUtil {
 		}
 		return size;
 	}
-	
+
 	public static ItemStack loadItemFromConfig(String configName, String path) {
-		Material m = Material.getMaterial(plugin.getConfig().getString(path + ".material"));
+		Material m = Material.getMaterial(plugin.fileManager.getConfig(configName).get().getString(path + ".material"));
 		int amount = 1;
-		if (plugin.getConfig().get(path + ".amount") != null) {
-			amount = plugin.getConfig().getInt(path + ".amount") <= 0 ? amount = 1
-					: plugin.getConfig().getInt(path + ".amount");
+		if (plugin.fileManager.getConfig(configName).get().get(path + ".amount") != null) {
+			amount = plugin.fileManager.getConfig(configName).get().getInt(path + ".amount") <= 0 ? amount = 1
+					: plugin.fileManager.getConfig(configName).get().getInt(path + ".amount");
 		}
 
 		ItemStack is = m != null ? new ItemStack(m)
-				: plugin.getHeadAPI().getItemHead(plugin.getConfigs().getCItemsConfig().getString(path + ".material"));
+				: plugin.getHeadAPI()
+						.getItemHead(plugin.fileManager.getConfig(configName).get().getString(path + ".material"));
 
-		String displayName = plugin.getConfig().getString(path + ".displayname");
+		String displayName = plugin.fileManager.getConfig(configName).get().getString(path + ".displayname");
 
-		List<String> lore = plugin.getConfig().getStringList(path + ".lore");
+		List<String> lore = plugin.fileManager.getConfig(configName).get().getStringList(path + ".lore");
 
 		List<String> enchantments = new ArrayList<>();
-		if (plugin.getConfig().getStringList(path + ".enchantments") != null) {
-			enchantments = plugin.getConfig().getStringList(path + ".enchantments");
+		if (plugin.fileManager.getConfig(configName).get().getStringList(path + ".enchantments") != null) {
+			enchantments = plugin.fileManager.getConfig(configName).get().getStringList(path + ".enchantments");
 		}
 
 		boolean glowing = false;
-		if (plugin.getConfig().get(path + ".glowing") != null) {
-			glowing = plugin.getConfig().getBoolean(path + ".glowing");
+		if (plugin.fileManager.getConfig(configName).get().get(path + ".glowing") != null) {
+			glowing = plugin.fileManager.getConfig(configName).get().getBoolean(path + ".glowing");
 		}
 
 		boolean hasDurability = true;
-		if (plugin.getConfig().get(path + ".canBeRepaired") != null) {
-			glowing = plugin.getConfig().getBoolean(path + ".canBeRepaired");
+		if (plugin.fileManager.getConfig(configName).get().get(path + ".canBeRepaired") != null) {
+			glowing = plugin.fileManager.getConfig(configName).get().getBoolean(path + ".canBeRepaired");
 		}
-		
+
 		int durability = is.getDurability();
-		if(plugin.getConfig().get(path + ".durability") != null) {
-			durability = plugin.getConfig().getInt(path + ".durability");
+		if (plugin.fileManager.getConfig(configName).get().get(path + ".durability") != null) {
+			durability = plugin.fileManager.getConfig(configName).get().getInt(path + ".durability");
 		}
 
 		return create(is, amount, displayName, lore, enchantments, hasDurability, durability, glowing);
@@ -139,7 +139,7 @@ public class ItemUtil {
 
 		if (hasDurability && durability != -1) {
 			item.setDurability((short) durability);
-		}else {
+		} else {
 			meta.setUnbreakable(true);
 			meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		}
@@ -149,24 +149,22 @@ public class ItemUtil {
 			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
 		item.setItemMeta(meta);
-//		Debug.Log("test: " + item.getItemMeta().getDisplayName());
 		return item;
 	}
 
 	public static Enchantment ench(String str) {
-		Enchantment enchant;
+		Enchantment enchant = null;
 		try {
-			if (str.toUpperCase() == null) {
-				str.toUpperCase();
-			}
-			enchant = Enchantment.getByName(str);
-			System.out.println("enchantment as string: " + str);
-			return enchant;
+			if (Enchantment.getByKey(NamespacedKey.minecraft(str)) != null) {
+				enchant = Enchantment.getByKey(NamespacedKey.minecraft(str));
+//				System.out.println("enchantment as string: " + str);
+				return enchant;
+			}			
 		} catch (NullPointerException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 
 		}
 		return null;
-	}
+	}	
 }

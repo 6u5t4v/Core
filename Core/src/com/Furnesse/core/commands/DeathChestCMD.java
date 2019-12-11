@@ -23,7 +23,7 @@ public class DeathChestCMD implements CommandExecutor {
 			if (args.length == 1) {
 				if(args[0].equalsIgnoreCase("help")) {
 					if(player.hasPermission("core.dc.help")){
-						for(String str : plugin.getConfigs().getLangConfig().getStringList("deathchest.help")) {
+						for(String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("deathchest.help")) {
 							player.sendMessage(Lang.chat(str));
 						}
 					}
