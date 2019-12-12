@@ -3,13 +3,12 @@ spikedclub:
   canBeRepaired: true
   displayname: "&eSpiked Club"
   material: WOODEN_SWORD
-  type: weapon
   lore:
   - "A cheap homemade club covered"
   - "in spikes, this is not nice to be"
   - "hit with."
   recipe:
-    enabled: true
+    enabled: false
     pattern:
     - blb
     - blb
@@ -23,7 +22,6 @@ excalibur:
   canBeRepaired: true
   displayname: "&dExcalibur"
   material: WOODEN_SWORD
-  type: weapon
   enchantments:
   - "sharpness:6"
   - "knockback:3"
@@ -31,11 +29,12 @@ excalibur:
   - "\n&7A super sharp sword, made from rare"
   - "&7minerals from the dangerous &nwarzone"
   recipe:
-    enabled: true
+    enabled: false
     pattern:
     - xdx
     - xdx
     - xpx
     ingredients:
-      d: purediamond
-      p: puregem
+      d: DIAMOND
+      p: EMERALD
+      x: AIR

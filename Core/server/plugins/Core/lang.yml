@@ -1,10 +1,13 @@
 prefix: '&8『 &6&lCORE &8』 &7'
 no_permission: '&cYou dont have permission to use this command'
 reloaded: '&aAll configs as successfully reloaded'
+invalid_player: '&c%player% &7is not online'
+full_inventory: '&7No room in your inventory, please make some!'
 help:
 - /core - shows this
 - /dc help - Manage deathchests
 - /rank help - Manage ranks
+- /items help - Manage custom items
 - /core reload - Reload configs
 - /nightvision - Enabled night-vision
 - /jellylegs - Reduce fall damage
@@ -37,6 +40,13 @@ rank:
   user_rank_received: '&7You have received new rank -> &d&n%rank%&7.'
   user_perm_received: '&7You receive new perm -> &d&n%perm%&7.'
   user_perm_removed: '&7You lost perm -> &d&n%perm%&7.'
+citems:
+  help:
+  - /items give <player> <item> [amount] - Give player a custom item
+  - /items list - See all available custom items
+  items_invalid_item: '&c%item% &7is not a valid item, try &e/items list&7.'
+  items_player_received: '&7You have received &ax%amount% %item%&7.'
+  items_succesfull_received: '&a%player% &7has received &ax%amount% %item%&7.'
 deathchest:
   help:
   - /dc - Open gui showing all active deathchests

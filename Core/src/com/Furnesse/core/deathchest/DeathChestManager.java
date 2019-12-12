@@ -7,12 +7,10 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Settings;
 
 public class DeathChestManager {

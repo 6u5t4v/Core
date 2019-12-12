@@ -8,8 +8,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.plugin.Plugin;
 
+import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.ItemUtil;
 
 public class CItem {
@@ -36,12 +36,12 @@ public class CItem {
 		ItemStack result = this.item;
 
 		// create a NamespacedKey for your recipe
-		NamespacedKey key = new NamespacedKey((Plugin) this, this.name);
+		NamespacedKey key = new NamespacedKey(Core.instance, this.name);
 
 		// Create our custom recipe variable
 		ShapedRecipe recipe = new ShapedRecipe(key, result);
 
-		recipe.shape(recipe.getShape());
+		recipe.shape(cRecipe.getPattern());
 
 		for(Map<Character, Material> ingred : cRecipe.ingredient) {
 			ingred.forEach((val, material) -> recipe.setIngredient(val, material));

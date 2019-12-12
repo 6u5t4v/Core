@@ -44,7 +44,7 @@ import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.rank.RankManager;
-import com.Furnesse.core.utils.Configs;
+import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Lang;
 import com.Furnesse.core.utils.Settings;
 import com.Furnesse.core.utils.Utils;
@@ -65,7 +65,6 @@ public class Core extends JavaPlugin implements Listener {
 
 	private static HeadDatabaseAPI headAPI;
 	
-	private Configs configs = new Configs(this);
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
 	private Scoreboard sb = new Scoreboard(this);
@@ -74,6 +73,8 @@ public class Core extends JavaPlugin implements Listener {
 	public ChatFormats chatFormat = new ChatFormats(this);
 	public Utils utils = new Utils(this);
 
+	public FileManager fileManager = new FileManager(this);
+	
 	public String host, database, username, password;
 	public String playerTable = "player_data", deathchestTable = "stored_deathchests";
 	public int port;
@@ -103,8 +104,7 @@ public class Core extends JavaPlugin implements Listener {
 		this.getLogger().info("<------<< Furnesse CORE >>------>");
 		instance = this;
 		
-		configs.createCustomConfig();
-		configs.saveConfigs();
+		registerConfigs();
 
 		if (!setupEconomy()) {
 			log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -120,10 +120,24 @@ public class Core extends JavaPlugin implements Listener {
 		registerCommands();
 		disableRecipes();
 		
-//		DeathChestManager.getInstance().loadDeathChests();
-		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
+	}
+	
+	private void registerConfigs() {
+		fileManager.getConfig("config.yml").copyDefaults(true).save();
+		fileManager.getConfig("lang.yml").copyDefaults(true).save();
+		fileManager.getConfig("customcommands.yml").copyDefaults(true).save();
+		fileManager.getConfig("customitems.yml").copyDefaults(true).save();
+		fileManager.getConfig("deathchests.yml").copyDefaults(true).save();
+		fileManager.getConfig("players.yml").copyDefaults(true).save();
+		fileManager.getConfig("ranks.yml").copyDefaults(true).save();
+	}
+	
+	public void reloadPlugin() {
+		for(FileManager.Config c : FileManager.configs.values()) {
+			c.reload();
+		}
 	}
 	
 	private void setupMySQL() {
@@ -248,19 +262,6 @@ public class Core extends JavaPlugin implements Listener {
 		return econ != null;
 	}
 
-//	@SuppressWarnings("unused")
-//	private boolean setupChat() {
-//		RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-//		chat = rsp.getProvider();
-//		return chat != null;
-//	}
-
-//	private boolean setupPermissions() {
-//		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-//		perms = rsp.getProvider();
-//		return perms != null;
-//	}
-
 	private void registerPlaceholders() {
 		PlaceholderAPI.registerPlaceholderHook("core", new PlaceholderHook() {
 			@Override
@@ -276,19 +277,19 @@ public class Core extends JavaPlugin implements Listener {
 				if (player == null) {
 					return null;
 				}
-				if (usingRanks) {
-					if (params.equalsIgnoreCase("rank_prefix")) {
-						return getRanks().getPRank(player).getPrefix();
-					}
-
-					if (params.equalsIgnoreCase("rank_suffix")) {
-						return getRanks().getPRank(player).getSuffix();
-					}
-
-					if (params.equalsIgnoreCase("rank")) {
-						return getRanks().getPRank(player).getName();
-					}
-				}
+//				if (usingRanks) {
+//					if (params.equalsIgnoreCase("rank_prefix")) {
+//						return getRanks().getPRank(player).getPrefix();
+//					}
+//
+//					if (params.equalsIgnoreCase("rank_suffix")) {
+//						return getRanks().getPRank(player).getSuffix();
+//					}
+//
+//					if (params.equalsIgnoreCase("rank")) {
+//						return getRanks().getPRank(player).getName();
+//					}
+//				}
 				return null;
 			}
 
@@ -309,7 +310,6 @@ public class Core extends JavaPlugin implements Listener {
 		if (usingRanks) {
 			this.getLogger().info("Enabling Ranks");
 			rankMan.loadRanks();
-//			setupPermissions();
 		}
 
 		if (usingSb) {
@@ -345,24 +345,14 @@ public class Core extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
-		DeathChestManager.getInstance().clearDeathChests();
+		if(usingDc && DeathChestManager.getInstance().getDeathChestsByUUID().values() != null)
+			DeathChestManager.getInstance().clearDeathChests();
+		
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
 	}
 
 	public Economy getEconomy() {
 		return econ;
-	}
-
-//	public Permission getPermissions() {
-//		return perms;
-//	}
-//
-//	public Chat getChat() {
-//		return chat;
-//	}
-
-	public Configs getConfigs() {
-		return configs;
 	}
 
 	public RankManager getRanks() {

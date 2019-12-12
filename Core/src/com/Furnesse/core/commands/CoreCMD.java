@@ -23,7 +23,7 @@ public class CoreCMD implements CommandExecutor {
 					for (int i = 0; i < args.length; i++) {
 						
 					}
-					for (String message : plugin.getConfigs().getLangConfig().getStringList("help.")) {
+					for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help.")) {
 						player.sendMessage(message);
 					}
 
@@ -35,7 +35,7 @@ public class CoreCMD implements CommandExecutor {
 			if (args.length == 1) {
 				if (args[0].equalsIgnoreCase("help")) {
 					if (player.hasPermission("core.help")) {
-						for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
+						for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
 							player.sendMessage(message);
 						}
 					} else {
@@ -45,7 +45,7 @@ public class CoreCMD implements CommandExecutor {
 
 				if (args[0].equalsIgnoreCase("reload")) {
 					if (player.hasPermission("core.reload")) {
-						plugin.getConfigs().reloadConfigs(player);
+						plugin.reloadPlugin();
 					} else {
 						player.sendMessage(Lang.NO_PERMISSION);
 					}
@@ -65,20 +65,21 @@ public class CoreCMD implements CommandExecutor {
 			}
 		}
 		if (args.length == 0) {
-			for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
+			for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
 				sender.sendMessage(message);
 			}
 		}
 
 		if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("help")) {
-				for (String message : plugin.getConfigs().getLangConfig().getStringList("help")) {
+				for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
 					sender.sendMessage(message);
 				}
 			}
 
 			if (args[0].equalsIgnoreCase("reload")) {
-				plugin.getConfigs().reloadConfigs(sender);
+				plugin.reloadPlugin();
+				sender.sendMessage(Lang.RELOADED);
 			}
 		}
 

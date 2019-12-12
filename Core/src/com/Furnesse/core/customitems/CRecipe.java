@@ -22,7 +22,7 @@ public class CRecipe {
 		return ingredient;
 	}
 
-	public void setIngredient(List<Map<Character, Material>> ingredient) {
-		this.ingredient = ingredient;
+	public String[] getPattern() {
+		return pattern;
 	}
 }
