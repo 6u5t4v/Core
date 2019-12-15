@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.Lang;
 
 public class CItemManager {
@@ -53,14 +54,11 @@ public class CItemManager {
 							Material mat = Material.getMaterial(plugin.fileManager.getConfig("customitems.yml").get().getString(cItem + ".recipe.ingredients." + str));
 							ingred.put(val, mat);
 						}
+						Debug.Log("pattern: " + pattern);
 						recipe = new CRecipe(pattern, ingredients);
 					}
 					
 					CItem customItem = new CItem(id, recipe);
-
-					if(hasRecipe && customItem.getcRecipe() != null) {
-						customItem.initRecipe();
-					}
 					
 					customItems.add(customItem);
 					loaded++;
@@ -154,6 +152,7 @@ public class CItemManager {
 	
 	public void giveCItem(CommandSender sender, Player target, CItem cItem, int amount) {
 		if (target.getInventory().getSize() == -1) {
+			target.sendMessage(Lang.FULL_INVENTORY);
 			return;
 		}
 

@@ -85,9 +85,10 @@ public class DeathChestListener implements Listener {
 					p.updateInventory();
 				}
 			}
-		} else {
-			p.sendMessage(Lang.DEATHCOORDS
-					.replace("%xloc%", String.valueOf(p.getLocation().getBlockX()))
+		}
+
+		if (p.hasPermission("core.deathcoords") || plugin.usingDc) {
+			p.sendMessage(Lang.DEATHCOORDS.replace("%xloc%", String.valueOf(p.getLocation().getBlockX()))
 					.replace("%yloc%", String.valueOf(p.getLocation().getBlockY()))
 					.replace("%zloc%", String.valueOf(p.getLocation().getBlockZ()))
 					.replace("%world%", p.getLocation().getWorld().getName()));

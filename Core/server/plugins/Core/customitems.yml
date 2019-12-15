@@ -3,6 +3,7 @@ spikedclub:
   canBeRepaired: true
   displayname: '&eSpiked Club'
   material: WOODEN_SWORD
+  modeldata: 30
   lore:
   - A cheap homemade club covered
   - in spikes, this is not nice to be
@@ -26,9 +27,7 @@ excalibur:
   - sharpness:6
   - knockback:3
   lore:
-  - |2-
-
-    &7A super sharp sword, made from rare
+  - '&7A super sharp sword, made from rare'
   - '&7minerals from the dangerous &nwarzone'
   recipe:
     enabled: false

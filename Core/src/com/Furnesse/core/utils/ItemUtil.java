@@ -63,10 +63,12 @@ public class ItemUtil {
 
 	public static ItemStack loadItemFromConfig(String configName, String path) {
 		Material m = Material.getMaterial(plugin.fileManager.getConfig(configName).get().getString(path + ".material"));
+		int confAmount = plugin.fileManager.getConfig(configName).get().getInt(path + ".amount");
+		
 		int amount = 1;
 		if (plugin.fileManager.getConfig(configName).get().get(path + ".amount") != null) {
-			amount = plugin.fileManager.getConfig(configName).get().getInt(path + ".amount") <= 0 ? amount = 1
-					: plugin.fileManager.getConfig(configName).get().getInt(path + ".amount");
+			amount = confAmount < 1 ? amount = 1
+					: confAmount;
 		}
 
 		ItemStack is = m != null ? new ItemStack(m)
@@ -96,6 +98,11 @@ public class ItemUtil {
 		if (plugin.fileManager.getConfig(configName).get().get(path + ".durability") != null) {
 			durability = plugin.fileManager.getConfig(configName).get().getInt(path + ".durability");
 		}
+		
+		if((plugin.fileManager.getConfig(configName).get().get(path + ".modeldata") != null)) {
+			is.getItemMeta().setCustomModelData(plugin.fileManager.getConfig(configName).get().getInt(path + ".modeldata"));
+			Debug.Log("modeldata: " + is.getItemMeta().getCustomModelData());
+		}		
 
 		return create(is, amount, displayName, lore, enchantments, hasDurability, durability, glowing);
 	}
@@ -148,6 +155,7 @@ public class ItemUtil {
 			meta.addEnchant(Enchantment.DURABILITY, 1, true);
 			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
+		
 		item.setItemMeta(meta);
 		return item;
 	}

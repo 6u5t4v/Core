@@ -11,15 +11,15 @@ public class CRecipe {
 	Core plugin = Core.instance;
 
 	String[] pattern;
-	List<Map<Character, Material>> ingredient;
+	List<Map<Character, Material>> ingredients;
 
-	public CRecipe(String[] pattern, List<Map<Character, Material>> ingredient) {
+	public CRecipe(String[] pattern, List<Map<Character, Material>> ingredients) {
 		this.pattern = pattern;
-		this.ingredient = ingredient;
+		this.ingredients = ingredients;
 	}
 
-	public List<Map<Character, Material>> getIngredient() {
-		return ingredient;
+	public List<Map<Character, Material>> getIngredients() {
+		return ingredients;
 	}
 
 	public String[] getPattern() {

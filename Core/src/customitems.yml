@@ -1,6 +1,6 @@
 spikedclub:
   enabled: true
-  canBeRepaired: true
+  canBeRepaired: false
   displayname: "&eSpiked Club"
   material: WOODEN_SWORD
   lore:
@@ -19,14 +19,14 @@ spikedclub:
       b: IRON_BAR
 excalibur:
   enabled: true
-  canBeRepaired: true
+  canBeRepaired: false
   displayname: "&dExcalibur"
   material: WOODEN_SWORD
   enchantments:
   - "sharpness:6"
   - "knockback:3"
   lore:
-  - "\n&7A super sharp sword, made from rare"
+  - "&7A super sharp sword, made from rare"
   - "&7minerals from the dangerous &nwarzone"
   recipe:
     enabled: false

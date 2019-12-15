@@ -21,10 +21,14 @@ public class CItem {
 		this.name = name;
 		this.cRecipe = cRecipe;
 		this.item = ItemUtil.loadItemFromConfig("customitems.yml", this.name);
+		
+		if(cRecipe != null) {
+			initRecipe();
+		}
 	}
 
 	public void give(Player p, int amount) {
-		amount = amount <= 0 ? amount = 1 : amount;
+		amount = amount < 1 ? amount = 1 : amount;
 		
 		for (int i = 0; i < amount; i++) {
 			p.getInventory().addItem(this.item);
@@ -43,8 +47,10 @@ public class CItem {
 
 		recipe.shape(cRecipe.getPattern());
 
-		for(Map<Character, Material> ingred : cRecipe.ingredient) {
-			ingred.forEach((val, material) -> recipe.setIngredient(val, material));
+		for(Map<Character, Material> ingred : cRecipe.ingredients) {
+			if(ingred != null) {
+				ingred.forEach((letter, material) -> recipe.setIngredient(letter, material));
+			}
 		}
 
 		// Finally, add the recipe to the bukkit recipes

@@ -33,7 +33,6 @@ public class ItemsCMD implements CommandExecutor {
 						for (String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("citems.help")) {
 							player.sendMessage(Lang.chat(str));
 						}
-
 					}
 
 					if (args[0].equalsIgnoreCase("list")) {
@@ -62,9 +61,9 @@ public class ItemsCMD implements CommandExecutor {
 							
 							plugin.cItemMan.giveCItem(sender, target, cItem, amount);
 							player.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
-									.replace("%player%", target.getName()
+									.replace("%player%", target.getName())
 									.replace("%amount%", String.valueOf(amount))
-									.replace("%item%", cItem.getName())));
+									.replace("%item%", cItem.getName()));
 
 						} else {
 							player.sendMessage(Lang.ITEMS_INVALID_ITEM.replace("%item%", args[2]));
@@ -80,22 +79,50 @@ public class ItemsCMD implements CommandExecutor {
 		}
 
 		if (args.length == 0) {
-			for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
-				sender.sendMessage(message);
-			}
+			// Open the gui containing all custom items
 		}
 
-		if (args.length == 1) {
+		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("help")) {
-				for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
-					sender.sendMessage(message);
+
+				for (String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("citems.help")) {
+					sender.sendMessage(Lang.chat(str));
 				}
 			}
-		}
 
-		if (args.length == 2) {
-			if (args[1].equalsIgnoreCase("give")) {
+			if (args[0].equalsIgnoreCase("list")) {
+				List<String> cItems = new ArrayList<String>();
+				for (CItem cItem : plugin.cItemMan.customItems) {
+					cItems.add(cItem.getName());
+				}
 
+				sender.sendMessage(Lang.chat("&a&lAvailable Items: &7" + cItems.toString()));
+			}
+
+			if (args[0].equalsIgnoreCase("give")) {
+				Player target = Bukkit.getPlayer(args[1]);
+
+				if (target == null) {
+					sender.sendMessage(Lang.INVALID_PLAYER.replace("%player%", args[1]));
+				}
+
+				if (plugin.cItemMan.getCItem(args[2]) != null) {
+					CItem cItem = plugin.cItemMan.getCItem(args[2]);
+					
+					int amount = 1;
+					if (args.length == 4) {
+						amount = Integer.parseInt(args[3]);
+					}
+					
+					plugin.cItemMan.giveCItem(sender, target, cItem, amount);
+					sender.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
+							.replace("%player%", target.getName())
+							.replace("%amount%", String.valueOf(amount))
+							.replace("%item%", cItem.getName()));
+
+				} else {
+					sender.sendMessage(Lang.ITEMS_INVALID_ITEM.replace("%item%", args[2]));
+				}
 			}
 		}
 		return true;
