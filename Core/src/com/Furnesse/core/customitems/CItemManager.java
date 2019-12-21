@@ -8,7 +8,9 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
 import com.Furnesse.core.Core;
@@ -26,15 +28,15 @@ public class CItemManager {
 	public List<CItem> customItems = new ArrayList<CItem>();
 
 	public void loadCustomItems() {
+		FileConfiguration config = plugin.getFileManager().getConfig("customitems.yml").get();
 		customItems.clear();
 
 		int loaded = 0;
-		for (String cItem : plugin.fileManager.getConfig("customitems.yml").get().getKeys(false)) {
+		for (String cItem : config.getKeys(false)) {
 			if (cItem == null)
 				return;
 			try {
-				boolean cItemEnabled = plugin.fileManager.getConfig("customitems.yml").get()
-						.getBoolean(cItem + ".enabled");
+				boolean cItemEnabled = config.getBoolean(cItem + ".enabled");
 				if (cItemEnabled) {
 					String id = cItem.toString();
 //					CItemTypes type = CItemTypes
@@ -45,20 +47,17 @@ public class CItemManager {
 //						continue;
 //					}
 
-					boolean hasRecipe = plugin.fileManager.getConfig("customitems.yml").get()
-							.getBoolean(cItem + ".recipe.enabled");
+					boolean hasRecipe = config.getBoolean(cItem + ".recipe.enabled");
 					CRecipe recipe = null;
 					if (hasRecipe) {
-						List<String> list = plugin.fileManager.getConfig("customitems.yml").get()
-								.getStringList(cItem + ".recipe.pattern");
+						List<String> list = config.getStringList(cItem + ".recipe.pattern");
 						String[] pattern = list.toArray(new String[0]);
 						List<Map<Character, Material>> ingredients = null;
-						for (String str : plugin.fileManager.getConfig("customitems.yml").get()
-								.getConfigurationSection(cItem + ".recipe.ingredients").getKeys(false)) {
+						for (String str : config.getConfigurationSection(cItem + ".recipe.ingredients")
+								.getKeys(false)) {
 							Map<Character, Material> ingred = new HashMap<>();
 							Character val = str.charAt(0);
-							Material mat = Material.getMaterial(plugin.fileManager.getConfig("customitems.yml").get()
-									.getString(cItem + ".recipe.ingredients." + str));
+							Material mat = Material.getMaterial(config.getString(cItem + ".recipe.ingredients." + str));
 							ingred.put(val, mat);
 						}
 						Debug.Log("pattern: " + pattern);
@@ -77,7 +76,7 @@ public class CItemManager {
 			}
 		}
 		loadRecipes();
-		
+
 		plugin.getLogger().info("Loaded: " + loaded + " custom items");
 
 	}
@@ -86,17 +85,16 @@ public class CItemManager {
 		for (CItem cItem : customItems) {
 			if (cItem.getRecipe() != null) {
 				CRecipe cRecipe = cItem.getRecipe();
-				
+
 				Debug.Log("recipe pattern:" + cRecipe.getPattern().toString());
 				Debug.Log("recipe pattern:" + cRecipe.getPattern());
-				
-				ShapedRecipe recipe = new ShapedRecipe(cItem.getItem())
-						.shape(cRecipe.getPattern());
-				
-				for(Map<Character, Material> ingredients : cRecipe.getIngredients()) {
+
+				ShapedRecipe recipe = new ShapedRecipe(cItem.getItem()).shape(cRecipe.getPattern());
+
+				for (Map<Character, Material> ingredients : cRecipe.getIngredients()) {
 					ingredients.forEach((key, mat) -> recipe.setIngredient(key, mat));
 				}
-				
+
 				Bukkit.getServer().addRecipe(recipe);
 				Debug.Log("loaded recipe for " + cItem.getName());
 			}
@@ -110,6 +108,15 @@ public class CItemManager {
 			}
 		}
 		return null;
+	}
+
+	public boolean itemInHand(ItemStack item) {
+		for (CItem cItem : customItems) {
+			if (cItem.getItem().equals(item)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 //	@SuppressWarnings("deprecation")
@@ -179,7 +186,7 @@ public class CItemManager {
 //		return enchants;
 //	}
 
-	public void giveCItem(CommandSender sender, Player target, CItem cItem, int amount) {
+	public void giveItem(CommandSender sender, Player target, CItem cItem, int amount) {
 		if (target.getInventory().getSize() == -1) {
 			target.sendMessage(Lang.FULL_INVENTORY);
 			return;

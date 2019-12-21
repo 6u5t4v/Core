@@ -17,7 +17,7 @@ public class ChatEvent implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChat(AsyncPlayerChatEvent e) {		
 		String msg = e.getMessage();
-		String format = plugin.chatFormat.getPlayerFormat(e.getPlayer()).getFormat();
+		String format = plugin.getChatFormat().getPlayerFormat(e.getPlayer()).getFormat();
 		
 		format = PlaceholderAPI.setPlaceholders(e.getPlayer(), format);
 		e.setFormat(Lang.chat(format.replace("%msg%", msg)).replace("%", "%%"));

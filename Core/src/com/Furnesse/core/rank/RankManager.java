@@ -24,17 +24,17 @@ public class RankManager {
 
 	public void loadRanks() {
 		ranks.clear();
-		ConfigurationSection availableRanks = plugin.fileManager.getConfig("ranks.yml").get().getConfigurationSection("Ranks");
+		ConfigurationSection availableRanks = plugin.getFileManager().getConfig("ranks.yml").get().getConfigurationSection("Ranks");
 		if (availableRanks != null) {
 			for (String rank : availableRanks.getKeys(false)) {
 				if (rank != null) {
 					String name = rank.toString();
-					String prefix = plugin.fileManager.getConfig("ranks.yml").get().getString("Ranks." + rank + ".prefix");
-					String suffix = plugin.fileManager.getConfig("ranks.yml").get().getString("Ranks." + rank + ".suffix");
-					boolean defaultRank = plugin.fileManager.getConfig("ranks.yml").get().getBoolean("Ranks." + rank + ".default");
-					List<String> perms = plugin.fileManager.getConfig("ranks.yml").get()
+					String prefix = plugin.getFileManager().getConfig("ranks.yml").get().getString("Ranks." + rank + ".prefix");
+					String suffix = plugin.getFileManager().getConfig("ranks.yml").get().getString("Ranks." + rank + ".suffix");
+					boolean defaultRank = plugin.getFileManager().getConfig("ranks.yml").get().getBoolean("Ranks." + rank + ".default");
+					List<String> perms = plugin.getFileManager().getConfig("ranks.yml").get()
 							.getStringList("Ranks." + rank + ".permissions");
-					List<String> inherits = plugin.fileManager.getConfig("ranks.yml").get()
+					List<String> inherits = plugin.getFileManager().getConfig("ranks.yml").get()
 							.getStringList("Ranks." + rank + ".inheritance");
 
 					Rank currentRank = new Rank(name, prefix, suffix, defaultRank, perms, inherits);

@@ -62,45 +62,45 @@ public class ItemUtil {
 	}
 
 	public static ItemStack loadItemFromConfig(String configName, String path) {
-		Material m = Material.getMaterial(plugin.fileManager.getConfig(configName).get().getString(path + ".material"));
-		int confAmount = plugin.fileManager.getConfig(configName).get().getInt(path + ".amount");
+		Material m = Material.getMaterial(plugin.getFileManager().getConfig(configName).get().getString(path + ".material"));
+		int confAmount = plugin.getFileManager().getConfig(configName).get().getInt(path + ".amount");
 		
 		int amount = 1;
-		if (plugin.fileManager.getConfig(configName).get().get(path + ".amount") != null) {
+		if (plugin.getFileManager().getConfig(configName).get().get(path + ".amount") != null) {
 			amount = confAmount < 1 ? amount = 1
 					: confAmount;
 		}
 
 		ItemStack is = m != null ? new ItemStack(m)
 				: plugin.getHeadAPI()
-						.getItemHead(plugin.fileManager.getConfig(configName).get().getString(path + ".material"));
+						.getItemHead(plugin.getFileManager().getConfig(configName).get().getString(path + ".material"));
 
-		String displayName = plugin.fileManager.getConfig(configName).get().getString(path + ".displayname");
+		String displayName = plugin.getFileManager().getConfig(configName).get().getString(path + ".displayname");
 
-		List<String> lore = plugin.fileManager.getConfig(configName).get().getStringList(path + ".lore");
+		List<String> lore = plugin.getFileManager().getConfig(configName).get().getStringList(path + ".lore");
 
 		List<String> enchantments = new ArrayList<>();
-		if (plugin.fileManager.getConfig(configName).get().getStringList(path + ".enchantments") != null) {
-			enchantments = plugin.fileManager.getConfig(configName).get().getStringList(path + ".enchantments");
+		if (plugin.getFileManager().getConfig(configName).get().getStringList(path + ".enchantments") != null) {
+			enchantments = plugin.getFileManager().getConfig(configName).get().getStringList(path + ".enchantments");
 		}
 
 		boolean glowing = false;
-		if (plugin.fileManager.getConfig(configName).get().get(path + ".glowing") != null) {
-			glowing = plugin.fileManager.getConfig(configName).get().getBoolean(path + ".glowing");
+		if (plugin.getFileManager().getConfig(configName).get().get(path + ".glowing") != null) {
+			glowing = plugin.getFileManager().getConfig(configName).get().getBoolean(path + ".glowing");
 		}
 
 		boolean hasDurability = true;
-		if (plugin.fileManager.getConfig(configName).get().get(path + ".canBeRepaired") != null) {
-			glowing = plugin.fileManager.getConfig(configName).get().getBoolean(path + ".canBeRepaired");
+		if (plugin.getFileManager().getConfig(configName).get().get(path + ".canBeRepaired") != null) {
+			glowing = plugin.getFileManager().getConfig(configName).get().getBoolean(path + ".canBeRepaired");
 		}
 
 		int durability = is.getDurability();
-		if (plugin.fileManager.getConfig(configName).get().get(path + ".durability") != null) {
-			durability = plugin.fileManager.getConfig(configName).get().getInt(path + ".durability");
+		if (plugin.getFileManager().getConfig(configName).get().get(path + ".durability") != null) {
+			durability = plugin.getFileManager().getConfig(configName).get().getInt(path + ".durability");
 		}
 		
-		if((plugin.fileManager.getConfig(configName).get().get(path + ".modeldata") != null)) {
-			is.getItemMeta().setCustomModelData(plugin.fileManager.getConfig(configName).get().getInt(path + ".modeldata"));
+		if((plugin.getFileManager().getConfig(configName).get().get(path + ".modeldata") != null)) {
+			is.getItemMeta().setCustomModelData(plugin.getFileManager().getConfig(configName).get().getInt(path + ".modeldata"));
 			Debug.Log("modeldata: " + is.getItemMeta().getCustomModelData());
 		}		
 

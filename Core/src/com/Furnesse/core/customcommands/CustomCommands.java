@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import com.Furnesse.core.Core;
 
@@ -18,7 +19,9 @@ public class CustomCommands {
 	private List<CustomCommand> customCommands = new ArrayList<CustomCommand>();
 	
 	public void loadCustomCommands() {
-		ConfigurationSection availableCmds = plugin.fileManager.getConfig("customcommands.yml").get().getConfigurationSection("Commands");
+		FileConfiguration config = plugin.getFileManager().getConfig("customcommands.yml").get();
+		
+		ConfigurationSection availableCmds = config.getConfigurationSection("Commands");
 		customCommands.clear();
 		int amount = 0;
 		if(availableCmds != null) {
@@ -26,9 +29,9 @@ public class CustomCommands {
 				if(cmd != null) {
 					try {
 						String name = cmd.toString();
-						String perm = plugin.fileManager.getConfig("customcommands.yml").get().getString("Commands." + cmd + ".permission");
-						List<String> msg = plugin.fileManager.getConfig("customcommands.yml").get().getStringList("Commands." + cmd + ".message");
-						List<String> aliases = plugin.fileManager.getConfig("customcommands.yml").get().getStringList("Commands." + cmd + ".aliases");
+						String perm = config.getString("Commands." + cmd + ".permission");
+						List<String> msg = config.getStringList("Commands." + cmd + ".message");
+						List<String> aliases = config.getStringList("Commands." + cmd + ".aliases");
 						
 						CustomCommand customCommand = new CustomCommand(name, perm, msg, aliases);
 						customCommands.add(customCommand);

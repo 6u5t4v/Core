@@ -47,7 +47,6 @@ import com.Furnesse.core.rank.RankManager;
 import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Lang;
 import com.Furnesse.core.utils.Settings;
-import com.Furnesse.core.utils.Utils;
 
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -68,16 +67,14 @@ public class Core extends JavaPlugin implements Listener {
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
 	private Scoreboard sb = new Scoreboard(this);
-//	private DeathChests deathChests = new DeathChests(this);
-	public CItemManager cItemMan = new CItemManager(this);
-	public ChatFormats chatFormat = new ChatFormats(this);
-	public Utils utils = new Utils(this);
+	private CItemManager cItemMan = new CItemManager(this);
+	private ChatFormats chatFormat = new ChatFormats(this);
 
-	public FileManager fileManager = new FileManager(this);
+	private FileManager fileManager = new FileManager(this);
 	
-	public String host, database, username, password;
+	private String host, database, username, password;
 	public String playerTable = "player_data", deathchestTable = "stored_deathchests";
-	public int port;
+	private int port;
 	private Connection connection;
 	
 	public boolean usingMySQL = false;
@@ -156,7 +153,7 @@ public class Core extends JavaPlugin implements Listener {
 				setConnection(DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, username, password));
 				
 				setupTables();
-				this.getLogger().info("§aSuccesfully loaded MySQL");
+				this.getLogger().info("ï¿½aSuccesfully loaded MySQL");
 			}
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -369,5 +366,17 @@ public class Core extends JavaPlugin implements Listener {
 	
 	public HeadDatabaseAPI getHeadAPI() {
 		return headAPI;
+	}
+	
+	public FileManager getFileManager() {
+		return fileManager;
+	}
+	
+	public CItemManager getItemManager() {
+		return cItemMan;
+	}
+	
+	public ChatFormats getChatFormat() {
+		return chatFormat;
 	}
 }

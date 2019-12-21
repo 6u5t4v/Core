@@ -3,6 +3,7 @@ package com.Furnesse.core.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
@@ -13,6 +14,8 @@ public class DeathChestCMD implements CommandExecutor {
 	Core plugin = Core.instance;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		FileConfiguration langFile = plugin.getFileManager().getConfig("lang.yml").get();
+		
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			// Player commands
@@ -23,7 +26,7 @@ public class DeathChestCMD implements CommandExecutor {
 			if (args.length == 1) {
 				if(args[0].equalsIgnoreCase("help")) {
 					if(player.hasPermission("core.dc.help")){
-						for(String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("deathchest.help")) {
+						for (String str : langFile.getStringList("deathchest.help")) {
 							player.sendMessage(Lang.chat(str));
 						}
 					}

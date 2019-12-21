@@ -3,6 +3,7 @@ package com.Furnesse.core.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
@@ -14,6 +15,8 @@ public class CoreCMD implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		FileConfiguration langFile = plugin.getFileManager().getConfig("lang.yml").get();
+		
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			// Player commands
@@ -23,7 +26,7 @@ public class CoreCMD implements CommandExecutor {
 					for (int i = 0; i < args.length; i++) {
 						
 					}
-					for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help.")) {
+					for (String message : langFile.getStringList("help.")) {
 						player.sendMessage(message);
 					}
 
@@ -35,7 +38,7 @@ public class CoreCMD implements CommandExecutor {
 			if (args.length == 1) {
 				if (args[0].equalsIgnoreCase("help")) {
 					if (player.hasPermission("core.help")) {
-						for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
+						for (String message : langFile.getStringList("help")) {
 							player.sendMessage(message);
 						}
 					} else {
@@ -65,14 +68,14 @@ public class CoreCMD implements CommandExecutor {
 			}
 		}
 		if (args.length == 0) {
-			for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
+			for (String message : langFile.getStringList("help")) {
 				sender.sendMessage(message);
 			}
 		}
 
 		if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("help")) {
-				for (String message : plugin.fileManager.getConfig("lang.yml").get().getStringList("help")) {
+				for (String message : langFile.getStringList("help")) {
 					sender.sendMessage(message);
 				}
 			}
