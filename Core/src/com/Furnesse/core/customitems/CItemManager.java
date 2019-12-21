@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ShapedRecipe;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Debug;
@@ -31,7 +32,8 @@ public class CItemManager {
 			if (cItem == null)
 				return;
 			try {
-				boolean cItemEnabled = plugin.fileManager.getConfig("customitems.yml").get().getBoolean(cItem + ".enabled");
+				boolean cItemEnabled = plugin.fileManager.getConfig("customitems.yml").get()
+						.getBoolean(cItem + ".enabled");
 				if (cItemEnabled) {
 					String id = cItem.toString();
 //					CItemTypes type = CItemTypes
@@ -42,24 +44,28 @@ public class CItemManager {
 //						continue;
 //					}
 
-					boolean hasRecipe = plugin.fileManager.getConfig("customitems.yml").get().getBoolean(cItem + ".recipe.enabled");
+					boolean hasRecipe = plugin.fileManager.getConfig("customitems.yml").get()
+							.getBoolean(cItem + ".recipe.enabled");
 					CRecipe recipe = null;
-					if(hasRecipe) {
-						List<String> list = plugin.fileManager.getConfig("customitems.yml").get().getStringList(cItem + ".recipe.pattern");
+					if (hasRecipe) {
+						List<String> list = plugin.fileManager.getConfig("customitems.yml").get()
+								.getStringList(cItem + ".recipe.pattern");
 						String[] pattern = list.toArray(new String[0]);
 						List<Map<Character, Material>> ingredients = null;
-						for(String str : plugin.fileManager.getConfig("customitems.yml").get().getConfigurationSection(cItem + ".recipe.ingredients").getKeys(false)) {
+						for (String str : plugin.fileManager.getConfig("customitems.yml").get()
+								.getConfigurationSection(cItem + ".recipe.ingredients").getKeys(false)) {
 							Map<Character, Material> ingred = new HashMap<>();
 							Character val = str.charAt(0);
-							Material mat = Material.getMaterial(plugin.fileManager.getConfig("customitems.yml").get().getString(cItem + ".recipe.ingredients." + str));
+							Material mat = Material.getMaterial(plugin.fileManager.getConfig("customitems.yml").get()
+									.getString(cItem + ".recipe.ingredients." + str));
 							ingred.put(val, mat);
 						}
 						Debug.Log("pattern: " + pattern);
 						recipe = new CRecipe(pattern, ingredients);
 					}
-					
+
 					CItem customItem = new CItem(id, recipe);
-					
+
 					customItems.add(customItem);
 					loaded++;
 				}
@@ -69,9 +75,30 @@ public class CItemManager {
 				e.printStackTrace();
 			}
 		}
-
+		loadRecipes();
+		
 		plugin.getLogger().info("Loaded: " + loaded + " custom items");
 
+	}
+
+	private void loadRecipes() {
+		for (CItem cItem : customItems) {
+			if (cItem.getRecipe() != null) {
+				CRecipe cRecipe = cItem.getRecipe();
+				
+				Debug.Log("recipe pattern:" + cRecipe.getPattern().toString());
+				Debug.Log("recipe pattern:" + cRecipe.getPattern());
+				
+				ShapedRecipe recipe = new ShapedRecipe(cItem.getItem())
+						.shape(cRecipe.getPattern());
+				
+				for(Map<Character, Material> ingredients : cRecipe.getIngredients()) {
+					ingredients.forEach((key, mat) -> recipe.setIngredient(key, mat));
+				}
+				
+				Debug.Log("loaded recipe for " + cItem.getName());
+			}
+		}
 	}
 
 	public CItem getCItem(String str) {
@@ -149,7 +176,7 @@ public class CItemManager {
 //
 //		return enchants;
 //	}
-	
+
 	public void giveCItem(CommandSender sender, Player target, CItem cItem, int amount) {
 		if (target.getInventory().getSize() == -1) {
 			target.sendMessage(Lang.FULL_INVENTORY);
@@ -157,8 +184,7 @@ public class CItemManager {
 		}
 
 		cItem.give(target, amount);
-		target.sendMessage(Lang.ITEMS_PLAYER_RECEIVED
-				.replace("%amount%", String.valueOf(amount))
-				.replace("%item%", cItem.getName()));
+		target.sendMessage(Lang.ITEMS_PLAYER_RECEIVED.replace("%amount%", String.valueOf(amount)).replace("%item%",
+				cItem.getName()));
 	}
 }
