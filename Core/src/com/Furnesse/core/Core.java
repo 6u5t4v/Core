@@ -28,7 +28,6 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Furnesse.core.Events.PlayerEvents;
-import com.Furnesse.core.Events.Scoreboard;
 import com.Furnesse.core.chat.ChatFormats;
 import com.Furnesse.core.commands.CoreCMD;
 import com.Furnesse.core.commands.CustomCMD;
@@ -44,6 +43,7 @@ import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.rank.RankManager;
+import com.Furnesse.core.sidebar.Sidebar;
 import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Lang;
 import com.Furnesse.core.utils.Settings;
@@ -66,7 +66,7 @@ public class Core extends JavaPlugin implements Listener {
 	
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
-	private Scoreboard sb = new Scoreboard(this);
+	private Sidebar sb;
 	private CItemManager cItemMan = new CItemManager(this);
 	private ChatFormats chatFormat = new ChatFormats(this);
 
@@ -360,7 +360,7 @@ public class Core extends JavaPlugin implements Listener {
 		return commands;
 	}
 
-	public Scoreboard getScoreboard() {
+	public Sidebar getSidebar() {
 		return sb;
 	}
 	

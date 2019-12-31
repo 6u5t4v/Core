@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.sidebar.Sidebar;
 import com.Furnesse.core.utils.Lang;
 
 public class CoreCMD implements CommandExecutor {
@@ -59,7 +60,7 @@ public class CoreCMD implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("sb")) {
 					if (player.hasPermission("core.sb.toggle")) {
 						if (args[1].equalsIgnoreCase("toggle")) {
-							plugin.getScoreboard().toggleScoreboard(player);
+							Sidebar.toggleSidebar(player);
 						}
 					} else {
 						player.sendMessage(Lang.NO_PERMISSION);

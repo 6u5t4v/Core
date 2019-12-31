@@ -54,17 +54,6 @@ public class PlayerEvents implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 
-//		registerPlayer(player);
-
-//		if (plugin.usingRanks) {
-//			plugin.getRanks().loadRank(player);
-//			plugin.getRanks().loadPlayerPerms(player);
-//		}
-
-		if (plugin.usingSb) {
-			plugin.getScoreboard().setScoreboard(player);
-		}
-
 		if (plugin.usingChat) {
 			plugin.getChatFormat().initFormat(player);
 		}
@@ -73,9 +62,6 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-		if (plugin.usingSb)
-			plugin.getScoreboard().removeScoreboard(player);
-
 //		if (plugin.usingRanks)
 //			plugin.getRanks().saveRank(player);
 
