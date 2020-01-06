@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
@@ -19,6 +20,8 @@ public class ItemsCMD implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		FileConfiguration langFile = plugin.getFileManager().getConfig("lang.yml").get();
+		
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			// Player commands
@@ -30,14 +33,14 @@ public class ItemsCMD implements CommandExecutor {
 				if (args.length > 0) {
 					if (args[0].equalsIgnoreCase("help")) {
 
-						for (String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("citems.help")) {
+						for (String str : langFile.getStringList("citems.help")) {
 							player.sendMessage(Lang.chat(str));
 						}
 					}
 
 					if (args[0].equalsIgnoreCase("list")) {
 						List<String> cItems = new ArrayList<String>();
-						for (CItem cItem : plugin.cItemMan.customItems) {
+						for (CItem cItem : plugin.getItemManager().customItems) {
 							cItems.add(cItem.getName());
 						}
 
@@ -51,15 +54,15 @@ public class ItemsCMD implements CommandExecutor {
 							player.sendMessage(Lang.INVALID_PLAYER.replace("%player%", args[1]));
 						}
 
-						if (plugin.cItemMan.getCItem(args[2]) != null) {
-							CItem cItem = plugin.cItemMan.getCItem(args[2]);
+						if (plugin.getItemManager().getCItem(args[2]) != null) {
+							CItem cItem = plugin.getItemManager().getCItem(args[2]);
 							
 							int amount = 1;
 							if (args.length == 4) {
 								amount = Integer.parseInt(args[3]);
 							}
 							
-							plugin.cItemMan.giveCItem(sender, target, cItem, amount);
+							plugin.getItemManager().giveItem(sender, target, cItem, amount);
 							player.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
 									.replace("%player%", target.getName())
 									.replace("%amount%", String.valueOf(amount))
@@ -85,14 +88,14 @@ public class ItemsCMD implements CommandExecutor {
 		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("help")) {
 
-				for (String str : plugin.fileManager.getConfig("lang.yml").get().getStringList("citems.help")) {
+				for (String str : langFile.getStringList("citems.help")) {
 					sender.sendMessage(Lang.chat(str));
 				}
 			}
 
 			if (args[0].equalsIgnoreCase("list")) {
 				List<String> cItems = new ArrayList<String>();
-				for (CItem cItem : plugin.cItemMan.customItems) {
+				for (CItem cItem : plugin.getItemManager().customItems) {
 					cItems.add(cItem.getName());
 				}
 
@@ -106,15 +109,15 @@ public class ItemsCMD implements CommandExecutor {
 					sender.sendMessage(Lang.INVALID_PLAYER.replace("%player%", args[1]));
 				}
 
-				if (plugin.cItemMan.getCItem(args[2]) != null) {
-					CItem cItem = plugin.cItemMan.getCItem(args[2]);
+				if (plugin.getItemManager().getCItem(args[2]) != null) {
+					CItem cItem = plugin.getItemManager().getCItem(args[2]);
 					
 					int amount = 1;
 					if (args.length == 4) {
 						amount = Integer.parseInt(args[3]);
 					}
 					
-					plugin.cItemMan.giveCItem(sender, target, cItem, amount);
+					plugin.getItemManager().giveItem(sender, target, cItem, amount);
 					sender.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
 							.replace("%player%", target.getName())
 							.replace("%amount%", String.valueOf(amount))

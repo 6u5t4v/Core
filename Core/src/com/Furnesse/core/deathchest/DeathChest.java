@@ -267,15 +267,15 @@ public class DeathChest {
 	}
 
 	public void save() {
-		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".location",
+		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".location",
 				this.location.serialize());
-		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".player",
+		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".player",
 				getOwner().getUniqueId().toString());
-		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".items",
+		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".items",
 				this.chestInventory.getContents());
-		Core.instance.fileManager.getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".timeleft",
+		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".timeleft",
 				Integer.valueOf(this.timeLeft));
-		Core.instance.fileManager.saveConfig("deathchests.yml");
+		Core.instance.getFileManager().saveConfig("deathchests.yml");
 	}
 
 	public Player getPlayer() {
