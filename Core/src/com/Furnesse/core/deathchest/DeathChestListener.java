@@ -26,7 +26,6 @@ import org.bukkit.inventory.Inventory;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
-import com.Furnesse.core.utils.Settings;
 
 public class DeathChestListener implements Listener {
 
@@ -66,14 +65,15 @@ public class DeathChestListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
-		if (plugin.usingDc) {
-			if (!Settings.getDisabledworlds().contains(p.getLocation().getWorld().getName())
+		if (plugin.getSettings().usingDc) {
+			if (!plugin.getSettings().disabledworlds.contains(p.getLocation().getWorld().getName())
 					&& e.getDrops().size() > 0) {
 
 				if ((e.getEntity().getLastDamageCause() != null
 						&& e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID
-						&& !Settings.isVoidSpawning())
-						|| (p.getLocation().getBlock().getType() == Material.LAVA && !Settings.isLavaSpawning())) {
+						&& !plugin.getSettings().voidSpawning)
+						|| (p.getLocation().getBlock().getType() == Material.LAVA
+								&& !plugin.getSettings().lavaSpawning)) {
 					return;
 				}
 
@@ -87,7 +87,7 @@ public class DeathChestListener implements Listener {
 			}
 		}
 
-		if (p.hasPermission("core.deathcoords") || plugin.usingDc) {
+		if (p.hasPermission("core.deathcoords") || plugin.getSettings().usingDc) {
 			p.sendMessage(Lang.DEATHCOORDS.replace("%xloc%", String.valueOf(p.getLocation().getBlockX()))
 					.replace("%yloc%", String.valueOf(p.getLocation().getBlockY()))
 					.replace("%zloc%", String.valueOf(p.getLocation().getBlockZ()))
@@ -97,7 +97,7 @@ public class DeathChestListener implements Listener {
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		if (!(Settings.getExpireTime() == -1)) {
+		if (!(plugin.getSettings().expireTime == -1)) {
 			return;
 		}
 

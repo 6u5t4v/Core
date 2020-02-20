@@ -1,5 +1,12 @@
 graceperiod: 30
 use_ranks: false
+cooldownTasks:
+  shop:
+    command: "shop"
+    disabledFor: 60
+    enabledFor: 20
+    broadcastMsg: "&c&l(!) &7The black market has &aOpen &7Closes in &c%enabledfor%"
+    disabledMsg: "&c&l(!) &7The black market is &cClosed&7, opens in %disabled_time%"
 deathchests:
   enabled: false
   spawn_chest_on_highest_block: true

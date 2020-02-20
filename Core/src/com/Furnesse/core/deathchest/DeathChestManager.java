@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.Furnesse.core.utils.Settings;
+import com.Furnesse.core.Core;
 
 public class DeathChestManager {
 	private static DeathChestManager ourInstance = new DeathChestManager();
@@ -130,7 +130,7 @@ public class DeathChestManager {
 		this.deathChests.put(p.getUniqueId(), currentChests);
 		this.deathChestsByUUID.put(dc.getChestUUID(), dc);
 
-		if (Settings.getExpireTime() != -1) {
+		if (Core.instance.getSettings().expireTime != -1) {
 			dc.announce();
 			dc.runRemoveTask();
 		}
@@ -138,22 +138,22 @@ public class DeathChestManager {
 		return true;
 	}
 
-	private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, Location loc, int timeLeft,
-			List<ItemStack> items) {
-		if (this.deathChests.get(p.getUniqueId()) == null) {
-			this.deathChests.put(p.getUniqueId(), new ArrayList<>());
-		}
-
-		ArrayList<DeathChest> currentChests = this.deathChests.get(p.getUniqueId());
-
-		DeathChest dc = new DeathChest(chestUuid, p, loc, timeLeft, items);
-		currentChests.add(dc);
-
-		this.deathChests.put(p.getUniqueId(), currentChests);
-		this.deathChestsByUUID.put(dc.getChestUUID(), dc);
-
-		return true;
-	}
+//	private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, Location loc, int timeLeft,
+//			List<ItemStack> items) {
+//		if (this.deathChests.get(p.getUniqueId()) == null) {
+//			this.deathChests.put(p.getUniqueId(), new ArrayList<>());
+//		}
+//
+//		ArrayList<DeathChest> currentChests = this.deathChests.get(p.getUniqueId());
+//
+//		DeathChest dc = new DeathChest(chestUuid, p, loc, timeLeft, items);
+//		currentChests.add(dc);
+//
+//		this.deathChests.put(p.getUniqueId(), currentChests);
+//		this.deathChestsByUUID.put(dc.getChestUUID(), dc);
+//
+//		return true;
+//	}
 
 	public DeathChest getDeathChest(String id) {
 		return this.deathChestsByUUID.get(UUID.fromString(id));

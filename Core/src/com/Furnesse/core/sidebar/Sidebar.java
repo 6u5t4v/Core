@@ -17,14 +17,13 @@ import org.bukkit.scoreboard.Team;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
-import com.Furnesse.core.utils.Settings;
 import com.Furnesse.core.utils.SyntaxTranslator;
 import com.Furnesse.core.utils.TPSMeter;
 
 public class Sidebar {
-	private Core plugin;
+	Core plugin;
 
-	private Map<Integer, Line> sidebarConfigLines;
+//	private Map<Integer, Line> sidebarConfigLines;
 
 	private Map<String, Scoreboard> scoreboards = new HashMap<>();
 
@@ -47,11 +46,11 @@ public class Sidebar {
 	public void sidebarUpdater() {
 		(new BukkitRunnable() {
 			public void run() {
-				for (Player p : Sidebar.this.plugin.getServer().getOnlinePlayers()) {
-					if (Sidebar.displaySidebar.get(p.getUniqueId()) == null)
-						Sidebar.displaySidebar.put(p.getUniqueId(), Boolean.valueOf(true));
+				for (Player p : plugin.getServer().getOnlinePlayers()) {
+					if (displaySidebar.get(p.getUniqueId()) == null)
+						displaySidebar.put(p.getUniqueId(), Boolean.valueOf(true));
 					if (p.hasPermission("core.sb.show")) {
-						if (((Boolean) Sidebar.displaySidebar.get(p)).booleanValue() && Core.instance.usingSb) {
+						if (Core.instance.getSettings().usingSb && ((Boolean) displaySidebar.get(p)).booleanValue()) {
 							Scoreboard scoreboard;
 							Objective objective;
 							if (Sidebar.this.scoreboards.get(p.getName()) == null) {
@@ -63,10 +62,11 @@ public class Sidebar {
 								scoreboard = (Scoreboard) Sidebar.this.scoreboards.get(p.getName());
 								objective = scoreboard.getObjective("PersonalSidebar");
 							}
-							objective.setDisplayName(Lang.chat(syntaxTranslator.Translate(Settings.getBoardName(), p)));
+							objective.setDisplayName(
+									Lang.chat(syntaxTranslator.Translate(plugin.getSettings().boardName, p)));
 							List<String> allLines = new ArrayList<>();
 
-							for (int i = Settings.getLines().size() - 1; i >= 0; i--) {
+							for (int i = plugin.getSettings().lines.size() - 1; i >= 0; i--) {
 								Team team = null;
 								String playerName = p.getName();
 								if (scoreboard.getTeam(
@@ -79,7 +79,7 @@ public class Sidebar {
 									team = scoreboard.getTeam(
 											String.valueOf(playerName.substring(0, Math.min(playerName.length(), 15)))
 
-											+ Sidebar.this.teamNameAppends[i]);
+													+ Sidebar.this.teamNameAppends[i]);
 								}
 								if (!team.hasEntry(Sidebar.this.colors[i] + "" + ChatColor.RESET))
 									team.addEntry(Sidebar.this.colors[i] + "" + ChatColor.RESET);
@@ -94,26 +94,17 @@ public class Sidebar {
 							p.setScoreboard(scoreboard);
 							continue;
 						}
-						p.setScoreboard(Sidebar.this.plugin.getServer().getScoreboardManager().getNewScoreboard());
+						p.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
 					}
 				}
 			}
 		}).runTaskTimer((Plugin) this.plugin, 0L, this.plugin.getConfig().getInt("SidebarUpdateSpeed"));
 	}
 
-	public static boolean toggleSidebar(Player p) {
-		if (displaySidebar.get(p.getUniqueId()) == null) {
-			displaySidebar.put(p.getUniqueId(), Boolean.valueOf(false));
-			return false;
-		}
-		if (((Boolean) displaySidebar.get(p.getUniqueId())).booleanValue()) {
-			displaySidebar.put(p.getUniqueId(), Boolean.valueOf(false));
-			return false;
-		}
-		if (!((Boolean) displaySidebar.get(p.getUniqueId())).booleanValue()) {
-			displaySidebar.put(p.getUniqueId(), Boolean.valueOf(true));
-			return true;
-		}
-		return false;
+	public static void toggleSidebar(UUID uuid) {
+		if (!displaySidebar.get(uuid))
+			displaySidebar.put(uuid, true);
+		else
+			displaySidebar.put(uuid, false);
 	}
 }

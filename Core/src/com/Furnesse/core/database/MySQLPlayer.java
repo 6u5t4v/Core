@@ -15,7 +15,7 @@ public class MySQLPlayer {
 	
 	public static boolean playerExists(UUID uuid) {
 		try {
-			PreparedStatement statement = plugin.getConnection().prepareStatement("SELECT * FROM " + plugin.playerTable + " WHERE UUID=?");
+			PreparedStatement statement = plugin.getSettings().getConnection().prepareStatement("SELECT * FROM " + plugin.getSettings().playerTable + " WHERE UUID=?");
 			statement.setString(1, uuid.toString());
 			
 			ResultSet results = statement.executeQuery();
@@ -34,14 +34,14 @@ public class MySQLPlayer {
 		
 	public static void createPlayer(final UUID uuid, Player player) {
 		try {
-			PreparedStatement statement = plugin.getConnection().prepareStatement("SELECT * FROM " + plugin.playerTable + " WHERE UUID=?");
+			PreparedStatement statement = plugin.getSettings().getConnection().prepareStatement("SELECT * FROM " + plugin.getSettings().playerTable + " WHERE UUID=?");
 			
 			statement.setString(1, uuid.toString());
 			ResultSet results = statement.executeQuery();
 			results.next();
 			if(!playerExists(uuid)) {
-				String sql = "INSERT INTO " + plugin.playerTable + "(uuid,username) VALUES (?,?)";
-				PreparedStatement insert = plugin.getConnection().prepareStatement(sql);
+				String sql = "INSERT INTO " + plugin.getSettings().playerTable + "(uuid,username) VALUES (?,?)";
+				PreparedStatement insert = plugin.getSettings().getConnection().prepareStatement(sql);
 				insert.setString(1, uuid.toString());
 				insert.setString(2, player.getName());
 				insert.executeUpdate();

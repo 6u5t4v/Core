@@ -1,7 +1,5 @@
 package com.Furnesse.core.Events;
 
-import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,21 +15,22 @@ public class PlayerEvents implements Listener {
 
 	private void registerPlayer(Player player) {
 		String uuid = player.getUniqueId().toString();
-		if (plugin.usingMySQL) {
+		if (plugin.getSettings().usingMySQL) {
 			MySQLPlayer.createPlayer(player.getUniqueId(), player);
 			return;
 		}
 
 		if (!isRegistered(player) || hasChangedName(player)) {
-			plugin.getFileManager().getConfig("players.yml").get().set("Players." + uuid + ".username", player.getName());
-			if (plugin.usingRanks) {
-				plugin.getFileManager().getConfig("players.yml").get().set("Players." + uuid + ".permissions",
-						new ArrayList<String>());
+			plugin.getFileManager().getConfig("players.yml").get().set("Players." + uuid + ".username",
+					player.getName());
+			
+			// Setup rank for the player
+			// Setup player's scoreboard prefrences (scoreboard enabled or not)
+			// Setup chat for the player
+			if (plugin.getSettings().usingChat) {
+				plugin.getChatFormat().initFormat(player);
 			}
-
-			plugin.getFileManager().saveConfig("players.yml");
 		}
-
 	}
 
 	private boolean isRegistered(Player player) {
@@ -42,9 +41,8 @@ public class PlayerEvents implements Listener {
 	}
 
 	private boolean hasChangedName(Player player) {
-		String oldName = plugin.getFileManager().getConfig("players.yml").get()
-				.getString("Players." + player.getUniqueId() + ".username");
-		if (!oldName.equals(player.getName())) {
+		if (!plugin.getFileManager().getConfig("players.yml").get()
+				.getString("Players." + player.getUniqueId() + ".username").equals(player.getName())) {
 			return true;
 		}
 		return false;
@@ -54,19 +52,11 @@ public class PlayerEvents implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 
-		if (plugin.usingChat) {
-			plugin.getChatFormat().initFormat(player);
-		}
+		registerPlayer(player);
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
-		Player player = e.getPlayer();
-//		if (plugin.usingRanks)
-//			plugin.getRanks().saveRank(player);
-
-		if (plugin.usingChat)
-			if (plugin.getChatFormat().getPlayerFormat(player) != null)
-				plugin.getChatFormat().pFormat.remove(player.getName());
+		// Save player's rank
 	}
 }

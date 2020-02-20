@@ -20,9 +20,10 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
-import com.Furnesse.core.utils.Settings;
 
 public class DeathChest {
+
+	Core plugin = Core.instance;
 
 	private UUID chestUUID;
 	private OfflinePlayer player;
@@ -36,7 +37,7 @@ public class DeathChest {
 	public DeathChest(Player p, List<ItemStack> items) {
 		this.chestUUID = UUID.randomUUID();
 		this.player = (OfflinePlayer) p;
-		this.timeLeft = Settings.getExpireTime();
+		this.timeLeft = Core.instance.getSettings().expireTime;
 
 		setupChest(p.getLocation(), items);
 
@@ -77,7 +78,7 @@ public class DeathChest {
 	}
 
 	private void setupChest(Location loc, List<ItemStack> items) {
-		if (Settings.isSpawnChestOnHighestBlock() || loc.getY() <= 0.0D) {
+		if (plugin.getSettings().spawnChestOnHighestBlock || loc.getY() <= 0.0D) {
 			loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
 		}
 
@@ -99,7 +100,7 @@ public class DeathChest {
 		this.location = loc.getBlock().getLocation();
 
 		this.chestInventory = Bukkit.createInventory(null, (items.size() > 27) ? 54 : 27,
-				Lang.chat(Settings.getDeathChestInvTitle().replaceAll("%player%", this.player.getName())));
+				Lang.chat(plugin.getSettings().deathChestInvTitle.replaceAll("%player%", this.player.getName())));
 
 		for (ItemStack i : items) {
 			if (i == null)
@@ -138,13 +139,13 @@ public class DeathChest {
 	private void removeChests(boolean closeInventories) {
 		if (closeInventories) {
 			for (HumanEntity entity : this.chestInventory.getViewers()) {
-				if(entity != null) {
+				if (entity != null) {
 					entity.closeInventory();
 				}
 			}
 		}
 
-		if (Settings.isDropItemsAfterExpire()) {
+		if (plugin.getSettings().dropItemsAfterExpire) {
 			for (ItemStack item : this.chestInventory.getContents()) {
 				if (item != null) {
 					this.location.getWorld().dropItemNaturally(this.location, item);
@@ -206,7 +207,7 @@ public class DeathChest {
 						break;
 					}
 
-					if (Settings.isAutoEquipArmor()
+					if (plugin.getSettings().autoEquipArmor
 							&& (Items.isHelmet(i.getType()) || Items.isChestPlate(i.getType())
 									|| Items.isLeggings(i.getType()) || Items.isBoots(i.getType()))) {
 						if (!autoEquip(p, i)) {
@@ -267,14 +268,14 @@ public class DeathChest {
 	}
 
 	public void save() {
-		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".location",
-				this.location.serialize());
-		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".player",
-				getOwner().getUniqueId().toString());
-		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".items",
-				this.chestInventory.getContents());
-		Core.instance.getFileManager().getConfig("deathchests.yml").get().set("chests." + this.chestUUID.toString() + ".timeleft",
-				Integer.valueOf(this.timeLeft));
+		Core.instance.getFileManager().getConfig("deathchests.yml").get()
+				.set("chests." + this.chestUUID.toString() + ".location", this.location.serialize());
+		Core.instance.getFileManager().getConfig("deathchests.yml").get()
+				.set("chests." + this.chestUUID.toString() + ".player", getOwner().getUniqueId().toString());
+		Core.instance.getFileManager().getConfig("deathchests.yml").get()
+				.set("chests." + this.chestUUID.toString() + ".items", this.chestInventory.getContents());
+		Core.instance.getFileManager().getConfig("deathchests.yml").get()
+				.set("chests." + this.chestUUID.toString() + ".timeleft", Integer.valueOf(this.timeLeft));
 		Core.instance.getFileManager().saveConfig("deathchests.yml");
 	}
 

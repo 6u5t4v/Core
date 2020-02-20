@@ -2,11 +2,11 @@ package com.Furnesse.core.sidebar;
 
 import java.util.List;
 
-import com.Furnesse.core.utils.Settings;
+import com.Furnesse.core.Core;
 
 public abstract class Line {
 
-	List<String> lines = Settings.getLines();
+	List<String> lines = Core.instance.getSettings().lines;
 	
 	public String getCurrentLine() {
 		return null;

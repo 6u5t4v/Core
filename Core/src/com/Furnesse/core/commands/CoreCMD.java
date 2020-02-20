@@ -17,7 +17,7 @@ public class CoreCMD implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		FileConfiguration langFile = plugin.getFileManager().getConfig("lang.yml").get();
-		
+
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			// Player commands
@@ -25,7 +25,7 @@ public class CoreCMD implements CommandExecutor {
 			if (args.length == 0) {
 				if (player.hasPermission("core.help") || player.isOp()) {
 					for (int i = 0; i < args.length; i++) {
-						
+
 					}
 					for (String message : langFile.getStringList("help.")) {
 						player.sendMessage(message);
@@ -60,7 +60,7 @@ public class CoreCMD implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("sb")) {
 					if (player.hasPermission("core.sb.toggle")) {
 						if (args[1].equalsIgnoreCase("toggle")) {
-							Sidebar.toggleSidebar(player);
+							Sidebar.toggleSidebar(player.getUniqueId());
 						}
 					} else {
 						player.sendMessage(Lang.NO_PERMISSION);

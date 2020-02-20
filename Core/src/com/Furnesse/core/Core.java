@@ -3,10 +3,6 @@ package com.Furnesse.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -34,6 +30,7 @@ import com.Furnesse.core.commands.CustomCMD;
 import com.Furnesse.core.commands.DeathChestCMD;
 import com.Furnesse.core.commands.ItemsCMD;
 import com.Furnesse.core.commands.RankCMD;
+import com.Furnesse.core.config.Settings;
 import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
 import com.Furnesse.core.customitems.CItemManager;
@@ -42,11 +39,11 @@ import com.Furnesse.core.deathchest.DeathChestManager;
 import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
+import com.Furnesse.core.mechanics.CommandCD;
 import com.Furnesse.core.rank.RankManager;
 import com.Furnesse.core.sidebar.Sidebar;
 import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Lang;
-import com.Furnesse.core.utils.Settings;
 
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -62,45 +59,22 @@ public class Core extends JavaPlugin implements Listener {
 	private static Economy econ = null;
 //	private static Chat chat = null;
 
-	private static HeadDatabaseAPI headAPI;
-	
+	private HeadDatabaseAPI headAPI;
+
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
 	private Sidebar sb;
 	private CItemManager cItemMan = new CItemManager(this);
 	private ChatFormats chatFormat = new ChatFormats(this);
+	private Settings settings = new Settings(this);
+	private CommandCD cmdCD = new CommandCD(this);
 
 	private FileManager fileManager = new FileManager(this);
-	
-	private String host, database, username, password;
-	public String playerTable = "player_data", deathchestTable = "stored_deathchests";
-	private int port;
-	private Connection connection;
-	
-	public boolean usingMySQL = false;
-	public boolean usingSb = false;
-	public boolean usingDc = false;
-	public boolean usingRanks = false;
-	public boolean usingChat = true;
-	
-	public void enableSystems() {
-		usingMySQL = getConfig().getBoolean("database.enabled");
-		usingSb = getConfig().getBoolean("scoreboard.enabled");
-		usingDc = getConfig().getBoolean("deathchests.enabled");
-		usingRanks = getConfig().getBoolean("using_ranks");
-		usingChat = getConfig().getBoolean("chat.enabled");
-		
-		this.getLogger().info("MySQL: " + usingMySQL);
-		this.getLogger().info("Scoreboard: " + usingSb);
-		this.getLogger().info("Deathchests: " + usingDc);
-		this.getLogger().info("Ranks: " + usingRanks);
-		this.getLogger().info("Chat: " + usingChat);
-	}
-	
+
 	public void onEnable() {
 		this.getLogger().info("<------<< Furnesse CORE >>------>");
 		instance = this;
-		
+
 		registerConfigs();
 
 		if (!setupEconomy()) {
@@ -108,19 +82,22 @@ public class Core extends JavaPlugin implements Listener {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
+
+		settings.enableSystems();
 		setupEconomy();
-		enableSystems();
 		setupConfigurations();
-		
+
 		registerListeners();
 		registerPlaceholders();
 		registerCommands();
 		disableRecipes();
-		
+
+		cmdCD.loadCooldownTasks();
+
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
-	
+
 	private void registerConfigs() {
 		fileManager.getConfig("config.yml").copyDefaults(true).save();
 		fileManager.getConfig("lang.yml").copyDefaults(true).save();
@@ -130,60 +107,11 @@ public class Core extends JavaPlugin implements Listener {
 		fileManager.getConfig("players.yml").copyDefaults(true).save();
 		fileManager.getConfig("ranks.yml").copyDefaults(true).save();
 	}
-	
+
 	public void reloadPlugin() {
-		for(FileManager.Config c : FileManager.configs.values()) {
+		for (FileManager.Config c : FileManager.configs.values()) {
 			c.reload();
 		}
-	}
-	
-	private void setupMySQL() {
-		host = getConfig().getString("database.mysql.host");
-		port = getConfig().getInt("database.mysql.port");
-		database = getConfig().getString("database.mysql.database");
-		username = getConfig().getString("database.mysql.username");
-		password = getConfig().getString("database.mysql.password");
-		
-		try {
-			synchronized(this) {
-				if(getConnection() != null && !getConnection().isClosed()) {
-					return;
-				}
-				Class.forName("com.mysql.jdbc.Driver");
-				setConnection(DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, username, password));
-				
-				setupTables();
-				this.getLogger().info("�aSuccesfully loaded MySQL");
-			}
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}catch(ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void setupTables() {
-		String table1 = "CREATE TABLE IF NOT EXISTS " + this.playerTable + "(uuid VARCHAR(200), username VARCHAR(16))";
-		String table2 = "CREATE TABLE IF NOT EXISTS " + this.deathchestTable + "(uuid VARCHAR(200), owner VARCHAR(16), location VARCHAR(64))";
-		try {
-			PreparedStatement playerStmt = connection.prepareStatement(table1);
-			PreparedStatement deathchestsStmt = connection.prepareStatement(table2);
-			
-			playerStmt.executeUpdate();
-			deathchestsStmt.executeUpdate();
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-	}
-	
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
 	}
 
 	@EventHandler
@@ -196,15 +124,15 @@ public class Core extends JavaPlugin implements Listener {
 			getLogger().log(Level.SEVERE, "Could not find the head you were looking for.");
 		}
 	}
-	
-	private void registerCommands() {		
+
+	private void registerCommands() {
 		registerCustomCommands();
-		
-		if(usingDc) {
+
+		if (settings.usingDc) {
 			getCommand("deathchests").setExecutor(new DeathChestCMD());
 		}
-		
-		if (usingRanks)
+
+		if (settings.usingRanks)
 			getCommand("rank").setExecutor(new RankCMD());
 		getCommand("core").setExecutor(new CoreCMD());
 		getCommand("items").setExecutor(new ItemsCMD());
@@ -238,12 +166,13 @@ public class Core extends JavaPlugin implements Listener {
 		pm.registerEvents(new CraftingRecipes(), this);
 		pm.registerEvents(new PlayerEvents(), this);
 		pm.registerEvents(this, this);
-		if(usingChat)
+		if (settings.usingChat)
 			pm.registerEvents(new ChatEvent(), this);
-		if(usingDc) {
+		if (settings.usingDc) {
 			pm.registerEvents(new DeathChestListener(), this);
 			pm.registerEvents(new DeathChestsGUI(), this);
 		}
+		pm.registerEvents((Listener) new CommandCD(this), this);
 	}
 
 	private boolean setupEconomy() {
@@ -293,32 +222,32 @@ public class Core extends JavaPlugin implements Listener {
 		});
 	}
 
-	public void setupConfigurations() {		
-		if(usingMySQL) {
+	public void setupConfigurations() {
+		if (settings.usingMySQL) {
 			this.getLogger().info("Enabling Mysql database");
-			setupMySQL();
+			settings.setupMySQL();
 		}
-		
-		if (usingChat) {
+
+		if (settings.usingChat) {
 			this.getLogger().info("Enabling Chat");
 			chatFormat.loadChatFormats();
 		}
 
-		if (usingRanks) {
+		if (settings.usingRanks) {
 			this.getLogger().info("Enabling Ranks");
 			rankMan.loadRanks();
 		}
 
-		if (usingSb) {
+		if (settings.usingSb) {
 			this.getLogger().info("Enabling Scoreboard");
-			Settings.setupSbVarialbes();
+			settings.setupSbVarialbes();
 		}
 
-		if (usingDc) {
+		if (settings.usingDc) {
 			this.getLogger().info("Enabling DeathChests");
-			Settings.setupDcVariables();
+			settings.setupDcVariables();
 		}
-		
+
 		commands.loadCustomCommands();
 		cItemMan.loadCustomItems();
 	}
@@ -338,13 +267,14 @@ public class Core extends JavaPlugin implements Listener {
 			}
 		}
 		this.getLogger().info("Disabled " + amount + " recipe(s)");
-		
 	}
 
 	public void onDisable() {
-		if(usingDc && DeathChestManager.getInstance().getDeathChestsByUUID().values() != null)
+		if (settings.usingDc && DeathChestManager.getInstance().getDeathChestsByUUID().values() != null)
 			DeathChestManager.getInstance().clearDeathChests();
-		
+
+		this.fileManager.saveConfig("players.yml");
+
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
 	}
 
@@ -363,20 +293,24 @@ public class Core extends JavaPlugin implements Listener {
 	public Sidebar getSidebar() {
 		return sb;
 	}
-	
+
 	public HeadDatabaseAPI getHeadAPI() {
 		return headAPI;
 	}
-	
+
 	public FileManager getFileManager() {
 		return fileManager;
 	}
-	
+
 	public CItemManager getItemManager() {
 		return cItemMan;
 	}
-	
+
 	public ChatFormats getChatFormat() {
 		return chatFormat;
+	}
+
+	public Settings getSettings() {
+		return settings;
 	}
 }
