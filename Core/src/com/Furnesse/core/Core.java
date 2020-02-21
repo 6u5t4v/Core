@@ -264,30 +264,46 @@ public class Core extends JavaPlugin implements Listener {
 
 				if (params.startsWith("cooldown_") && params.endsWith("_remaining")) {
 					String taskName = params.substring(9, params.length() - 10);
+					if (cmdCD.cmdCooldown.get(taskName) == null) {
+						getLogger().severe("No valid task with the name " + taskName + ". Check you config.yml");
+						return null;
+					}
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return Time.convertSecondsToCooldown((int) cd.getTimeRemaning());
 				}
 
 				if (params.startsWith("cooldown_") && params.endsWith("_disabledtime")) {
 					String taskName = params.substring(9, params.length() - 13);
+					if (cmdCD.cmdCooldown.get(taskName) == null) {
+						getLogger().severe("No valid task with the name " + taskName + ". Check you config.yml");
+						return null;
+					}
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return cd.getDisabledTime();
 				}
 
 				if (params.startsWith("cooldown_") && params.endsWith("_enabledtime")) {
 					String taskName = params.substring(9, params.length() - 12);
+					if (cmdCD.cmdCooldown.get(taskName) == null) {
+						getLogger().severe("No valid task with the name " + taskName + ". Check you config.yml");
+						return null;
+					}
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return cd.getDisabledTime();
 				}
 
-				if (params.startsWith("cooldown_") && params.endsWith("_isopen")) {
+				if (params.startsWith("cooldown_") && params.endsWith("_oncooldown")) {
 					String taskName = params.substring(9, params.length() - 7);
+					if (cmdCD.cmdCooldown.get(taskName) == null) {
+						getLogger().severe("No valid task with the name " + taskName + ". Check you config.yml");
+						return null;
+					}
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
-					String str = "";
-					if (!cd.isCmdOnCooldown())
-						str = "&a&lOPEN";
-					else
+					String str;
+					if (cd.isCmdOnCooldown())
 						str = "&c&lUNAVAILABLE";
+					else
+						str = "&a&lOPEN";
 					return str;
 				}
 
