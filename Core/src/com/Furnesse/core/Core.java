@@ -42,6 +42,7 @@ import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.mechanics.CommandCD;
 import com.Furnesse.core.rank.RankManager;
 import com.Furnesse.core.sidebar.Sidebar;
+import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Lang;
 
@@ -93,7 +94,7 @@ public class Core extends JavaPlugin implements Listener {
 		disableRecipes();
 
 		cmdCD.loadCooldownTasks();
-
+		
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
@@ -173,6 +174,7 @@ public class Core extends JavaPlugin implements Listener {
 			pm.registerEvents(new DeathChestsGUI(), this);
 		}
 		pm.registerEvents((Listener) new CommandCD(this), this);
+		Debug.Log("enabled commandcd");
 	}
 
 	private boolean setupEconomy() {
@@ -312,5 +314,9 @@ public class Core extends JavaPlugin implements Listener {
 
 	public Settings getSettings() {
 		return settings;
+	}
+	
+	public CommandCD getCommandCD() {
+		return cmdCD;
 	}
 }

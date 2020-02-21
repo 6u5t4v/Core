@@ -14,7 +14,7 @@ import com.Furnesse.core.utils.Lang;
 
 public class CommandCD implements Listener {
 
-	Core plugin;
+	private Core plugin;
 
 	public CommandCD(Core plugin) {
 		this.plugin = plugin;
@@ -33,7 +33,7 @@ public class CommandCD implements Listener {
 
 				Cooldown cooldown = new Cooldown(taskName, command, disabledFor, enabledFor);
 				cmdCooldown.put(command, cooldown);
-				cooldown.startDisableTimer();
+				cooldown.startTimer(true);
 				Debug.Log("test: " + taskName + " command: " + command);
 			}
 		}
@@ -52,9 +52,9 @@ public class CommandCD implements Listener {
 	public void onPlayerCallCooldownCommand(PlayerCommandPreprocessEvent e) {
 		if (cmdCooldown.containsKey(e.getMessage())) {
 			Cooldown cd = getCooldown(e.getMessage());
-			if (cd.getDisabledTime() >= System.currentTimeMillis()) {
-				e.getPlayer().sendMessage(Lang.chat(cd.getDisabledMsg()));
+			if (cd.isCmdOnCooldown()) {
 				e.setCancelled(true);
+				e.getPlayer().sendMessage(Lang.chat(cd.getDisabledMsg()));
 			}
 		}
 	}

@@ -42,7 +42,7 @@ public class Settings {
 		usingDc = plugin.getConfig().getBoolean("deathchests.enabled");
 		usingRanks = plugin.getConfig().getBoolean("using_ranks");
 		usingChat = plugin.getConfig().getBoolean("chat.enabled");
-
+		
 		plugin.getLogger().info("MySQL: " + usingMySQL);
 		plugin.getLogger().info("Scoreboard: " + usingSb);
 		plugin.getLogger().info("Deathchests: " + usingDc);

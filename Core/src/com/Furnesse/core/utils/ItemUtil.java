@@ -62,13 +62,13 @@ public class ItemUtil {
 	}
 
 	public static ItemStack loadItemFromConfig(String configName, String path) {
-		Material m = Material.getMaterial(plugin.getFileManager().getConfig(configName).get().getString(path + ".material"));
+		Material m = Material
+				.getMaterial(plugin.getFileManager().getConfig(configName).get().getString(path + ".material"));
 		int confAmount = plugin.getFileManager().getConfig(configName).get().getInt(path + ".amount");
-		
+
 		int amount = 1;
 		if (plugin.getFileManager().getConfig(configName).get().get(path + ".amount") != null) {
-			amount = confAmount < 1 ? amount = 1
-					: confAmount;
+			amount = confAmount < 1 ? amount = 1 : confAmount;
 		}
 
 		ItemStack is = m != null ? new ItemStack(m)
@@ -98,11 +98,16 @@ public class ItemUtil {
 		if (plugin.getFileManager().getConfig(configName).get().get(path + ".durability") != null) {
 			durability = plugin.getFileManager().getConfig(configName).get().getInt(path + ".durability");
 		}
-		
-		if((plugin.getFileManager().getConfig(configName).get().get(path + ".modeldata") != null)) {
-			is.getItemMeta().setCustomModelData(plugin.getFileManager().getConfig(configName).get().getInt(path + ".modeldata"));
-			Debug.Log("modeldata: " + is.getItemMeta().getCustomModelData());
-		}		
+
+//		if ((plugin.getFileManager().getConfig(configName).get().get(path + ".modeldata") != null)) {
+//			int modelData = plugin.getFileManager().getConfig(configName).get().getInt(path + ".modeldata");
+//			if (is.getItemMeta().hasCustomModelData()) {
+//				is.getItemMeta().setCustomModelData(modelData);
+//			} else {
+//				is.getItemMeta().setCustomModelData(modelData);
+//			}
+//			Debug.Log("modeldata: " + is.getItemMeta().getCustomModelData());
+//		}
 
 		return create(is, amount, displayName, lore, enchantments, hasDurability, durability, glowing);
 	}
@@ -155,7 +160,7 @@ public class ItemUtil {
 			meta.addEnchant(Enchantment.DURABILITY, 1, true);
 			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
-		
+
 		item.setItemMeta(meta);
 		return item;
 	}
@@ -167,12 +172,12 @@ public class ItemUtil {
 				enchant = Enchantment.getByKey(NamespacedKey.minecraft(str));
 //				System.out.println("enchantment as string: " + str);
 				return enchant;
-			}			
+			}
 		} catch (NullPointerException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 
 		}
 		return null;
-	}	
+	}
 }
