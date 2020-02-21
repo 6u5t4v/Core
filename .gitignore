@@ -41,3 +41,4 @@ Core/server/world_the_end/DIM1/region/r.0.0.mca
 Core/server/world_the_end/level.dat
 Core/server/world_the_end/level.dat_old
 Core/server/world_the_end/session.lock
+*.jar

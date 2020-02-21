@@ -98,11 +98,12 @@ public class Cooldown {
 
 	public void startDisableTimer() {
 		new BukkitRunnable() {
-			long lastRun = getDisabledTime() * 1000;
-
+			long lastRun = 0;
+			long timeToDisable = getDisabledTime() * 1000;
 			public void run() {
-				long timeSinceDisable = System.currentTimeMillis() - lastRun;
-				if (timeSinceDisable <= getDisabledTime()) {
+				lastRun = System.currentTimeMillis();
+				long delta = System.currentTimeMillis() - lastRun;
+				if (delta <= timeToDisable) {
 					cmdOnCooldown = false;
 
 					Bukkit.broadcastMessage(Lang.chat(broadcastMsg.replace("%enabledfor%", String.valueOf(enabledTime))
@@ -110,7 +111,7 @@ public class Cooldown {
 					this.cancel();
 					startEnableCooldown();
 				}
-				Debug.Log("disabled " + timeSinceDisable);
+				Debug.Log("disabled " + delta);
 			}
 		}.runTaskTimer(plugin, 20, 20);
 	}
