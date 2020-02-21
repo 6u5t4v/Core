@@ -6,6 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.Lang;
+import com.Furnesse.core.utils.Time;
 
 public class Cooldown {
 	Core plugin = Core.instance;
@@ -13,26 +14,20 @@ public class Cooldown {
 	private String taskname;
 	private String command;
 	private boolean cmdOnCooldown;
-	private long disabledTime;
-	private long enabledTime;
+	private String disabledTime;
+	private String enabledTime;
 	private String broadcastMsg;
 	private String disabledMsg;
 
 	private long timeRemaning;
 
-	public Cooldown(String taskname, String command, long disabledTime, long enabledTime) {
+	public Cooldown(String taskname, String command, String disabledTime, String enabledTime) {
 		this.taskname = taskname;
 		this.command = command;
 		this.disabledTime = disabledTime;
 		this.enabledTime = enabledTime;
-		this.broadcastMsg = Lang.chat(plugin.getConfig().getString("cooldownTasks." + taskname + ".broadcastMsg")
-				.replace("%enabledfor%", String.valueOf(this.enabledTime))
-				.replace("%disabledfor%", String.valueOf(this.disabledTime)));
-		this.disabledMsg = Lang.chat(plugin.getConfig().getString("cooldownTasks." + taskname + ".disabledMsg")
-				.replace("%enabledfor%", String.valueOf(this.enabledTime))
-				.replace("%disabledfor%", String.valueOf(this.disabledTime)));
-
-		this.cmdOnCooldown = true;
+		this.broadcastMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".broadcastMsg");
+		this.disabledMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".disabledMsg");
 	}
 
 	public long getTimeRemaning() {
@@ -72,37 +67,35 @@ public class Cooldown {
 		this.cmdOnCooldown = cmdOnCooldown;
 	}
 
-	public long getDisabledTime() {
+	public String getDisabledTime() {
 		return disabledTime;
 	}
 
-	public long getEnabledTime() {
+	public String getEnabledTime() {
 		return enabledTime;
 	}
 
 	// true = !true
 	// false = !false
 	public void startTimer(boolean isDisabled) {
-		long cooldown;
-		if (isDisabled)
-			cooldown = disabledTime;
-		else
-			cooldown = enabledTime;
+		long cooldown = isDisabled ? Time.convertCooldownToSeconds(disabledTime)
+				: Time.convertCooldownToSeconds(enabledTime);
 
+		cmdOnCooldown = isDisabled;
 		new BukkitRunnable() {
 			long start = System.currentTimeMillis() / 1000;
 
 			public void run() {
-				long currentTime = System.currentTimeMillis() / 1000;
-				long delta = currentTime - start;
-				timeRemaning = delta;
+				timeRemaning = System.currentTimeMillis() / 1000 - start;
+
 				if (timeRemaning >= cooldown) {
-					cmdOnCooldown = !isDisabled;
-					Bukkit.broadcastMessage(Lang.chat(broadcastMsg));
+					setCmdOnCooldown(!isDisabled);
+					Bukkit.broadcastMessage(Lang.chat(
+							broadcastMsg.replace("%enabledfor%", enabledTime).replace("%disabledfor%", disabledTime)));
 					this.cancel();
 					startTimer(cmdOnCooldown);
 				}
-				Debug.Log("time remaning " + timeRemaning + " | " + cmdOnCooldown);
+//				Debug.Log("time remaning " + timeRemaning + " | " + cmdOnCooldown);
 			}
 		}.runTaskTimer(plugin, 20, 20);
 	}

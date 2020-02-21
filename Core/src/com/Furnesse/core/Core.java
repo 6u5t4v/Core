@@ -40,11 +40,13 @@ import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
 import com.Furnesse.core.mechanics.CommandCD;
+import com.Furnesse.core.mechanics.Cooldown;
 import com.Furnesse.core.rank.RankManager;
 import com.Furnesse.core.sidebar.Sidebar;
 import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Lang;
+import com.Furnesse.core.utils.Time;
 
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -85,6 +87,7 @@ public class Core extends JavaPlugin implements Listener {
 		}
 
 		settings.enableSystems();
+
 		setupEconomy();
 		setupConfigurations();
 
@@ -94,7 +97,7 @@ public class Core extends JavaPlugin implements Listener {
 		disableRecipes();
 
 		cmdCD.loadCooldownTasks();
-		
+
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
@@ -173,7 +176,7 @@ public class Core extends JavaPlugin implements Listener {
 			pm.registerEvents(new DeathChestListener(), this);
 			pm.registerEvents(new DeathChestsGUI(), this);
 		}
-		pm.registerEvents((Listener) new CommandCD(this), this);
+		pm.registerEvents(cmdCD, this);
 		Debug.Log("enabled commandcd");
 	}
 
@@ -205,6 +208,36 @@ public class Core extends JavaPlugin implements Listener {
 				if (player == null) {
 					return null;
 				}
+				
+				if (params.startsWith("cooldown_") && params.endsWith("_remaining")) {
+					String taskName = params.substring(9, params.length() - 9);
+					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+					return Time.convertSecondsToCooldown((int) cd.getTimeRemaning());
+				}
+				
+				if (params.startsWith("cooldown_") && params.endsWith("_disabledtime")) {
+					String taskName = params.substring(9, params.length() - 9);
+					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+					return cd.getDisabledTime();
+				}
+				
+				if (params.startsWith("cooldown_") && params.endsWith("_enabledtime")) {
+					String taskName = params.substring(9, params.length() - 9);
+					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+					return cd.getDisabledTime();
+				}
+				
+				if (params.startsWith("cooldown_") && params.endsWith("_isenabled")) {
+					String taskName = params.substring(9, params.length() - 9);
+					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+					String str = "";
+					if(cd.isCmdOnCooldown())
+						str = "&a&lOPEN";
+					else
+						str = "&c&lUNAVAILABLE";
+					return str;
+				}
+
 //				if (usingRanks) {
 //					if (params.equalsIgnoreCase("rank_prefix")) {
 //						return getRanks().getPRank(player).getPrefix();
@@ -315,7 +348,7 @@ public class Core extends JavaPlugin implements Listener {
 	public Settings getSettings() {
 		return settings;
 	}
-	
+
 	public CommandCD getCommandCD() {
 		return cmdCD;
 	}

@@ -1,9 +1,8 @@
 spikedclub:
   enabled: true
-  canBeRepaired: true
+  canBeRepaired: false
   displayname: '&eSpiked Club'
   material: WOODEN_SWORD
-  modeldata: 30
   lore:
   - A cheap homemade club covered
   - in spikes, this is not nice to be
@@ -20,7 +19,7 @@ spikedclub:
       b: IRON_BAR
 excalibur:
   enabled: true
-  canBeRepaired: true
+  canBeRepaired: false
   displayname: '&dExcalibur'
   material: WOODEN_SWORD
   enchantments:
