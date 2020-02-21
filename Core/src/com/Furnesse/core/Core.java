@@ -86,6 +86,8 @@ public class Core extends JavaPlugin implements Listener {
 			return;
 		}
 
+		checkHooks();
+		
 		settings.enableSystems();
 
 		setupEconomy();
@@ -102,14 +104,24 @@ public class Core extends JavaPlugin implements Listener {
 		this.getLogger().info("<------------------------------->");
 	}
 
+	private void checkHooks() {
+		if (getServer().getPluginManager().getPlugin("HeadDatabase") != null) {
+			headAPI = new HeadDatabaseAPI();
+			this.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
+		}
+	}
+
 	private void registerConfigs() {
 		fileManager.getConfig("config.yml").copyDefaults(true).save();
 		fileManager.getConfig("lang.yml").copyDefaults(true).save();
 		fileManager.getConfig("customcommands.yml").copyDefaults(true).save();
 		fileManager.getConfig("customitems.yml").copyDefaults(true).save();
-		fileManager.getConfig("deathchests.yml").copyDefaults(true).save();
-		fileManager.getConfig("players.yml").copyDefaults(true).save();
-		fileManager.getConfig("ranks.yml").copyDefaults(true).save();
+		if (settings.usingDc)
+			fileManager.getConfig("deathchests.yml").copyDefaults(true).save();
+		if (settings.usingChat || settings.usingRanks || settings.usingSb)
+			fileManager.getConfig("players.yml").copyDefaults(true).save();
+		if (settings.usingRanks)
+			fileManager.getConfig("ranks.yml").copyDefaults(true).save();
 	}
 
 	public void reloadPlugin() {
@@ -120,7 +132,6 @@ public class Core extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onDatabaseLoad(DatabaseLoadEvent event) {
-		headAPI = new HeadDatabaseAPI();
 		try {
 			ItemStack item = headAPI.getItemHead("23282");
 			getLogger().log(Level.INFO, headAPI.getItemID(item));
@@ -169,7 +180,6 @@ public class Core extends JavaPlugin implements Listener {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new CraftingRecipes(), this);
 		pm.registerEvents(new PlayerEvents(), this);
-		pm.registerEvents(this, this);
 		if (settings.usingChat)
 			pm.registerEvents(new ChatEvent(), this);
 		if (settings.usingDc) {
@@ -208,30 +218,30 @@ public class Core extends JavaPlugin implements Listener {
 				if (player == null) {
 					return null;
 				}
-				
+
 				if (params.startsWith("cooldown_") && params.endsWith("_remaining")) {
 					String taskName = params.substring(9, params.length() - 9);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return Time.convertSecondsToCooldown((int) cd.getTimeRemaning());
 				}
-				
+
 				if (params.startsWith("cooldown_") && params.endsWith("_disabledtime")) {
 					String taskName = params.substring(9, params.length() - 9);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return cd.getDisabledTime();
 				}
-				
+
 				if (params.startsWith("cooldown_") && params.endsWith("_enabledtime")) {
 					String taskName = params.substring(9, params.length() - 9);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return cd.getDisabledTime();
 				}
-				
+
 				if (params.startsWith("cooldown_") && params.endsWith("_isenabled")) {
 					String taskName = params.substring(9, params.length() - 9);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					String str = "";
-					if(cd.isCmdOnCooldown())
+					if (cd.isCmdOnCooldown())
 						str = "&a&lOPEN";
 					else
 						str = "&c&lUNAVAILABLE";
