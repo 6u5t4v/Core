@@ -6,9 +6,9 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Volumes/GUS/Github/HeadDatabaseAPI.jar"/>
-	<classpathentry kind="lib" path="/Volumes/GUS/Github/PlaceholderAPI-2.10.4.jar"/>
-	<classpathentry kind="lib" path="/Volumes/GUS/Github/spigot-1.15.jar"/>
-	<classpathentry kind="lib" path="/Volumes/GUS/Github/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/jars/HeadDatabaseAPI.jar"/>
+	<classpathentry kind="lib" path="C:/jars/PlaceholderAPI-2.10.4.jar"/>
+	<classpathentry kind="lib" path="C:/jars/spigot-1.15.jar"/>
+	<classpathentry kind="lib" path="C:/jars/Vault.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
