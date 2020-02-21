@@ -1,8 +1,8 @@
 main: com.Furnesse.core.Core
 author: 6u5t4v
-version: 1.0
+version: 1.5.32
 name: Core
-api-version: 1.14
+api-version: 1.15
 website: www.furnesse.com
 depend: [Vault, PlaceholderAPI]
 commands:
