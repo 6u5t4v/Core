@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.config.Message;
 import com.Furnesse.core.utils.Debug;
-import com.Furnesse.core.utils.Lang;
 
 public class CItemManager {
 
@@ -119,81 +119,14 @@ public class CItemManager {
 		return false;
 	}
 
-//	@SuppressWarnings("deprecation")
-//	public ItemStack createItem(CItem cItem, int amount) {
-//		ItemStack item = new ItemStack(cItem.getMat(), amount);
-//		ItemMeta meta = item.getItemMeta();
-//		meta.setDisplayName(Lang.chat(cItem.getName()));
-//		switch (cItem.getType()) {
-//		case weapon:
-//			if (cItem.getWeapon().enchants != null) {
-//				for (Map<Enchantment, Integer> enchantment : cItem.getWeapon().enchants) {
-//					enchantment.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
-//					enchantment.forEach((enchant, level) -> System.out.println("added lvl: " + level + " " + enchantment));
-//				}
-//			}
-//			break;
-//		case armor:
-//			if (cItem.getWeapon().enchants != null) {
-//				for (Map<Enchantment, Integer> enchantment : cItem.getArmor().enchants) {
-//					enchantment.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
-//					enchantment.forEach((enchant, level) -> System.out.println("added lvl: " + level + " " + enchantment));
-//					
-//				}
-//			}
-//
-//			AttributeModifier modifier = new AttributeModifier("generic.armor.toughness", cItem.getArmor().armor,
-//					Operation.ADD_NUMBER);
-//			meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, modifier);
-//			break;
-//		case block:
-//			break;
-//		case item:
-//			break;
-//		}
-//		if (cItem.isCanBeRepaired()) {
-//			item.setDurability((short) cItem.getDurability());
-//		} else {
-//			meta.setUnbreakable(true);
-//			meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-//		}
-//		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-//		List<String> lore = new ArrayList<>();
-//		for (String str : cItem.getLore()) {
-//			lore.add(Lang.chat(str));
-//		}
-//		meta.setLore(lore);
-//		item.setItemMeta(meta);
-//		return item;
-//	}
-
-//	public List<Map<Enchantment, Integer>> getEnchantments(String item) {
-//		Map<Enchantment, Integer> enchant = new HashMap<>();
-//		List<Map<Enchantment, Integer>> enchants = new ArrayList<>();
-//		for (String str : plugin.fileManager.getConfig("customitems.yml").get().getStringList(item + ".enchants")) {
-//			String enchantName = str.split(":")[0];
-//			int enchantlvl = Integer.parseInt(str.split(":")[1]);
-//			if (Enchantment.getByKey(NamespacedKey.minecraft(enchantName)) != null) {
-//				Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantName));
-//				enchant.put(enchantment, enchantlvl);
-//				enchants.add(enchant);
-//			} else {
-//				System.out.println("Make sure you are using the vanilla enchantments & lowercase.");
-//				continue;
-//			}
-//		}
-//
-//		return enchants;
-//	}
-
 	public void giveItem(CommandSender sender, Player target, CItem cItem, int amount) {
 		if (target.getInventory().getSize() == -1) {
-			target.sendMessage(Lang.FULL_INVENTORY);
+			target.sendMessage(Message.FULL_INVENTORY.getChatMessage());
 			return;
 		}
 
 		cItem.give(target, amount);
-		target.sendMessage(Lang.ITEMS_PLAYER_RECEIVED.replace("%amount%", String.valueOf(amount)).replace("%item%",
-				cItem.getName()));
+		target.sendMessage(Message.ITEMS_PLAYER_RECEIVED.getChatMessage().replace("%amount%", String.valueOf(amount))
+				.replace("%item%", cItem.getName()));
 	}
 }

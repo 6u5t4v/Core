@@ -7,8 +7,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.config.Message;
 import com.Furnesse.core.sidebar.Sidebar;
-import com.Furnesse.core.utils.Lang;
 
 public class CoreCMD implements CommandExecutor {
 
@@ -32,7 +32,7 @@ public class CoreCMD implements CommandExecutor {
 					}
 
 				} else {
-					player.sendMessage(Lang.NO_PERMISSION);
+					player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 				}
 			}
 
@@ -43,15 +43,16 @@ public class CoreCMD implements CommandExecutor {
 							player.sendMessage(message);
 						}
 					} else {
-						player.sendMessage(Lang.NO_PERMISSION);
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 					}
 				}
 
 				if (args[0].equalsIgnoreCase("reload")) {
 					if (player.hasPermission("core.reload")) {
 						plugin.reloadPlugin();
+						sender.sendMessage(Message.RELOADED.getChatMessage());
 					} else {
-						player.sendMessage(Lang.NO_PERMISSION);
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 					}
 				}
 			}
@@ -63,11 +64,12 @@ public class CoreCMD implements CommandExecutor {
 							Sidebar.toggleSidebar(player.getUniqueId());
 						}
 					} else {
-						player.sendMessage(Lang.NO_PERMISSION);
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 					}
 				}
 			}
 		}
+		
 		if (args.length == 0) {
 			for (String message : langFile.getStringList("help")) {
 				sender.sendMessage(message);
@@ -83,7 +85,7 @@ public class CoreCMD implements CommandExecutor {
 
 			if (args[0].equalsIgnoreCase("reload")) {
 				plugin.reloadPlugin();
-				sender.sendMessage(Lang.RELOADED);
+				sender.sendMessage(Message.RELOADED.getChatMessage());
 			}
 		}
 

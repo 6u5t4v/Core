@@ -25,7 +25,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.utils.Lang;
+import com.Furnesse.core.config.Message;
 
 public class DeathChestListener implements Listener {
 
@@ -88,10 +88,11 @@ public class DeathChestListener implements Listener {
 		}
 
 		if (p.hasPermission("core.deathcoords") || plugin.getSettings().usingDc) {
-			p.sendMessage(Lang.DEATHCOORDS.replace("%xloc%", String.valueOf(p.getLocation().getBlockX()))
-					.replace("%yloc%", String.valueOf(p.getLocation().getBlockY()))
-					.replace("%zloc%", String.valueOf(p.getLocation().getBlockZ()))
-					.replace("%world%", p.getLocation().getWorld().getName()));
+			p.sendMessage(
+					Message.DEATHCOORDS.getChatMessage().replace("%xloc%", String.valueOf(p.getLocation().getBlockX()))
+							.replace("%yloc%", String.valueOf(p.getLocation().getBlockY()))
+							.replace("%zloc%", String.valueOf(p.getLocation().getBlockZ()))
+							.replace("%world%", p.getLocation().getWorld().getName()));
 		}
 	}
 
@@ -120,7 +121,7 @@ public class DeathChestListener implements Listener {
 			DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
 			if (dc != null) {
 				e.setCancelled(true);
-				p.sendMessage(Lang.DEATHCHEST_CANNOT_BREAK);
+				p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
 
 			}
 		}

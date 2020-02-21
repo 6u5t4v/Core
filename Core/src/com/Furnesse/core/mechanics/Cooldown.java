@@ -1,10 +1,12 @@
 package com.Furnesse.core.mechanics;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.Furnesse.core.Core;
-import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.Lang;
 import com.Furnesse.core.utils.Time;
 
@@ -19,7 +21,7 @@ public class Cooldown {
 	private String broadcastMsg;
 	private String disabledMsg;
 
-	private long timeRemaning;
+	private long timeRemaining;
 
 	public Cooldown(String taskname, String command, String disabledTime, String enabledTime) {
 		this.taskname = taskname;
@@ -31,11 +33,11 @@ public class Cooldown {
 	}
 
 	public long getTimeRemaning() {
-		return timeRemaning;
+		return timeRemaining;
 	}
 
-	public void setTimeRemaning(long timeRemaning) {
-		this.timeRemaning = timeRemaning;
+	public void setTimeRemaning(long timeRemaining) {
+		this.timeRemaining = timeRemaining;
 	}
 
 	public String getTaskname() {
@@ -75,27 +77,28 @@ public class Cooldown {
 		return enabledTime;
 	}
 
-	// true = !true
-	// false = !false
 	public void startTimer(boolean isDisabled) {
 		long cooldown = isDisabled ? Time.convertCooldownToSeconds(disabledTime)
 				: Time.convertCooldownToSeconds(enabledTime);
 
 		cmdOnCooldown = isDisabled;
 		new BukkitRunnable() {
-			long start = System.currentTimeMillis() / 1000;
+			Instant start = Instant.now();
+			Duration period = Duration.ofSeconds(cooldown);
 
 			public void run() {
-				timeRemaning = System.currentTimeMillis() / 1000 - start;
+				Duration passed = Duration.between(start, Instant.now());
+				Duration remaining = period.minus(passed);
 
-				if (timeRemaning >= cooldown) {
+				timeRemaining = remaining.getSeconds();
+				if (remaining.isZero() || remaining.isNegative()) {
 					setCmdOnCooldown(!isDisabled);
 					Bukkit.broadcastMessage(Lang.chat(
 							broadcastMsg.replace("%enabledfor%", enabledTime).replace("%disabledfor%", disabledTime)));
 					this.cancel();
 					startTimer(cmdOnCooldown);
 				}
-//				Debug.Log("time remaning " + timeRemaning + " | " + cmdOnCooldown);
+//				Debug.Log("time remaning " + timeRemaining + " | " + cmdOnCooldown);
 			}
 		}.runTaskTimer(plugin, 20, 20);
 	}

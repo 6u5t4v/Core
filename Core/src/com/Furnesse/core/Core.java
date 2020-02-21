@@ -30,6 +30,7 @@ import com.Furnesse.core.commands.CustomCMD;
 import com.Furnesse.core.commands.DeathChestCMD;
 import com.Furnesse.core.commands.ItemsCMD;
 import com.Furnesse.core.commands.RankCMD;
+import com.Furnesse.core.config.Message;
 import com.Furnesse.core.config.Settings;
 import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
@@ -45,7 +46,6 @@ import com.Furnesse.core.rank.RankManager;
 import com.Furnesse.core.sidebar.Sidebar;
 import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.FileManager;
-import com.Furnesse.core.utils.Lang;
 import com.Furnesse.core.utils.Time;
 
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
@@ -87,7 +87,7 @@ public class Core extends JavaPlugin implements Listener {
 		}
 
 		checkHooks();
-		
+
 		settings.enableSystems();
 
 		setupEconomy();
@@ -100,6 +100,8 @@ public class Core extends JavaPlugin implements Listener {
 
 		cmdCD.loadCooldownTasks();
 
+//		test();
+
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
@@ -108,6 +110,8 @@ public class Core extends JavaPlugin implements Listener {
 		if (getServer().getPluginManager().getPlugin("HeadDatabase") != null) {
 			headAPI = new HeadDatabaseAPI();
 			this.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
+		} else {
+			headAPI = null;
 		}
 	}
 
@@ -127,6 +131,45 @@ public class Core extends JavaPlugin implements Listener {
 	public void reloadPlugin() {
 		for (FileManager.Config c : FileManager.configs.values()) {
 			c.reload();
+		}
+		registerConfigs();
+		Message.reload();
+		setupConfigurations();
+		settings.enableSystems();
+
+		registerCommands();
+		registerListeners();
+
+		cmdCD.loadCooldownTasks();
+		disableRecipes();
+	}
+
+	private void test() {
+		String[] params = { "cooldown_shop_remaining", "cooldown_shop_disabledtime", "cooldown_shop_enabledtime",
+				"cooldown_shop_isopen" };
+
+		for (String param : params) {
+			if (param.startsWith("cooldown_") && param.endsWith("_remaining")) {
+				String taskName = param.substring(9, param.length() - 10);
+				Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+				Debug.Log("taskname: " + taskName + " | test: " + cd.getTaskname());
+			}
+			if (param.startsWith("cooldown_") && param.endsWith("_disabledtime")) {
+				String taskName = param.substring(9, param.length() - 13);
+				Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+				Debug.Log("taskname: " + taskName + " | test: " + cd.getTaskname());
+			}
+			if (param.startsWith("cooldown_") && param.endsWith("_enabledtime")) {
+				String taskName = param.substring(9, param.length() - 12);
+				Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+				Debug.Log("taskname: " + taskName + " | test: " + cd.getTaskname());
+			}
+			if (param.startsWith("cooldown_") && param.endsWith("_isopen")) {
+				String taskName = param.substring(9, param.length() - 7);
+				Cooldown cd = cmdCD.cmdCooldown.get(taskName);
+				Debug.Log("taskname: " + taskName + " | test: " + cd.getTaskname());
+			}
+
 		}
 	}
 
@@ -165,7 +208,7 @@ public class Core extends JavaPlugin implements Listener {
 				PluginCommand pluginCommand = constructor.newInstance(ccmd.getCmd(), this);
 				pluginCommand.setAliases(ccmd.getAliases());
 				pluginCommand.setPermission(ccmd.getPerm());
-				pluginCommand.setPermissionMessage(Lang.NO_PERMISSION);
+				pluginCommand.setPermissionMessage(Message.NO_PERMISSION.getChatMessage());
 				commandMap.register(getDescription().getName(), pluginCommand);
 				getCommand(ccmd.getCmd()).setExecutor(new CustomCMD());
 //				System.out.println("loaded custom command: " + ccmd.getCmd());
@@ -220,28 +263,28 @@ public class Core extends JavaPlugin implements Listener {
 				}
 
 				if (params.startsWith("cooldown_") && params.endsWith("_remaining")) {
-					String taskName = params.substring(9, params.length() - 9);
+					String taskName = params.substring(9, params.length() - 10);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return Time.convertSecondsToCooldown((int) cd.getTimeRemaning());
 				}
 
 				if (params.startsWith("cooldown_") && params.endsWith("_disabledtime")) {
-					String taskName = params.substring(9, params.length() - 9);
+					String taskName = params.substring(9, params.length() - 13);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return cd.getDisabledTime();
 				}
 
 				if (params.startsWith("cooldown_") && params.endsWith("_enabledtime")) {
-					String taskName = params.substring(9, params.length() - 9);
+					String taskName = params.substring(9, params.length() - 12);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					return cd.getDisabledTime();
 				}
 
-				if (params.startsWith("cooldown_") && params.endsWith("_isenabled")) {
-					String taskName = params.substring(9, params.length() - 9);
+				if (params.startsWith("cooldown_") && params.endsWith("_isopen")) {
+					String taskName = params.substring(9, params.length() - 7);
 					Cooldown cd = cmdCD.cmdCooldown.get(taskName);
 					String str = "";
-					if (cd.isCmdOnCooldown())
+					if (!cd.isCmdOnCooldown())
 						str = "&a&lOPEN";
 					else
 						str = "&c&lUNAVAILABLE";

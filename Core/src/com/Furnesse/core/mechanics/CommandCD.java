@@ -25,6 +25,7 @@ public class CommandCD implements Listener {
 
 	public void loadCooldownTasks() {
 		ConfigurationSection cdTasks = plugin.getConfig().getConfigurationSection("cooldownTasks");
+		cmdCooldown.clear();
 		if (cdTasks != null) {
 			for (String taskName : cdTasks.getKeys(false)) {
 				if (taskName != null) {

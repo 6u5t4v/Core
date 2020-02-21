@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.config.Message;
 import com.Furnesse.core.utils.Lang;
 
 public class DeathChest {
@@ -166,7 +167,7 @@ public class DeathChest {
 		removeChests(closeInventories);
 
 		if (this.player.isOnline()) {
-			this.player.getPlayer().sendMessage(Lang.DEATHCHEST_DISSAPEARED);
+			this.player.getPlayer().sendMessage(Message.DEATHCHEST_DISSAPEARED.getChatMessage());
 		}
 
 		DeathChestManager.getInstance().removeDeathChest(this);
@@ -185,15 +186,15 @@ public class DeathChest {
 			return;
 		}
 
-		this.player.getPlayer()
-				.sendMessage(Lang.DEATHCOORDS.replace("%xloc%", String.valueOf(location.getBlockX()))
+		this.player.getPlayer().sendMessage(
+				Message.DEATHCOORDS.getChatMessage().replace("%xloc%", String.valueOf(location.getBlockX()))
 						.replace("%yloc%", String.valueOf(location.getBlockY()))
 						.replace("%zloc%", String.valueOf(location.getBlockZ()))
 						.replace("%world%", location.getWorld().getName()));
 
 		if (this.timeLeft != -1) {
-			this.player.getPlayer()
-					.sendMessage(Lang.DEATHCHEST_EXPIRE_TIME.replace("%time%", String.valueOf(this.timeLeft)));
+			this.player.getPlayer().sendMessage(
+					Message.DEATHCHEST_EXPIRE_TIME.getChatMessage().replace("%time%", String.valueOf(this.timeLeft)));
 		}
 
 		this.announced = true;
@@ -226,12 +227,12 @@ public class DeathChest {
 			if (isChestEmpty()) {
 				removeDeathChest(true);
 			} else {
-				p.sendMessage(Lang.DEATHCHEST_FASTLOOT_COMPLETE.replace("%amount%",
+				p.sendMessage(Message.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replace("%amount%",
 						String.valueOf(DeathChestManager.getAmountOfItems(this.chestInventory))));
 			}
 		} else {
 
-			p.sendMessage(Lang.NO_PERMISSION);
+			p.sendMessage(Message.NO_PERMISSION.getChatMessage());
 		}
 	}
 

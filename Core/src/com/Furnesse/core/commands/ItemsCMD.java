@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
+import com.Furnesse.core.config.Message;
 import com.Furnesse.core.customitems.CItem;
 import com.Furnesse.core.utils.Lang;
 
@@ -21,7 +22,7 @@ public class ItemsCMD implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		FileConfiguration langFile = plugin.getFileManager().getConfig("lang.yml").get();
-		
+
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			// Player commands
@@ -51,31 +52,30 @@ public class ItemsCMD implements CommandExecutor {
 						Player target = Bukkit.getPlayer(args[1]);
 
 						if (target == null) {
-							player.sendMessage(Lang.INVALID_PLAYER.replace("%player%", args[1]));
+							player.sendMessage(Message.INVALID_PLAYER.getChatMessage().replace("%player%", args[1]));
 						}
 
 						if (plugin.getItemManager().getCItem(args[2]) != null) {
 							CItem cItem = plugin.getItemManager().getCItem(args[2]);
-							
+
 							int amount = 1;
 							if (args.length == 4) {
 								amount = Integer.parseInt(args[3]);
 							}
-							
+
 							plugin.getItemManager().giveItem(sender, target, cItem, amount);
-							player.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
-									.replace("%player%", target.getName())
-									.replace("%amount%", String.valueOf(amount))
+							player.sendMessage(Message.ITEMS_SUCCESFULL_RECEIVED.getChatMessage()
+									.replace("%player%", target.getName()).replace("%amount%", String.valueOf(amount))
 									.replace("%item%", cItem.getName()));
 
 						} else {
-							player.sendMessage(Lang.ITEMS_INVALID_ITEM.replace("%item%", args[2]));
+							player.sendMessage(Message.ITEMS_INVALID_ITEM.getChatMessage().replace("%item%", args[2]));
 						}
 					}
 
 				}
 			} else {
-				player.sendMessage(Lang.NO_PERMISSION);
+				player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 			}
 
 			return true;
@@ -106,25 +106,24 @@ public class ItemsCMD implements CommandExecutor {
 				Player target = Bukkit.getPlayer(args[1]);
 
 				if (target == null) {
-					sender.sendMessage(Lang.INVALID_PLAYER.replace("%player%", args[1]));
+					sender.sendMessage(Message.INVALID_PLAYER.getChatMessage().replace("%player%", args[1]));
 				}
 
 				if (plugin.getItemManager().getCItem(args[2]) != null) {
 					CItem cItem = plugin.getItemManager().getCItem(args[2]);
-					
+
 					int amount = 1;
 					if (args.length == 4) {
 						amount = Integer.parseInt(args[3]);
 					}
-					
+
 					plugin.getItemManager().giveItem(sender, target, cItem, amount);
-					sender.sendMessage(Lang.ITEMS_SUCCESFULL_RECEIVED
-							.replace("%player%", target.getName())
-							.replace("%amount%", String.valueOf(amount))
-							.replace("%item%", cItem.getName()));
+					sender.sendMessage(
+							Message.ITEMS_SUCCESFULL_RECEIVED.getChatMessage().replace("%player%", target.getName())
+									.replace("%amount%", String.valueOf(amount)).replace("%item%", cItem.getName()));
 
 				} else {
-					sender.sendMessage(Lang.ITEMS_INVALID_ITEM.replace("%item%", args[2]));
+					sender.sendMessage(Message.ITEMS_INVALID_ITEM.getChatMessage().replace("%item%", args[2]));
 				}
 			}
 		}
