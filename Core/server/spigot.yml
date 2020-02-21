@@ -12,6 +12,7 @@
 
 config-version: 12
 settings:
+  log-villager-deaths: true
   debug: false
   save-user-cache-on-stop-only: false
   bungeecord: false
@@ -60,6 +61,7 @@ advancements:
   - minecraft:story/disabled
 world-settings:
   default:
+    trident-despawn-rate: 1200
     view-distance: default
     verbose: true
     dragon-death-sound-radius: 0

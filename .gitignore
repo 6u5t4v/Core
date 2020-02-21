@@ -1,6 +1,3 @@
-
-Core/.classpath
-*.jar
 Core/.classpath
 *.gz
 *.log
@@ -45,3 +42,17 @@ Core/server/world_the_end/session.lock
 Core/.classpath
 Core/.classpath
 *.jar
+Core/server/plugins/Core/config.yml
+*.log
+*.jar
+Core/server/plugins/Core/customcommands.yml
+Core/server/plugins/Core/customitems.yml
+Core/server/plugins/Core/lang.yml
+Core/server/plugins/Core/ranks.yml
+Core/server/plugins/Essentials/userdata/3d49da81-b821-4326-bc0e-4489268921b6.yml
+Core/server/server.properties
+Core/server/usercache.json
+Core/server/world/datapacks/bukkit/pack.mcmeta
+*.mca
+*.lock
+Core/.settings/org.eclipse.core.resources.prefs
