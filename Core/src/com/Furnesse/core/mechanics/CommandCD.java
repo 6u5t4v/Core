@@ -25,19 +25,29 @@ public class CommandCD implements Listener {
 
 	public void loadCooldownTasks() {
 		ConfigurationSection cdTasks = plugin.getConfig().getConfigurationSection("cooldownTasks");
-		cmdCooldown.clear();
+		preloadTasks();
 		if (cdTasks != null) {
 			for (String taskName : cdTasks.getKeys(false)) {
 				if (taskName != null) {
 					String command = plugin.getConfig().getString("cooldownTasks." + taskName + ".command");
 					String disabledFor = plugin.getConfig().getString("cooldownTasks." + taskName + ".disabledFor");
 					String enabledFor = plugin.getConfig().getString("cooldownTasks." + taskName + ".enabledFor");
-					
+
 					cmdCooldown.put(command, new Cooldown(taskName, command, disabledFor, enabledFor));
-					cmdCooldown.get(command).startTimer(true);
+					cmdCooldown.get(command).startTimer(true, true);
 				}
 			}
 		}
+	}
+
+	private void preloadTasks() {
+		if (!cmdCooldown.isEmpty()) {
+			for (Cooldown cd : cmdCooldown.values()) {
+				cd.startTimer(false, false);
+			}
+		}
+
+		cmdCooldown.clear();
 	}
 
 	public Map<String, Cooldown> getCooldownTasks() {
@@ -55,7 +65,7 @@ public class CommandCD implements Listener {
 
 	@EventHandler
 	public void onPlayerCallCooldownCommand(PlayerCommandPreprocessEvent e) {
-		if (cmdCooldown.containsKey(e.getMessage().substring(1))) {
+		if (cmdCooldown.containsKey(e.getMessage().substring(1).split(" ")[0])) {
 			Player p = e.getPlayer();
 			String cmd = e.getMessage().substring(1);
 

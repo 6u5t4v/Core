@@ -23,7 +23,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.Furnesse.core.Events.PlayerEvents;
 import com.Furnesse.core.chat.ChatFormats;
 import com.Furnesse.core.commands.CoreCMD;
 import com.Furnesse.core.commands.CustomCMD;
@@ -40,6 +39,7 @@ import com.Furnesse.core.deathchest.DeathChestManager;
 import com.Furnesse.core.deathchest.DeathChestsGUI;
 import com.Furnesse.core.listeners.ChatEvent;
 import com.Furnesse.core.listeners.CraftingRecipes;
+import com.Furnesse.core.listeners.PlayerListeners;
 import com.Furnesse.core.mechanics.CommandCD;
 import com.Furnesse.core.mechanics.Cooldown;
 import com.Furnesse.core.rank.RankManager;
@@ -132,7 +132,6 @@ public class Core extends JavaPlugin implements Listener {
 		for (FileManager.Config c : FileManager.configs.values()) {
 			c.reload();
 		}
-		registerConfigs();
 		Message.reload();
 		setupConfigurations();
 		settings.enableSystems();
@@ -144,6 +143,7 @@ public class Core extends JavaPlugin implements Listener {
 		disableRecipes();
 	}
 
+	@SuppressWarnings("unused")
 	private void test() {
 		String[] params = { "cooldown_shop_remaining", "cooldown_shop_disabledtime", "cooldown_shop_enabledtime",
 				"cooldown_shop_isopen" };
@@ -222,7 +222,7 @@ public class Core extends JavaPlugin implements Listener {
 	private void registerListeners() {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new CraftingRecipes(), this);
-		pm.registerEvents(new PlayerEvents(), this);
+		pm.registerEvents(new PlayerListeners(), this);
 		if (settings.usingChat)
 			pm.registerEvents(new ChatEvent(), this);
 		if (settings.usingDc) {
@@ -230,7 +230,6 @@ public class Core extends JavaPlugin implements Listener {
 			pm.registerEvents(new DeathChestsGUI(), this);
 		}
 		pm.registerEvents(cmdCD, this);
-		Debug.Log("enabled commandcd");
 	}
 
 	private boolean setupEconomy() {
@@ -293,7 +292,7 @@ public class Core extends JavaPlugin implements Listener {
 				}
 
 				if (params.startsWith("cooldown_") && params.endsWith("_oncooldown")) {
-					String taskName = params.substring(9, params.length() - 7);
+					String taskName = params.substring(9, params.length() - 11);
 					if (cmdCD.cmdCooldown.get(taskName) == null) {
 						getLogger().severe("No valid task with the name " + taskName + ". Check you config.yml");
 						return null;
@@ -377,7 +376,8 @@ public class Core extends JavaPlugin implements Listener {
 		if (settings.usingDc && DeathChestManager.getInstance().getDeathChestsByUUID().values() != null)
 			DeathChestManager.getInstance().clearDeathChests();
 
-		this.fileManager.saveConfig("players.yml");
+		if (fileManager.getConfig("player.yml") != null)
+			this.fileManager.saveConfig("players.yml");
 
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
 	}

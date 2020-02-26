@@ -15,10 +15,14 @@ public class Cooldown {
 
 	private String taskname;
 	private String command;
+
 	private boolean cmdOnCooldown;
+
 	private String disabledTime;
 	private String enabledTime;
-	private String broadcastMsg;
+
+	private String eventStartMsg;
+	private String eventEndMsg;
 	private String disabledMsg;
 
 	private long timeRemaining;
@@ -28,7 +32,8 @@ public class Cooldown {
 		this.command = command;
 		this.disabledTime = disabledTime;
 		this.enabledTime = enabledTime;
-		this.broadcastMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".broadcastMsg");
+		this.eventStartMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".eventStartMsg");
+		this.eventEndMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".eventEndMsg");
 		this.disabledMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".disabledMsg");
 	}
 
@@ -77,7 +82,7 @@ public class Cooldown {
 		return enabledTime;
 	}
 
-	public void startTimer(boolean isDisabled) {
+	public void startTimer(boolean isDisabled, boolean run) {
 		long cooldown = isDisabled ? Time.convertCooldownToSeconds(disabledTime)
 				: Time.convertCooldownToSeconds(enabledTime);
 
@@ -87,16 +92,23 @@ public class Cooldown {
 			Duration period = Duration.ofSeconds(cooldown);
 
 			public void run() {
+				if (!run)
+					this.cancel();
 				Duration passed = Duration.between(start, Instant.now());
 				Duration remaining = period.minus(passed);
 
 				timeRemaining = remaining.getSeconds();
-				if (remaining.isZero() || remaining.isNegative()) {
-					setCmdOnCooldown(!isDisabled);
-					Bukkit.broadcastMessage(Lang.chat(
-							broadcastMsg.replace("%enabledfor%", enabledTime).replace("%disabledfor%", disabledTime)));
+				if (timeRemaining <= 0) {
+					if (isDisabled)
+						Bukkit.broadcastMessage(Lang.chat(eventStartMsg.replace("%enabledfor%", enabledTime)
+								.replace("%disabledfor%", disabledTime).replace("%timeRemaining%", disabledTime)));
+					else
+						Bukkit.broadcastMessage(Lang.chat(eventEndMsg.replace("%enabledfor%", enabledTime)
+								.replace("%disabledfor%", disabledTime).replace("%timeRemaining%", disabledTime)));
+
+					cmdOnCooldown = !isDisabled;
 					this.cancel();
-					startTimer(cmdOnCooldown);
+					startTimer(cmdOnCooldown, true);
 				}
 //				Debug.Log("time remaning " + timeRemaining + " | " + cmdOnCooldown);
 			}
