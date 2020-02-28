@@ -5,18 +5,23 @@ name: Core
 api-version: 1.15
 website: www.furnesse.com
 depend: [Vault, PlaceholderAPI]
+softdepend: [HeadDatabase]
 commands:
-  deathchests:
+  fcdeathchest:
     description: Deathchests managing
     aliases:
-    - dc
-    - dchest
-  rank:
+    - fcdc
+    - fcdchest
+  fcranks:
     description: Rank managing
-  core:
+  fcore:
     description: Main command to view all Core's commands
-  items:
+    aliases:
+    - fc
+  fcitems:
     description: custom items.
+    aliases:
+    - fci
 permissions:
   core.deathcoords:
     description: get coords for where you died.

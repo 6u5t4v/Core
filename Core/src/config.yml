@@ -1,7 +1,7 @@
 use_ranks: false
 cooldownTasks:
-  shop:
-    command: "shop"
+  shopgui:
+    command: "shopgui"
     disabledFor: "3h 0m 0s"
     enabledFor: "0h 10m 0s"
     eventStartMsg: "&c&l(!) &7The black market has &aOpened &7Closes in &c%enabledfor%&7."

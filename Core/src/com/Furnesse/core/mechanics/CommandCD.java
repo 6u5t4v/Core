@@ -34,7 +34,7 @@ public class CommandCD implements Listener {
 					String enabledFor = plugin.getConfig().getString("cooldownTasks." + taskName + ".enabledFor");
 
 					cmdCooldown.put(command, new Cooldown(taskName, command, disabledFor, enabledFor));
-					cmdCooldown.get(command).startTimer(true, true);
+					cmdCooldown.get(command).startTimer(true);
 				}
 			}
 		}
@@ -43,7 +43,7 @@ public class CommandCD implements Listener {
 	private void preloadTasks() {
 		if (!cmdCooldown.isEmpty()) {
 			for (Cooldown cd : cmdCooldown.values()) {
-				cd.startTimer(false, false);
+				cd.stopTask();
 			}
 		}
 
@@ -67,7 +67,7 @@ public class CommandCD implements Listener {
 	public void onPlayerCallCooldownCommand(PlayerCommandPreprocessEvent e) {
 		if (cmdCooldown.containsKey(e.getMessage().substring(1).split(" ")[0])) {
 			Player p = e.getPlayer();
-			String cmd = e.getMessage().substring(1);
+			String cmd = e.getMessage().substring(1).split(" ")[0];
 
 			Cooldown cd = getCooldown(cmd);
 			if (cd.isCmdOnCooldown()) {

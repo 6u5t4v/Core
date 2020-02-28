@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.Lang;
@@ -27,6 +26,8 @@ public class Cooldown {
 
 	private long timeRemaining;
 
+	private int taskId;
+
 	public Cooldown(String taskname, String command, String disabledTime, String enabledTime) {
 		this.taskname = taskname;
 		this.command = command;
@@ -35,6 +36,11 @@ public class Cooldown {
 		this.eventStartMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".eventStartMsg");
 		this.eventEndMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".eventEndMsg");
 		this.disabledMsg = plugin.getConfig().getString("cooldownTasks." + taskname + ".disabledMsg");
+	}
+
+	public void stopTask() {
+		Bukkit.getScheduler().cancelTask(this.taskId);
+		this.cmdOnCooldown = false;
 	}
 
 	public long getTimeRemaning() {
@@ -59,15 +65,6 @@ public class Cooldown {
 
 	public boolean isCmdOnCooldown() {
 		return cmdOnCooldown;
-
-//		long lastCheck = System.currentTimeMillis() / 1000;
-//		this.dTimeRemaning = lastCheck;
-//		if (!(lastCheck >= disabledTime)) {
-//			cmdOnCooldown = true;
-//		} else {
-//			cmdOnCooldown = false;
-//		}
-//		return cmdOnCooldown;
 	}
 
 	public void setCmdOnCooldown(boolean cmdOnCooldown) {
@@ -82,18 +79,16 @@ public class Cooldown {
 		return enabledTime;
 	}
 
-	public void startTimer(boolean isDisabled, boolean run) {
+	public void startTimer(boolean isDisabled) {
 		long cooldown = isDisabled ? Time.convertCooldownToSeconds(disabledTime)
 				: Time.convertCooldownToSeconds(enabledTime);
 
 		cmdOnCooldown = isDisabled;
-		new BukkitRunnable() {
+		this.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			Instant start = Instant.now();
 			Duration period = Duration.ofSeconds(cooldown);
 
 			public void run() {
-				if (!run)
-					this.cancel();
 				Duration passed = Duration.between(start, Instant.now());
 				Duration remaining = period.minus(passed);
 
@@ -107,11 +102,11 @@ public class Cooldown {
 								.replace("%disabledfor%", disabledTime).replace("%timeRemaining%", disabledTime)));
 
 					cmdOnCooldown = !isDisabled;
-					this.cancel();
-					startTimer(cmdOnCooldown, true);
+					Bukkit.getScheduler().cancelTask(taskId);
+					startTimer(cmdOnCooldown);
 				}
 //				Debug.Log("time remaning " + timeRemaining + " | " + cmdOnCooldown);
 			}
-		}.runTaskTimer(plugin, 20, 20);
+		}, 20, 20);
 	}
 }

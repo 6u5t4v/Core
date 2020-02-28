@@ -1,5 +1,8 @@
 package com.Furnesse.core.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,7 +11,9 @@ import org.bukkit.entity.Player;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.config.Message;
+import com.Furnesse.core.mechanics.Cooldown;
 import com.Furnesse.core.sidebar.Sidebar;
+import com.Furnesse.core.utils.Lang;
 
 public class CoreCMD implements CommandExecutor {
 
@@ -55,6 +60,19 @@ public class CoreCMD implements CommandExecutor {
 						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 					}
 				}
+
+				if (args[0].equalsIgnoreCase("tasks")) {
+					if (player.hasPermission("core.showtasks")) {
+						List<String> tasks = new ArrayList<>();
+						for (Cooldown cd : plugin.getCommandCD().cmdCooldown.values()) {
+							tasks.add(cd.getTaskname());
+						}
+
+						player.sendMessage(Lang.chat("&aTasks &7") + tasks.toString());
+					} else {
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
+					}
+				}
 			}
 
 			if (args.length == 2) {
@@ -67,9 +85,65 @@ public class CoreCMD implements CommandExecutor {
 						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
 					}
 				}
+
+				if (args[0].equalsIgnoreCase("tasks")) {
+					if (player.hasPermission("core.disabletasks")) {
+						if (args[1].equalsIgnoreCase("disable")) {
+							player.sendMessage("Usage: /fcore tasks disable <task>");
+						}
+					} else {
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
+					}
+					
+					if (player.hasPermission("core.enabletasks")) {
+						if (args[1].equalsIgnoreCase("enable")) {
+							player.sendMessage("Usage: /fcore tasks enable <task>");
+						}
+					} else {
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
+					}
+				}
+			}
+
+			if (args.length == 3) {
+				if (args[0].equalsIgnoreCase("tasks")) {
+					if (player.hasPermission("core.disabletasks")) {
+						if (args[1].equalsIgnoreCase("disable")) {
+							Cooldown cd = plugin.getCommandCD().getCooldown(args[2]);
+							if (cd == null) {
+								player.sendMessage(Lang.chat("&cNo task with name " + args[2] + " exists"));
+							}
+							if (cd.isCmdOnCooldown()) {
+								cd.stopTask();
+								player.sendMessage(Lang.chat("&a" + args[2] + " &ahas been disabled"));
+							} else {
+								player.sendMessage(Lang.chat("&c" + args[2] + " &cis already disabled"));
+							}
+						}
+					} else {
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
+					}
+
+					if (player.hasPermission("core.enabletasks")) {
+						if (args[1].equalsIgnoreCase("enable")) {
+							Cooldown cd = plugin.getCommandCD().getCooldown(args[2]);
+							if (cd == null) {
+								player.sendMessage(Lang.chat("&cNo task with name " + args[2] + " exists"));
+							}
+							if (!cd.isCmdOnCooldown()) {
+								cd.startTimer(true);
+								player.sendMessage(Lang.chat("&a" + args[2] + " &ahas been enabled"));
+							} else {
+								player.sendMessage(Lang.chat("&c" + args[2] + " &cis already enabled"));
+							}
+						}
+					} else {
+						player.sendMessage(Message.NO_PERMISSION.getChatMessage());
+					}
+				}
 			}
 		}
-		
+
 		if (args.length == 0) {
 			for (String message : langFile.getStringList("help")) {
 				sender.sendMessage(message);

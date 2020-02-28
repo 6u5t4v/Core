@@ -100,8 +100,6 @@ public class Core extends JavaPlugin implements Listener {
 
 		cmdCD.loadCooldownTasks();
 
-//		test();
-
 		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
 	}
@@ -132,6 +130,7 @@ public class Core extends JavaPlugin implements Listener {
 		for (FileManager.Config c : FileManager.configs.values()) {
 			c.reload();
 		}
+		
 		Message.reload();
 		setupConfigurations();
 		settings.enableSystems();
@@ -187,13 +186,13 @@ public class Core extends JavaPlugin implements Listener {
 		registerCustomCommands();
 
 		if (settings.usingDc) {
-			getCommand("deathchests").setExecutor(new DeathChestCMD());
+			getCommand("fcdeathchest").setExecutor(new DeathChestCMD());
 		}
 
 		if (settings.usingRanks)
-			getCommand("rank").setExecutor(new RankCMD());
-		getCommand("core").setExecutor(new CoreCMD());
-		getCommand("items").setExecutor(new ItemsCMD());
+			getCommand("fcranks").setExecutor(new RankCMD());
+		getCommand("fcore").setExecutor(new CoreCMD());
+		getCommand("fcitems").setExecutor(new ItemsCMD());
 	}
 
 	private void registerCustomCommands() {
