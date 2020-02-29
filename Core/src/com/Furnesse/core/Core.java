@@ -24,6 +24,7 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Furnesse.core.chat.ChatFormats;
+import com.Furnesse.core.combatlog.CombatLog;
 import com.Furnesse.core.commands.CoreCMD;
 import com.Furnesse.core.commands.CustomCMD;
 import com.Furnesse.core.commands.DeathChestCMD;
@@ -71,8 +72,12 @@ public class Core extends JavaPlugin implements Listener {
 	private ChatFormats chatFormat = new ChatFormats(this);
 	private Settings settings = new Settings(this);
 	private CommandCD cmdCD = new CommandCD(this);
-
+	private CombatLog combatLog = new CombatLog(this);
+	
 	private FileManager fileManager = new FileManager(this);
+
+	public boolean landsHook = false;
+	public boolean worldguardHook = false;
 
 	public void onEnable() {
 		this.getLogger().info("<------<< Furnesse CORE >>------>");
@@ -105,11 +110,23 @@ public class Core extends JavaPlugin implements Listener {
 	}
 
 	private void checkHooks() {
-		if (getServer().getPluginManager().getPlugin("HeadDatabase") != null) {
+		PluginManager pm = getServer().getPluginManager();
+		if (pm.getPlugin("HeadDatabase") != null) {
 			headAPI = new HeadDatabaseAPI();
 			this.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		} else {
 			headAPI = null;
+		}
+
+		if (pm.getPlugin("Lands") != null) {
+			String version = pm.getPlugin("Lands").getDescription().getVersion();
+			this.landsHook = true;
+			this.getLogger().info("Hooked into Lands " + version + " successfully");
+		}
+
+		if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+			this.worldguardHook = true;
+			this.getLogger().info("Hooked into WorldGuard successfully");
 		}
 	}
 
@@ -130,7 +147,7 @@ public class Core extends JavaPlugin implements Listener {
 		for (FileManager.Config c : FileManager.configs.values()) {
 			c.reload();
 		}
-		
+
 		Message.reload();
 		setupConfigurations();
 		settings.enableSystems();

@@ -1,4 +1,37 @@
 use_ranks: false
+combatlog:
+  # worlds where combatlog is disabled
+  disabled_worlds: []
+  # The duration of the player being tagged (in seconds) default: 10
+  tag_duration: 10
+  # If it should be shown on the actionbar when in combat default: true
+  actionbar: true
+  # Commands that should be called for both players when entering combat.
+  remove_on_tag:
+  - fly
+  # Temporary anti fall-damage good if disabling flight on tag_duration default: false
+  temp_anti_fall_damage: true
+  # Commands that cannot be executed for the players in combat.
+  blocked_commands:
+  - home
+  - spawn
+  - tpa
+  - tpaccept
+  - tpahere
+  - warp
+  - fly
+  - warps
+  # Stuff that should happend if the player leaves while in combat.
+  combat_logout:
+    # Should the player just instantly die? default: false
+    kill: false
+    # Spawn an npc at the player's last location. If kill is true then this is skipped.
+    spawn_npc: true
+    # If spawn_npc is true, then specify for how long this npc is available (in seconds) default: 10
+    npc_available_time: 10
+    # Commands that should be executed use %player% for the player who left
+    commands: []
+  
 cooldownTasks:
   shopgui:
     command: "shopgui"
@@ -15,7 +48,7 @@ deathchests:
   auto_equip_armor: true
   spawn_in_lava: true
   drop_items_after_expire: false
-  expire_time: -1
+  expire_time: 900
   disabled_worlds:
   - 'warzone'
   - 'spawn_world'

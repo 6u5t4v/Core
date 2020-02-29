@@ -22,7 +22,13 @@ public enum Message
 	DEATHCHEST_FASTLOOT_COMPLETE("deathchest.deathchest_fastloot_complete"),
 
 	ITEMS_INVALID_ITEM("citems.items_invalid_item"), ITEMS_PLAYER_RECEIVED("citems.items_player_received"),
-	ITEMS_SUCCESFULL_RECEIVED("citems.items_succesfull_received");
+	ITEMS_SUCCESFULL_RECEIVED("citems.items_succesfull_received"),
+
+	TAGGER("combatlog.tagger"), TAGGED("combatlog.tagged"), UNTAG("combatlog.untag"), IN_COMBAT("combatlog.in_combat"),
+	NOT_IN_COMBAT("combatlog.not_in_combat"), ACTIONBAR_IN_COMBAT("combatlog.actionbar_in_combat"),
+	ACTION_UNTAG("combatlog.actionbar_untag"), COMMAND_BLOCKED("combatlog.command_blocked"),
+	TELEPORT_BLOCKED("combatlog.teleport_blocked"), FLIGHT_DISABLED("combatlog.flight_disabled"),
+	KILLED("combatlog.killed");
 
 	private String path;
 	private String message;
