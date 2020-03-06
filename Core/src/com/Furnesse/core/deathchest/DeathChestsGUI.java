@@ -47,9 +47,7 @@ public class DeathChestsGUI implements Listener{
 		return item;
 	}
 	
-	public void onMenuInteract(InventoryClickEvent e) {
-		Player p = (Player) e.getWhoClicked();
-		
+	public void onMenuInteract(InventoryClickEvent e) {		
 		if(e.getClickedInventory().equals(dcMenu)) {
 			e.setCancelled(true);
 		}

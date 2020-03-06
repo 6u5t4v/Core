@@ -25,6 +25,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.Furnesse.core.chat.ChatFormats;
 import com.Furnesse.core.combatlog.CombatLog;
+import com.Furnesse.core.combatlog.listeners.EntityDamageByEntityListener;
+import com.Furnesse.core.combatlog.listeners.PlayerCommandPreProcessListener;
+import com.Furnesse.core.combatlog.listeners.PlayerDeathListener;
+import com.Furnesse.core.combatlog.listeners.PlayerJoinListener;
+import com.Furnesse.core.combatlog.listeners.PlayerKickListener;
+import com.Furnesse.core.combatlog.listeners.PlayerMoveListener;
+import com.Furnesse.core.combatlog.listeners.PlayerQuitListener;
+import com.Furnesse.core.combatlog.listeners.PlayerTagListener;
+import com.Furnesse.core.combatlog.listeners.PlayerToggleFlightListener;
+import com.Furnesse.core.combatlog.listeners.PlayerUntagListener;
+import com.Furnesse.core.commands.CombatLogCMD;
 import com.Furnesse.core.commands.CoreCMD;
 import com.Furnesse.core.commands.CustomCMD;
 import com.Furnesse.core.commands.DeathChestCMD;
@@ -48,7 +59,9 @@ import com.Furnesse.core.sidebar.Sidebar;
 import com.Furnesse.core.utils.Debug;
 import com.Furnesse.core.utils.FileManager;
 import com.Furnesse.core.utils.Time;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
+import me.angeschossen.lands.api.integration.LandsIntegration;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -58,11 +71,15 @@ import net.milkbowl.vault.economy.Economy;
 public class Core extends JavaPlugin implements Listener {
 	public static Core instance;
 
+	public static String jarFile;
+
 	private static final Logger log = Logger.getLogger("Minecraft");
 //	private static Permission perms = null;
 	private static Economy econ = null;
 //	private static Chat chat = null;
 
+	public WorldGuardPlugin wgAPI;
+	public LandsIntegration landsAPI;
 	private HeadDatabaseAPI headAPI;
 
 	private RankManager rankMan = new RankManager(this);
@@ -73,14 +90,16 @@ public class Core extends JavaPlugin implements Listener {
 	private Settings settings = new Settings(this);
 	private CommandCD cmdCD = new CommandCD(this);
 	private CombatLog combatLog = new CombatLog(this);
-	
+
 	private FileManager fileManager = new FileManager(this);
 
 	public boolean landsHook = false;
 	public boolean worldguardHook = false;
 
+	public int combatlogs = 0;
+
 	public void onEnable() {
-		this.getLogger().info("<------<< Furnesse CORE >>------>");
+		this.getLogger().info("<------<< Furnesse CORE " + this.getDescription().getVersion() + " >>------>");
 		instance = this;
 
 		registerConfigs();
@@ -91,11 +110,11 @@ public class Core extends JavaPlugin implements Listener {
 			return;
 		}
 
-		checkHooks();
+		getJarFile();
 
 		settings.enableSystems();
 
-		setupEconomy();
+		checkHooks();
 		setupConfigurations();
 
 		registerListeners();
@@ -103,10 +122,12 @@ public class Core extends JavaPlugin implements Listener {
 		registerCommands();
 		disableRecipes();
 
-		cmdCD.loadCooldownTasks();
-
-		this.getLogger().info("Has been enabled v" + this.getDescription().getVersion());
 		this.getLogger().info("<------------------------------->");
+	}
+
+	private void getJarFile() {
+		String type = Bukkit.getBukkitVersion();
+		Debug.Log(type);
 	}
 
 	private void checkHooks() {
@@ -118,15 +139,22 @@ public class Core extends JavaPlugin implements Listener {
 			headAPI = null;
 		}
 
-		if (pm.getPlugin("Lands") != null) {
-			String version = pm.getPlugin("Lands").getDescription().getVersion();
-			this.landsHook = true;
-			this.getLogger().info("Hooked into Lands " + version + " successfully");
-		}
+		if (settings.usingCl) {
+			if (settings.cl_usingLandsHook) {
+				if (pm.getPlugin("Lands") != null) {
+					String version = pm.getPlugin("Lands").getDescription().getVersion();
+					this.landsAPI = new LandsIntegration(this, true);
+					this.landsHook = true;
+					this.getLogger().info("Hooked into Lands " + version + " successfully");
+				}
+			}
 
-		if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-			this.worldguardHook = true;
-			this.getLogger().info("Hooked into WorldGuard successfully");
+			if (settings.cl_usingWorldguardHook) {
+				if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+					this.worldguardHook = true;
+					this.getLogger().info("Hooked into WorldGuard successfully");
+				}
+			}
 		}
 	}
 
@@ -147,15 +175,14 @@ public class Core extends JavaPlugin implements Listener {
 		for (FileManager.Config c : FileManager.configs.values()) {
 			c.reload();
 		}
-
 		Message.reload();
-		setupConfigurations();
+
 		settings.enableSystems();
+		setupConfigurations();
 
 		registerCommands();
 		registerListeners();
 
-		cmdCD.loadCooldownTasks();
 		disableRecipes();
 	}
 
@@ -210,6 +237,8 @@ public class Core extends JavaPlugin implements Listener {
 			getCommand("fcranks").setExecutor(new RankCMD());
 		getCommand("fcore").setExecutor(new CoreCMD());
 		getCommand("fcitems").setExecutor(new ItemsCMD());
+		if (settings.usingCl)
+			getCommand("tag").setExecutor(new CombatLogCMD());
 	}
 
 	private void registerCustomCommands() {
@@ -246,6 +275,18 @@ public class Core extends JavaPlugin implements Listener {
 			pm.registerEvents(new DeathChestsGUI(), this);
 		}
 		pm.registerEvents(cmdCD, this);
+		if (settings.usingCl) {
+			pm.registerEvents(new EntityDamageByEntityListener(), this);
+			pm.registerEvents(new PlayerCommandPreProcessListener(), this);
+			pm.registerEvents(new PlayerDeathListener(), this);
+			pm.registerEvents(new PlayerJoinListener(), this);
+			pm.registerEvents(new PlayerKickListener(), this);
+			pm.registerEvents(new PlayerMoveListener(), this);
+			pm.registerEvents(new PlayerQuitListener(), this);
+			pm.registerEvents(new PlayerTagListener(), this);
+			pm.registerEvents(new PlayerToggleFlightListener(), this);
+			pm.registerEvents(new PlayerUntagListener(), this);
+		}
 	}
 
 	private boolean setupEconomy() {
@@ -341,34 +382,12 @@ public class Core extends JavaPlugin implements Listener {
 		});
 	}
 
-	public void setupConfigurations() {
-		if (settings.usingMySQL) {
-			this.getLogger().info("Enabling Mysql database");
-			settings.setupMySQL();
-		}
-
-		if (settings.usingChat) {
-			this.getLogger().info("Enabling Chat");
-			chatFormat.loadChatFormats();
-		}
-
-		if (settings.usingRanks) {
-			this.getLogger().info("Enabling Ranks");
-			rankMan.loadRanks();
-		}
-
-		if (settings.usingSb) {
-			this.getLogger().info("Enabling Scoreboard");
-			settings.setupSbVarialbes();
-		}
-
-		if (settings.usingDc) {
-			this.getLogger().info("Enabling DeathChests");
-			settings.setupDcVariables();
-		}
-
+	private void setupConfigurations() {
 		commands.loadCustomCommands();
 		cItemMan.loadCustomItems();
+		cmdCD.loadCooldownTasks();
+		if (settings.usingCl)
+			combatLog.enableTimer();
 	}
 
 	public static List<Material> disabledRecipes = new ArrayList<>();
@@ -394,6 +413,8 @@ public class Core extends JavaPlugin implements Listener {
 
 		if (fileManager.getConfig("player.yml") != null)
 			this.fileManager.saveConfig("players.yml");
+
+		combatLog.taggedPlayers.clear();
 
 		this.getLogger().info("Has been disabled v" + this.getDescription().getVersion());
 	}
@@ -436,5 +457,9 @@ public class Core extends JavaPlugin implements Listener {
 
 	public CommandCD getCommandCD() {
 		return cmdCD;
+	}
+
+	public CombatLog getCombatLog() {
+		return combatLog;
 	}
 }

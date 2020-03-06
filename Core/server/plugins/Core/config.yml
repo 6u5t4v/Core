@@ -1,11 +1,37 @@
 use_ranks: false
+combatlog:
+  enabled: true
+  disabled_worlds: []
+  hooks:
+    lands: true
+    worldguard: false
+  tag_duration: 10
+  actionbar: true
+  remove_on_tag:
+  - fly
+  temp_anti_fall_damage: true
+  blocked_commands:
+  - home
+  - spawn
+  - tpa
+  - tpaccept
+  - tpahere
+  - warp
+  - fly
+  remove_tag_in_safezone: true
+  combat_logout:
+    kill: false
+    spawn_npc: true
+    npc_available_time: 10
+    commands: []
 cooldownTasks:
-  shop:
-    command: shop
-    disabledFor: 3h
-    enabledFor: 10m
-    broadcastMsg: '&c&l(!) &7The black market has &aOpen &7Closes in &c%enabledfor%&7.'
-    disabledMsg: '&c&l(!) &7The black market is &cClosed&7, opens in &c%timeRemaining%&7.'
+  shopgui:
+    command: shopgui
+    disabledFor: 3h 0m 0s
+    enabledFor: 0h 10m 0s
+    eventStartMsg: '&c&l(!) &7The black market has &aOpened &7Closes in &c%enabledfor%&7.'
+    eventEndMsg: '&c&l(!) &7The black market has &cClosed&7. Returns in &c%disabledfor%&7.'
+    disabledMsg: '&c&l(!) &7The black market is &cClosed&7. Returns in &c%timeRemaining%&7.'
 deathchests:
   enabled: false
   spawn_chest_on_highest_block: true
@@ -14,10 +40,11 @@ deathchests:
   auto_equip_armor: true
   spawn_in_lava: true
   drop_items_after_expire: false
-  expire_time: -1
+  expire_time: 900
   disabled_worlds:
   - warzone
   - spawn_world
+  - netherzone
   gui:
     prev_item:
       material: STONE_BUTTON
@@ -56,12 +83,12 @@ scoreboard:
   - '&8&m                        &r'
   - '&7play.&3furnesse&7.com'
 announcer:
-  enabled: true
+  enabled: false
   delay: 420
   '1':
   - an announce
 chat:
-  enabled: true
+  enabled: false
   formats:
     default:
       format: '&8[&f%player_world%&8] %core_rank_prefix% &7%player_name% &8Â» &f%msg%'

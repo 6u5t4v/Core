@@ -63,10 +63,10 @@ public class Sidebar {
 								objective = scoreboard.getObjective("PersonalSidebar");
 							}
 							objective.setDisplayName(
-									Lang.chat(syntaxTranslator.Translate(plugin.getSettings().boardName, p)));
+									Lang.chat(syntaxTranslator.Translate(plugin.getSettings().sb_boardName, p)));
 							List<String> allLines = new ArrayList<>();
 
-							for (int i = plugin.getSettings().lines.size() - 1; i >= 0; i--) {
+							for (int i = plugin.getSettings().sb_lines.size() - 1; i >= 0; i--) {
 								Team team = null;
 								String playerName = p.getName();
 								if (scoreboard.getTeam(

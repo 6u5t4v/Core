@@ -6,7 +6,7 @@ import com.Furnesse.core.Core;
 
 public abstract class Line {
 
-	List<String> lines = Core.instance.getSettings().lines;
+	List<String> lines = Core.instance.getSettings().sb_lines;
 	
 	public String getCurrentLine() {
 		return null;

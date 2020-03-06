@@ -1,33 +1,27 @@
-prefix: '&8『 &6&lCORE &8』 &7'
+prefix: '&8[ &6&lCORE &8] &7'
 no_permission: '&cYou dont have permission to use this command'
 reloaded: '&aAll configs as successfully reloaded'
 invalid_player: '&c%player% &7is not online'
 full_inventory: '&7No room in your inventory, please make some!'
 help:
-- /core - shows this
-- /dc help - Manage deathchests
-- /rank help - Manage ranks
-- /items help - Manage custom items
-- /core reload - Reload configs
-- /nightvision - Enabled night-vision
-- /jellylegs - Reduce fall damage
-- /nightvision - Enabled night-vision
-- /bless - Remove all negative potion effects
-- /staff - Enabled staffmode
-- /sb toggle - Toggle your scoreboard on/off
+- '&e/core &7- shows this'
+- '&e/dc help &7- Manage deathchests'
+- '&e/rank help &7- Manage ranks'
+- '&e/items help &7- Manage custom items'
+- '&e/sb toggle &7- Toggle your scoreboard on/off'
+- '&e/core reload &7- Reload configs'
 rank:
   help:
-  - /rank help - Shows this
-  - /rank list - Shows every rank
-  - /rank create <name> - Create new rank
-  - /rank delete <rank> - Delete an existing rank
-  - /rank setprefix <rank> <prefix> - Set the prefix for the rank
-  - /rank setsuffix <rank> <prefix> - Set the suffix for the rank
-  - /rank addperm <rank> <perm> - Add permission to the rank
-  - /rank removeperm <rank> <perm> - Remove permission from the rank
-  - /rank user <player> set <rank> - Set the users rank
-  - /rank user <player> addperm <perm> - Give the user a permission
-  - /rank user <player> removeperm <perm> - Remove the permission from the user
+  - '&e/rank help &7- Shows this'
+  - '&e/rank list &7- Shows every rank'
+  - '&e/rank shows <rank> &7- Shows info about a rank'
+  - '&e/rank create <name> &7- Create new rank'
+  - '&e/rank delete <rank> &7- Delete an existing rank'
+  - '&e/rank setprefix <rank> <prefix> &7- Set the prefix for the rank'
+  - '&e/rank setsuffix <rank> <prefix> &7- Set the suffix for the rank'
+  - '&e/rank addperm <rank|player> <perm> &7- Add permission to the rank'
+  - '&e/rank removeperm <rank|player> <perm> &7- Remove permission from the rank'
+  - '&e/rank set <player> <rank>'
   rank_created: '&7Rank &d&n%rank%&7 has been created'
   rank_deleted: '&7Rank &d&n%rank%&7 has been deleted'
   rank_setprefix: '&7Set prefix for &d&n%rank%&7 to %prefix%&7.'
@@ -42,8 +36,8 @@ rank:
   user_perm_removed: '&7You lost perm -> &d&n%perm%&7.'
 citems:
   help:
-  - /items give <player> <item> [amount] - Give player a custom item
-  - /items list - See all available custom items
+  - '&e/items give <player> <item> [amount] &7- Give player a custom item'
+  - '&e/items list &7- See all available custom items'
   items_invalid_item: '&c%item% &7is not a valid item, try &e/items list&7.'
   items_player_received: '&7You have received &ax%amount% %item%&7.'
   items_succesfull_received: '&a%player% &7has received &ax%amount% %item%&7.'
@@ -60,3 +54,15 @@ deathchest:
   deathchest_fastloot_complete: '&aFastloot complete. There are &e%amount% items left
     &ain your DeathChest.'
   deathcoords: '&cYou died at &8(&7World: &e%world%&7, &e%xloc% %yloc% %zloc%&8)'
+combatlog:
+  tagger: '&c&l(!) &7You have tagged &c%player%&7. Do not logout!'
+  tagged: '&c&l(!) &7You have been tagged by &c%player%&7. Do not logout!'
+  untag: '&c&l(!) &7You are no longer in combat. You may logout.'
+  in_combat: '&c&l(!) &7You are tagged for &c%time% &7more seconds.'
+  not_in_combat: '&c&l(!) &7You are not in combat.'
+  actionbar_in_combat: '&cIn combat for &7%time% &cseconds.'
+  actionbar_untag: '&aYou are no longer in combat.'
+  command_blocked: '&c&l(!) &cYou cannot use that command while in combat!'
+  teleport_blocked: '&c&l(!) &cYou cannot teleport while in combat!'
+  flight_disabled: '&c&l(!) &cYour flight has been disabled'
+  killed: '&c&l(!) &cYou were killed after combatlogging!'

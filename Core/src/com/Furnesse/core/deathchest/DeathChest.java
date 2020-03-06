@@ -38,7 +38,7 @@ public class DeathChest {
 	public DeathChest(Player p, List<ItemStack> items) {
 		this.chestUUID = UUID.randomUUID();
 		this.player = (OfflinePlayer) p;
-		this.timeLeft = Core.instance.getSettings().expireTime;
+		this.timeLeft = plugin.getSettings().dc_expireTime;
 
 		setupChest(p.getLocation(), items);
 
@@ -79,7 +79,7 @@ public class DeathChest {
 	}
 
 	private void setupChest(Location loc, List<ItemStack> items) {
-		if (plugin.getSettings().spawnChestOnHighestBlock || loc.getY() <= 0.0D) {
+		if (plugin.getSettings().dc_spawnChestOnHighestBlock || loc.getY() <= 0.0D) {
 			loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
 		}
 
@@ -101,7 +101,7 @@ public class DeathChest {
 		this.location = loc.getBlock().getLocation();
 
 		this.chestInventory = Bukkit.createInventory(null, (items.size() > 27) ? 54 : 27,
-				Lang.chat(plugin.getSettings().deathChestInvTitle.replaceAll("%player%", this.player.getName())));
+				Lang.chat(plugin.getSettings().dc_deathChestInvTitle.replaceAll("%player%", this.player.getName())));
 
 		for (ItemStack i : items) {
 			if (i == null)
@@ -146,7 +146,7 @@ public class DeathChest {
 			}
 		}
 
-		if (plugin.getSettings().dropItemsAfterExpire) {
+		if (plugin.getSettings().dc_dropItemsAfterExpire) {
 			for (ItemStack item : this.chestInventory.getContents()) {
 				if (item != null) {
 					this.location.getWorld().dropItemNaturally(this.location, item);
@@ -208,7 +208,7 @@ public class DeathChest {
 						break;
 					}
 
-					if (plugin.getSettings().autoEquipArmor
+					if (plugin.getSettings().dc_autoEquipArmor
 							&& (Items.isHelmet(i.getType()) || Items.isChestPlate(i.getType())
 									|| Items.isLeggings(i.getType()) || Items.isBoots(i.getType()))) {
 						if (!autoEquip(p, i)) {

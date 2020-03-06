@@ -1,7 +1,12 @@
 use_ranks: false
 combatlog:
+  # Should combatlog be enabled?
+  enabled: true
   # worlds where combatlog is disabled
   disabled_worlds: []
+  hooks:
+    lands: true
+    worldguard: false
   # The duration of the player being tagged (in seconds) default: 10
   tag_duration: 10
   # If it should be shown on the actionbar when in combat default: true
@@ -20,7 +25,8 @@ combatlog:
   - tpahere
   - warp
   - fly
-  - warps
+  # Remove tag when entering safezone
+  remove_tag_in_safezone: true
   # Stuff that should happend if the player leaves while in combat.
   combat_logout:
     # Should the player just instantly die? default: false
@@ -41,7 +47,7 @@ cooldownTasks:
     eventEndMsg: "&c&l(!) &7The black market has &cClosed&7. Returns in &c%disabledfor%&7."
     disabledMsg: "&c&l(!) &7The black market is &cClosed&7. Returns in &c%timeRemaining%&7."
 deathchests:
-  enabled: true
+  enabled: false
   spawn_chest_on_highest_block: true
   deathchest_inv_title: "&c%player%'s &8Deathchest"
   void_spawning: true

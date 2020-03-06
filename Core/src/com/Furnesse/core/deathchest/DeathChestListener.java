@@ -66,14 +66,14 @@ public class DeathChestListener implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
 		if (plugin.getSettings().usingDc) {
-			if (!plugin.getSettings().disabledworlds.contains(p.getLocation().getWorld().getName())
+			if (!plugin.getSettings().dc_disabledworlds.contains(p.getLocation().getWorld().getName())
 					&& e.getDrops().size() > 0) {
 
 				if ((e.getEntity().getLastDamageCause() != null
 						&& e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID
-						&& !plugin.getSettings().voidSpawning)
+						&& !plugin.getSettings().dc_voidSpawning)
 						|| (p.getLocation().getBlock().getType() == Material.LAVA
-								&& !plugin.getSettings().lavaSpawning)) {
+								&& !plugin.getSettings().dc_lavaSpawning)) {
 					return;
 				}
 
@@ -98,7 +98,7 @@ public class DeathChestListener implements Listener {
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-		if (!(plugin.getSettings().expireTime == -1)) {
+		if (!(plugin.getSettings().dc_expireTime == -1)) {
 			return;
 		}
 
