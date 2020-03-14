@@ -1,8 +1,11 @@
 package com.Furnesse.core.customitems;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 
+import com.Furnesse.core.Core;
 import com.Furnesse.core.utils.ItemUtil;
 
 public class CItem {
@@ -10,20 +13,12 @@ public class CItem {
 	private ItemStack item;
 	private CRecipe recipe;
 
-	public CItem(String name, CRecipe recipe) {
+	public CItem(String name, CRecipe recipe, ItemStack item) {
 		this.name = name;
 		this.recipe = recipe;
-		this.item = ItemUtil.loadItemFromConfig("customitems.yml", this.name);
+		this.item = item;
 	}
 
-	public void give(Player p, int amount) {
-		amount = amount < 1 ? amount = 1 : amount;
-		
-		for (int i = 0; i < amount; i++) {
-			p.getInventory().addItem(this.item);
-		}
-	}
-	
 	public String getName() {
 		return name;
 	}
@@ -37,7 +32,15 @@ public class CItem {
 	}
 
 	public CRecipe getRecipe() {
-		return recipe;
+		return this.recipe;
 	}
 	
+	public ShapedRecipe gfdetRecipe() {
+		NamespacedKey key = new NamespacedKey(Core.instance, this.name);
+		
+		ShapedRecipe recipe = new ShapedRecipe(key, getItem());
+
+		recipe.shape();		
+		return null;
+	}
 }

@@ -16,6 +16,12 @@ public class PlayerTagEvent extends Event implements Cancellable {
 		this.victim = victim;
 		this.time = time;
 	}
+	
+	public PlayerTagEvent(Player tagPlayer, int time) {
+		this.victim = tagPlayer;
+		this.damager = null;
+		this.time = time;
+	}
 
 	public Player getDamager() {
 		return this.damager;

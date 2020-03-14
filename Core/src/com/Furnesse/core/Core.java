@@ -23,6 +23,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.Furnesse.core.api.CombatLogAPI;
 import com.Furnesse.core.chat.ChatFormats;
 import com.Furnesse.core.combatlog.CombatLog;
 import com.Furnesse.core.combatlog.listeners.EntityDamageByEntityListener;
@@ -80,6 +81,7 @@ public class Core extends JavaPlugin implements Listener {
 
 	public WorldGuardPlugin wgAPI;
 	public LandsIntegration landsAPI;
+	public CombatLogAPI combatLogAPI;
 	private HeadDatabaseAPI headAPI;
 
 	private RankManager rankMan = new RankManager(this);
@@ -117,6 +119,9 @@ public class Core extends JavaPlugin implements Listener {
 		checkHooks();
 		setupConfigurations();
 
+		if(settings.usingCl)
+			combatLogAPI = new CombatLogAPI();
+		
 		registerListeners();
 		registerPlaceholders();
 		registerCommands();

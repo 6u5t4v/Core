@@ -1,13 +1,13 @@
 package com.Furnesse.core.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -61,6 +61,14 @@ public class ItemUtil {
 		return size;
 	}
 
+	private static List<String> convertLore(List<String> lore) {
+		List<String> newLore = new ArrayList<>();
+		for (int i = 0; i < lore.size(); i++) {
+			newLore.add(Lang.chat(lore.get(i)));
+		}
+		return newLore;
+	}
+
 	public static ItemStack loadItemFromConfig(String configName, String path) {
 		Material m = Material
 				.getMaterial(plugin.getFileManager().getConfig(configName).get().getString(path + ".material"));
@@ -89,14 +97,17 @@ public class ItemUtil {
 			glowing = plugin.getFileManager().getConfig(configName).get().getBoolean(path + ".glowing");
 		}
 
-		boolean hasDurability = true;
-		if (plugin.getFileManager().getConfig(configName).get().get(path + ".canBeRepaired") != null) {
-			glowing = plugin.getFileManager().getConfig(configName).get().getBoolean(path + ".canBeRepaired");
+		boolean isUnbreakable = true;
+		if (plugin.getFileManager().getConfig(configName).get().get(path + ".unbreakable") != null) {
+			isUnbreakable = plugin.getFileManager().getConfig(configName).get().getBoolean(path + ".unbreakable");
 		}
 
-		int durability = is.getDurability();
-		if (plugin.getFileManager().getConfig(configName).get().get(path + ".durability") != null) {
-			durability = plugin.getFileManager().getConfig(configName).get().getInt(path + ".durability");
+		int durability = 1;
+		if (is.getItemMeta() instanceof Damageable) {
+			durability = is.getDurability();
+			if (plugin.getFileManager().getConfig(configName).get().get(path + ".durability") != null) {
+				durability = plugin.getFileManager().getConfig(configName).get().getInt(path + ".durability");
+			}
 		}
 
 //		if ((plugin.getFileManager().getConfig(configName).get().get(path + ".modeldata") != null)) {
@@ -109,25 +120,11 @@ public class ItemUtil {
 //			Debug.Log("modeldata: " + is.getItemMeta().getCustomModelData());
 //		}
 
-		return create(is, amount, displayName, lore, enchantments, hasDurability, durability, glowing);
-	}
-
-	public static List<String> convertLore(List<String> list) {
-		List<String> lore = new ArrayList<>();
-		if (list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				lore.add(Lang.chat(list.get(i)));
-			}
-		}
-		return lore;
-	}
-
-	public static List<String> makeLore(String... string) {
-		return Arrays.asList(string);
+		return create(is, amount, displayName, lore, enchantments, isUnbreakable, durability, glowing);
 	}
 
 	public static ItemStack create(ItemStack item, int amount, String displayName, List<String> lore,
-			List<String> enchantments, boolean hasDurability, int durability, boolean glowing) {
+			List<String> enchantments, boolean isUnbreakable, int durability, boolean glowing) {
 		if (item == null)
 			return null;
 
@@ -141,16 +138,33 @@ public class ItemUtil {
 		if (lore != null) {
 			meta.setLore(convertLore(lore));
 		}
+
 		if (enchantments != null) {
+			List<String> newLore = new ArrayList<>();
 			for (String enchant : enchantments) {
 				String enchantName = enchant.split(":")[0];
 				int enchantLvl = Integer.valueOf(enchant.split(":")[1]);
 				meta.addEnchant(ench(enchantName), enchantLvl, true);
+
+				newLore.add(Lang.chat("&7" + enchantName + " " + enchantLvl));
+				for (String str : meta.getLore()) {
+					newLore.add(str);
+				}
 			}
+			meta.setLore(convertLore(newLore));
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
 
-		if (hasDurability && durability != -1) {
-			item.setDurability((short) durability);
+		if (!isUnbreakable) {
+			if (meta instanceof Damageable) {
+				Damageable damage = (Damageable) meta;
+				if (durability < 0) {
+					damage.setHealth(((Damageable) meta).getHealth());
+				} else {
+					damage.setHealth(durability);
+				}
+			}
+
 		} else {
 			meta.setUnbreakable(true);
 			meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -176,7 +190,6 @@ public class ItemUtil {
 		} catch (NullPointerException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-
 		}
 		return null;
 	}

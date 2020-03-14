@@ -1,6 +1,7 @@
 spikedclub:
   enabled: true
-  canBeRepaired: false
+  unbreakable: false
+  durability: 30
   displayname: "&eSpiked Club"
   material: WOODEN_SWORD
   lore:
@@ -8,18 +9,18 @@ spikedclub:
   - "in spikes, this is not nice to be"
   - "hit with."
   recipe:
-    enabled: false
+    enabled: true
     pattern:
     - blb
     - blb
     - xsx
     ingredients:
-      l: OAK_WOOD_PLANK
+      l: OAK_PLANKS
       s: STICK
-      b: IRON_BAR
+      b: IRON_BARS
 excalibur:
   enabled: true
-  canBeRepaired: false
+  unbreakable: true
   displayname: "&dExcalibur"
   material: WOODEN_SWORD
   enchantments:
@@ -29,7 +30,7 @@ excalibur:
   - "&7A super sharp sword, made from rare"
   - "&7minerals from the dangerous &nwarzone"
   recipe:
-    enabled: false
+    enabled: true
     pattern:
     - xdx
     - xdx

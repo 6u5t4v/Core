@@ -1,24 +1,23 @@
 package com.Furnesse.core.customitems;
 
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
 
 public class CRecipe {
-	private String[] pattern;
-	private List<Map<Character, Material>> ingredients;
+	private String[] shape;
+	private Map<Character, Material> ingredients;
 
-	public CRecipe(String[] pattern, List<Map<Character, Material>> ingredients) {
-		this.pattern = pattern;
+	public CRecipe(String[] shape, Map<Character, Material> ingredients) {
+		this.shape = shape;
 		this.ingredients = ingredients;
 	}
 
-	public List<Map<Character, Material>> getIngredients() {
+	public Map<Character, Material> getIngredients() {
 		return ingredients;
 	}
 
-	public String[] getPattern() {
-		return pattern;
+	public String[] getShape() {
+		return shape;
 	}
 }

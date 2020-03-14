@@ -4,18 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import com.Furnesse.core.Core;
 import com.Furnesse.core.config.Message;
 import com.Furnesse.core.utils.Debug;
+import com.Furnesse.core.utils.ItemUtil;
 
 public class CItemManager {
 
@@ -26,6 +30,7 @@ public class CItemManager {
 	}
 
 	public List<CItem> customItems = new ArrayList<CItem>();
+	public Map<String, ItemStack> customItemstacks = new HashMap<>();
 
 	public void loadCustomItems() {
 		FileConfiguration config = plugin.getFileManager().getConfig("customitems.yml").get();
@@ -34,39 +39,38 @@ public class CItemManager {
 		int loaded = 0;
 		for (String cItem : config.getKeys(false)) {
 			if (cItem == null)
-				return;
+				continue;
 			try {
 				boolean cItemEnabled = config.getBoolean(cItem + ".enabled");
 				if (cItemEnabled) {
 					String id = cItem.toString();
-//					CItemTypes type = CItemTypes
-//							.valueOf(plugin.getConfigs().getCItemsConfig().getString(cItem + ".type"));
-
-//					if (type == null) {
-//						plugin.getLogger().severe(ChatColor.RED + "Make sure you are using a valid type for " + cItem);
-//						continue;
-//					}
 
 					boolean hasRecipe = config.getBoolean(cItem + ".recipe.enabled");
 					CRecipe recipe = null;
 					if (hasRecipe) {
 						List<String> list = config.getStringList(cItem + ".recipe.pattern");
 						String[] pattern = list.toArray(new String[0]);
-						List<Map<Character, Material>> ingredients = null;
+
+						Map<Character, Material> ingredients = new HashMap<>();
 						for (String str : config.getConfigurationSection(cItem + ".recipe.ingredients")
 								.getKeys(false)) {
-							Map<Character, Material> ingred = new HashMap<>();
-							Character val = str.charAt(0);
-							Material mat = Material.getMaterial(config.getString(cItem + ".recipe.ingredients." + str));
-							ingred.put(val, mat);
+							char val = str.charAt(0);
+
+							Material mat = null;
+
+							mat = Material.getMaterial(config.getString(cItem + ".recipe.ingredients." + str));
+							ingredients.put(val, mat);
+
 						}
-						Debug.Log("pattern: " + pattern);
 						recipe = new CRecipe(pattern, ingredients);
 					}
 
-					CItem customItem = new CItem(id, recipe);
+					ItemStack item = ItemUtil.loadItemFromConfig("customitems.yml", id);
+					
+					CItem customItem = new CItem(id, recipe, item);
 
 					customItems.add(customItem);
+					customItemstacks.put(id, item);
 					loaded++;
 				}
 
@@ -75,28 +79,33 @@ public class CItemManager {
 				e.printStackTrace();
 			}
 		}
+
 		loadRecipes();
-
 		plugin.getLogger().info("Loaded: " + loaded + " custom items");
-
 	}
 
 	private void loadRecipes() {
 		for (CItem cItem : customItems) {
 			if (cItem.getRecipe() != null) {
 				CRecipe cRecipe = cItem.getRecipe();
+				
+				NamespacedKey key = new NamespacedKey(plugin, cItem.getName());
 
-				Debug.Log("recipe pattern:" + cRecipe.getPattern().toString());
-				Debug.Log("recipe pattern:" + cRecipe.getPattern());
+				ShapedRecipe recipe = new ShapedRecipe(key, cItem.getItem());
 
-				ShapedRecipe recipe = new ShapedRecipe(cItem.getItem()).shape(cRecipe.getPattern());
+				recipe.shape(cRecipe.getShape());
 
-				for (Map<Character, Material> ingredients : cRecipe.getIngredients()) {
-					ingredients.forEach((key, mat) -> recipe.setIngredient(key, mat));
+				
+				recipe.setIngredient('s', cItem.getItem().getType());
+				try {
+					cRecipe.getIngredients().forEach((ingred, mat) -> mat != null ? recipe.setIngredient(ingred, mat) : cItem.getItem().getType() != null ? recipe.setIngredient(ingred, cItem.getItem().getType()) : recipe.setIngredient(ingred, ));
+				} catch (Exception e) {
+					plugin.getLogger().log(Level.SEVERE,
+							"recipe material for " + cItem.getName() + " could not be found", e);
+					return;
 				}
 
 				Bukkit.getServer().addRecipe(recipe);
-				Debug.Log("loaded recipe for " + cItem.getName());
 			}
 		}
 	}
@@ -125,7 +134,11 @@ public class CItemManager {
 			return;
 		}
 
-		cItem.give(target, amount);
+		amount = amount < 1 ? 1 : amount;
+		for (int i = 0; i < amount; i++) {
+			target.getInventory().addItem(cItem.getItem());
+		}
+
 		target.sendMessage(Message.ITEMS_PLAYER_RECEIVED.getChatMessage().replace("%amount%", String.valueOf(amount))
 				.replace("%item%", cItem.getName()));
 	}

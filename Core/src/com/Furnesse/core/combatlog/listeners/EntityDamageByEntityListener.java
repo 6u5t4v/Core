@@ -18,7 +18,7 @@ public class EntityDamageByEntityListener implements Listener {
 	public void onPlayerDamageByPlayer(EntityDamageByEntityEvent e) {
 		Entity victim = e.getEntity();
 		Entity damager = e.getDamager();
-		if (victim instanceof Player && damager instanceof Player) {			
+		if (victim instanceof Player && damager instanceof Player) {
 			PlayerTagEvent event = new PlayerTagEvent((Player) damager, (Player) victim,
 					plugin.getSettings().cl_tagDuration);
 			plugin.getServer().getPluginManager().callEvent(event);
