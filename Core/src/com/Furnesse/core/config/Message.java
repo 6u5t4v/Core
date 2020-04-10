@@ -6,7 +6,7 @@ import com.Furnesse.core.utils.Lang;
 public enum Message
 {
 	PREFIX("prefix"), NO_PERMISSION("no_permission"), RELOADED("reloaded"), INVALID_PLAYER("invalid_player"),
-	FULL_INVENTORY("full_inventory"),
+	FULL_INVENTORY("full_inventory"), NO_SPACE_IN_PLAYER_INVENTORY("no_space_in_player_inventory"),
 
 	RANK_CREATED("rank.rank_created"), RANK_DELETED("rank.rank_deleted"), RANK_SETPREFIX("rank.rank_setprefix"),
 	RANK_SETSUFFIX("rank.rank_setsuffix"), RANK_PERM_ADDED("rank.rank_perm_added"),
@@ -21,8 +21,8 @@ public enum Message
 	DEATHCHEST_CANNOT_OPEN("deathchest.deathchest_cannot_open"),
 	DEATHCHEST_FASTLOOT_COMPLETE("deathchest.deathchest_fastloot_complete"),
 
-	ITEMS_INVALID_ITEM("citems.items_invalid_item"), ITEMS_PLAYER_RECEIVED("citems.items_player_received"),
-	ITEMS_SUCCESFULL_RECEIVED("citems.items_succesfull_received"),
+	ITEMS_INVALID_ITEM("customitems.items_invalid_item"), ITEMS_PLAYER_RECEIVED("customitems.items_player_received"),
+	ITEMS_SUCCESFULL_RECEIVED("customitems.items_succesfull_received"),
 
 	TAGGER("combatlog.tagger"), TAGGED("combatlog.tagged"), UNTAG("combatlog.untag"), IN_COMBAT("combatlog.in_combat"),
 	NOT_IN_COMBAT("combatlog.not_in_combat"), ACTIONBAR_IN_COMBAT("combatlog.actionbar_in_combat"),

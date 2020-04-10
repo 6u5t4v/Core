@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
@@ -46,7 +47,7 @@ import com.Furnesse.core.config.Message;
 import com.Furnesse.core.config.Settings;
 import com.Furnesse.core.customcommands.CustomCommand;
 import com.Furnesse.core.customcommands.CustomCommands;
-import com.Furnesse.core.customitems.CItemManager;
+import com.Furnesse.core.customitems.CustomItems;
 import com.Furnesse.core.deathchest.DeathChestListener;
 import com.Furnesse.core.deathchest.DeathChestManager;
 import com.Furnesse.core.deathchest.DeathChestsGUI;
@@ -79,6 +80,8 @@ public class Core extends JavaPlugin implements Listener {
 	private static Economy econ = null;
 //	private static Chat chat = null;
 
+	public final NamespacedKey customitemKey = new NamespacedKey(this, "CoreCustomItem");
+	
 	public WorldGuardPlugin wgAPI;
 	public LandsIntegration landsAPI;
 	public CombatLogAPI combatLogAPI;
@@ -87,7 +90,7 @@ public class Core extends JavaPlugin implements Listener {
 	private RankManager rankMan = new RankManager(this);
 	private CustomCommands commands = new CustomCommands(this);
 	private Sidebar sb;
-	private CItemManager cItemMan = new CItemManager(this);
+	private CustomItems customItems = new CustomItems(this);
 	private ChatFormats chatFormat = new ChatFormats(this);
 	private Settings settings = new Settings(this);
 	private CommandCD cmdCD = new CommandCD(this);
@@ -112,12 +115,11 @@ public class Core extends JavaPlugin implements Listener {
 			return;
 		}
 
-		getJarFile();
-
 		settings.enableSystems();
 
 		checkHooks();
 		setupConfigurations();
+
 
 		if(settings.usingCl)
 			combatLogAPI = new CombatLogAPI();
@@ -128,11 +130,6 @@ public class Core extends JavaPlugin implements Listener {
 		disableRecipes();
 
 		this.getLogger().info("<------------------------------->");
-	}
-
-	private void getJarFile() {
-		String type = Bukkit.getBukkitVersion();
-		Debug.Log(type);
 	}
 
 	private void checkHooks() {
@@ -184,7 +181,7 @@ public class Core extends JavaPlugin implements Listener {
 
 		settings.enableSystems();
 		setupConfigurations();
-
+		
 		registerCommands();
 		registerListeners();
 
@@ -235,13 +232,13 @@ public class Core extends JavaPlugin implements Listener {
 		registerCustomCommands();
 
 		if (settings.usingDc) {
-			getCommand("fcdeathchest").setExecutor(new DeathChestCMD());
+			getCommand("cdeathchest").setExecutor(new DeathChestCMD());
 		}
 
 		if (settings.usingRanks)
-			getCommand("fcranks").setExecutor(new RankCMD());
-		getCommand("fcore").setExecutor(new CoreCMD());
-		getCommand("fcitems").setExecutor(new ItemsCMD());
+			getCommand("crank").setExecutor(new RankCMD());
+		getCommand("core").setExecutor(new CoreCMD());
+		getCommand("citems").setExecutor(new ItemsCMD());
 		if (settings.usingCl)
 			getCommand("tag").setExecutor(new CombatLogCMD());
 	}
@@ -389,7 +386,7 @@ public class Core extends JavaPlugin implements Listener {
 
 	private void setupConfigurations() {
 		commands.loadCustomCommands();
-		cItemMan.loadCustomItems();
+		customItems.loadItems();
 		cmdCD.loadCooldownTasks();
 		if (settings.usingCl)
 			combatLog.enableTimer();
@@ -448,8 +445,8 @@ public class Core extends JavaPlugin implements Listener {
 		return fileManager;
 	}
 
-	public CItemManager getItemManager() {
-		return cItemMan;
+	public CustomItems getCustomItems() {
+		return customItems;
 	}
 
 	public ChatFormats getChatFormat() {

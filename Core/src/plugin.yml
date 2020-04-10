@@ -1,27 +1,24 @@
 main: com.Furnesse.core.Core
 author: 6u5t4v
-version: 1.5.32
+version: 1.6.0
 name: Core
 api-version: 1.15
 website: www.furnesse.com
 depend: [Vault, PlaceholderAPI]
 softdepend: [HeadDatabase, WorldGuard, Lands]
 commands:
-  fcdeathchest:
+  cdeathchest:
     description: Deathchests managing
-    aliases:
-    - fcdc
-    - fcdchest
-  fcranks:
+    aliases: [dchest, cdchest, deathchests, dchests, cdchests, dc]
+  cranks:
     description: Rank managing
-  fcore:
+    aliases: [rank, ranks]
+  core:
     description: Main command to view all Core's commands
-    aliases:
-    - fc
-  fcitems:
+    aliases: [fc,fcore]
+  citems:
     description: custom items.
-    aliases:
-    - fci
+    aliases: [citems]
   tag:
     description: check combat tag time remaining
     aliases:

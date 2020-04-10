@@ -1,8 +1,8 @@
 spikedclub:
   enabled: true
   unbreakable: false
-  durability: 30
-  displayname: '&eSpiked Club'
+  damage: 30
+  name: '&eSpiked Club'
   material: WOODEN_SWORD
   lore:
   - A cheap homemade club covered
@@ -10,7 +10,7 @@ spikedclub:
   - hit with.
   recipe:
     enabled: true
-    pattern:
+    shape:
     - blb
     - blb
     - xsx
@@ -21,17 +21,17 @@ spikedclub:
 excalibur:
   enabled: true
   unbreakable: true
-  displayname: '&dExcalibur'
+  name: '&dExcalibur'
   material: WOODEN_SWORD
   enchantments:
-  - sharpness:6
-  - knockback:3
+  - sharpness,6
+  - knockback,3
   lore:
   - '&7A super sharp sword, made from rare'
   - '&7minerals from the dangerous &nwarzone'
   recipe:
     enabled: true
-    pattern:
+    shape:
     - xdx
     - xdx
     - xpx

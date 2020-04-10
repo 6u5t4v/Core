@@ -1,15 +1,29 @@
 prefix: "&8[ &6&lCORE &8] &7"
 no_permission: "&cYou dont have permission to use this command"
-reloaded: "&aAll configs as successfully reloaded"
-invalid_player: "&c%player% &7is not online"
+reloaded: "&aAll configs have successfully reloaded"
+invalid_player: "&d&n%player%&7 is not online"
 full_inventory: "&7No room in your inventory, please make some!"
+no_space_in_player_inventory: "&d&n%player%&7 had no room for &d&n%item%&7 in their inventory"
 help:
+    - "&6Core made by &c6u5t4v&7(Gustav&7)&6. &eVersion&7(&c{vers}&7)"
     - "&e/core &7- shows this"
+    - "&e/core showtasks &7- Show all available tasks"
+    - "&e/core tasks disable <task> &7- Disable a specific task"
+    - "&e/core tasks enable <task> &7- Enable a specific task"
+    - "&e/core reload &7- Reload configs"
+    - "&e/core info &7- Shows information about the core"
+    - " "
+    - "&6Core features:"
     - "&e/dc help &7- Manage deathchests"
     - "&e/rank help &7- Manage ranks"
     - "&e/items help &7- Manage custom items"
     - "&e/sb toggle &7- Toggle your scoreboard on/off"
-    - "&e/core reload &7- Reload configs"
+# For ranks section.
+# {rank} - the edited or created rank
+# {prefix} - the edited prefix
+# {suffix} - the edited suffix
+# {perm} - the added or removed permission
+# {player} - the player whose rank gets modified
 rank:
   help:
     - "&e/rank help &7- Shows this"
@@ -24,23 +38,28 @@ rank:
     - "&e/rank set <player> <rank>"
   rank_created: "&7Rank &d&n%rank%&7 has been created"
   rank_deleted: "&7Rank &d&n%rank%&7 has been deleted"
-  rank_setprefix: "&7Set prefix for &d&n%rank%&7 to %prefix%&7."
-  rank_setsuffix: "&7Set suffix for &d&n%rank%&7 to %suffix%&7."
-  rank_perm_added: "&7Added perm &d&n%perm%&7 to &d&n%rank%&7."
-  rank_perm_removed: "&7Removed perm &d&n%perm%&7 from &d&n%rank%&7."
+  rank_setprefix: "&7Set new prefix for &d&n%rank%&7 to %prefix%&7."
+  rank_setsuffix: "&7Set new suffix for &d&n%rank%&7 to %suffix%&7."
+  rank_perm_added: "&7Added permission &d&n%perm%&7 to &d&n%rank%&7."
+  rank_perm_removed: "&7Removed permission &d&n%perm%&7 from &d&n%rank%&7."
   user_set_rank: "&7Set &d&n%player%''s&7 rank to &d&n%rank%&7."
   user_added_perm: "&7Added &d&n%perm%&7 to &d&n%player%&7."
   user_removed_perm: "&7Removed &d&n%perm%&7 from &d&n%player%&7."
   user_rank_received: "&7You have received new rank -> &d&n%rank%&7."
   user_perm_received: "&7You receive new perm -> &d&n%perm%&7."
   user_perm_removed: "&7You lost perm -> &d&n%perm%&7."
-citems:
+# For custom items section.
+# {item} - item given to a player.
+# {player} - the player who received an item
+# {amount} - amount of the {item} given to the player. 
+customitems:
   help:
-  - "&e/items give <player> <item> [amount] &7- Give player a custom item"
+  - "&e/items &7- Open a menu."
+  - "&e/items give <item> [player] [amount] &7- Give player a custom item"
   - "&e/items list &7- See all available custom items"
-  items_invalid_item: "&c%item% &7is not a valid item, try &e/items list&7."
-  items_player_received: "&7You have received &ax%amount% %item%&7."
-  items_succesfull_received: "&a%player% &7has received &ax%amount% %item%&7."
+  items_invalid_item: "&d&n%item%&7 is not a valid item, try &d/items list&7."
+  items_player_received: "&7You have received &d&n%amount%&7x &d&n%item%&7."
+  items_succesfully_received: "&a%player% &7has received &ax%amount% %item%&7."
 deathchest:
   help:
   - "/dc - Open gui showing all active deathchests"

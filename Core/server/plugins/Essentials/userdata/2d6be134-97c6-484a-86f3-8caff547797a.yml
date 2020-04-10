@@ -1,6 +1,6 @@
 lastAccountName: Gustau
 timestamps:
-  login: 1584224031544
+  login: 1586557496459
   lastteleport: 1582984409577
   logout: 1583522930549
 ipAddress: 127.0.0.1
@@ -18,4 +18,4 @@ logoutlocation:
   z: 89.29405608569446
   yaw: -118.81813
   pitch: 22.649502
-afk: true
+afk: false
