@@ -22,7 +22,7 @@ public enum Message
 	DEATHCHEST_FASTLOOT_COMPLETE("deathchest.deathchest_fastloot_complete"),
 
 	ITEMS_INVALID_ITEM("customitems.items_invalid_item"), ITEMS_PLAYER_RECEIVED("customitems.items_player_received"),
-	ITEMS_SUCCESFULL_RECEIVED("customitems.items_succesfull_received"),
+	ITEMS_SUCCESFULL_RECEIVED("customitems.items_succesfully_received"),
 
 	TAGGER("combatlog.tagger"), TAGGED("combatlog.tagged"), UNTAG("combatlog.untag"), IN_COMBAT("combatlog.in_combat"),
 	NOT_IN_COMBAT("combatlog.not_in_combat"), ACTIONBAR_IN_COMBAT("combatlog.actionbar_in_combat"),

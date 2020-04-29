@@ -39,3 +39,18 @@ excalibur:
       d: DIAMOND
       p: EMERALD
       x: AIR
+bigchunkmeat:
+  enabled: true
+  name: '&dBig Chunk Meat'
+  material: COOKED_BEEF
+  lore:
+  - '&7Fully fills hungerbar'
+  glow: true
+  recipe:
+    enabled: true
+    shape:
+    - ccc
+    - ccc
+    - ccc
+    ingredients:
+      c: COOKED_BEEF

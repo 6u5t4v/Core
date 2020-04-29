@@ -77,19 +77,27 @@ public class ItemStacks {
 
 		int amount = section.getInt("amount", 1);
 
-		return builder()
-				.withMaterial(Material.matchMaterial(section.getString("material", "AIR")))
+		String material = section.getString("material", "AIR");
+		if (material.startsWith("hdb-") || material.startsWith("player-")) {
+			return skullBuilder(section.getString("material"))
+					.withAmount(amount < 1 ? 1 : amount > 64 ? 64 : amount)
+					.withDurability((short) section.getInt("damage", (short) 0))
+					.withDisplayNameColoured(section.getString("name"))
+					.withLoreColoured(section.getStringList("lore"))
+					.withUnbreakable(section.getBoolean("unbreakable"));
+		}
+
+		return builder().withMaterial(Material.matchMaterial(material))
 				.withAmount(amount < 1 ? 1 : amount > 64 ? 64 : amount)
 				.withDurability((short) section.getInt("damage", (short) 0))
-				.withDisplayNameColoured(section.getString("name"))
-				.withLoreColoured(section.getStringList("lore"))
+				.withDisplayNameColoured(section.getString("name")).withLoreColoured(section.getStringList("lore"))
 				.withUnbreakable(section.getBoolean("unbreakable"));
 	}
 
 	public static PersistentDataContainer toPDCItemStack(ItemStack stack) {
-        return stack.getItemMeta().getPersistentDataContainer();
-    }
-	
+		return stack.getItemMeta().getPersistentDataContainer();
+	}
+
 	/**
 	 * Unwraps a {@link ResourceSection} into a {@link ItemStack}.
 	 *

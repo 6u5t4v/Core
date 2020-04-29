@@ -21,7 +21,7 @@ public class PlayerMoveListener implements Listener {
 
 		if (plugin.getSettings().cl_removeTagInSafezone) {
 			if (plugin.getCombatLog().taggedPlayers.containsKey(p.getUniqueId())) {
-				if (plugin.landsHook) {
+				if (plugin.landsHooked) {
 					if (plugin.landsAPI.isClaimed(loc) && !plugin.landsAPI.getLand(loc).isInWar()) {
 						PlayerUntagEvent event = new PlayerUntagEvent(p, PlayerUntagEvent.UntagCause.SAFE_AREA);
 						Bukkit.getServer().getPluginManager().callEvent(event);

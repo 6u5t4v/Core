@@ -98,8 +98,8 @@ public class Core extends JavaPlugin implements Listener {
 
 	private FileManager fileManager = new FileManager(this);
 
-	public boolean landsHook = false;
-	public boolean worldguardHook = false;
+	public boolean landsHooked = false;
+	public boolean worldguardHooked = false;
 
 	public int combatlogs = 0;
 
@@ -146,14 +146,14 @@ public class Core extends JavaPlugin implements Listener {
 				if (pm.getPlugin("Lands") != null) {
 					String version = pm.getPlugin("Lands").getDescription().getVersion();
 					this.landsAPI = new LandsIntegration(this, true);
-					this.landsHook = true;
+					this.landsHooked = true;
 					this.getLogger().info("Hooked into Lands " + version + " successfully");
 				}
 			}
 
 			if (settings.cl_usingWorldguardHook) {
 				if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-					this.worldguardHook = true;
+					this.worldguardHooked = true;
 					this.getLogger().info("Hooked into WorldGuard successfully");
 				}
 			}
@@ -165,6 +165,7 @@ public class Core extends JavaPlugin implements Listener {
 		fileManager.getConfig("lang.yml").copyDefaults(true).save();
 		fileManager.getConfig("customcommands.yml").copyDefaults(true).save();
 		fileManager.getConfig("customitems.yml").copyDefaults(true).save();
+		fileManager.getConfig("menus.yml").copyDefaults(true).save();
 		if (settings.usingDc)
 			fileManager.getConfig("deathchests.yml").copyDefaults(true).save();
 		if (settings.usingChat || settings.usingRanks || settings.usingSb)

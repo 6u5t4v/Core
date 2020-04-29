@@ -28,11 +28,14 @@ public class CommandCD implements Listener {
 		preloadTasks();
 		if (cdTasks != null) {
 			for (String taskName : cdTasks.getKeys(false)) {
-				if (taskName != null) {
+				if (taskName != null) {				
+					if(!plugin.getConfig().getBoolean("cooldownTasks." + taskName + ".enabled"))
+						continue;
+					
 					String command = plugin.getConfig().getString("cooldownTasks." + taskName + ".command");
 					String disabledFor = plugin.getConfig().getString("cooldownTasks." + taskName + ".disabledFor");
 					String enabledFor = plugin.getConfig().getString("cooldownTasks." + taskName + ".enabledFor");
-
+					
 					cmdCooldown.put(command, new Cooldown(taskName, command, disabledFor, enabledFor));
 					cmdCooldown.get(command).startTimer(true);
 				}

@@ -9,8 +9,8 @@
 	<classpathentry kind="lib" path="C:/jars/HeadDatabaseAPI.jar"/>
 	<classpathentry kind="lib" path="C:/jars/spigot-1.15.jar"/>
 	<classpathentry kind="lib" path="C:/jars/Vault.jar"/>
-	<classpathentry kind="lib" path="C:/Users/gkhaa/OneDrive/Skrivebord/Furnesse 1.15/plugins/worldguard-bukkit-7.0.2.jar"/>
 	<classpathentry kind="lib" path="C:/jars/PlaceholderAPI-2.10.5.jar"/>
 	<classpathentry kind="lib" path="C:/jars/Lands-4.5.6.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/gkhaa/OneDrive/Skrivebord/WarzoneMania 1.15/plugins/worldguard-bukkit-7.0.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

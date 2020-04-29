@@ -26,7 +26,7 @@ public class CombatLogAPI {
 	}
 
 	public boolean isInSafezone(Location loc) {
-		if (plugin.landsHook) {
+		if (plugin.landsHooked) {
 			if (plugin.landsAPI.isClaimed(loc) && !plugin.landsAPI.getLand(loc).isInWar()) {
 				return true;
 			}

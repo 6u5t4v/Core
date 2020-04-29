@@ -24,6 +24,7 @@ public class Cooldown {
 	private String eventEndMsg;
 	private String disabledMsg;
 
+	
 	private long timeRemaining;
 
 	private int taskId;
