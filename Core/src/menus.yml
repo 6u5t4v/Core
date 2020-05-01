@@ -1,4 +1,5 @@
 playerupgrades:
+  title: "player upgrades Menu"
   command: "playerupgrades"
   slots: 36
   permission: core.menu.playerupgrade

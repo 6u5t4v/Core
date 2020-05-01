@@ -47,6 +47,10 @@ public class CustomCommands {
 		}
 	}
 	
+	public void loadCustomCommand(CustomCommand custom) {
+		
+	}
+	
 	public List<CustomCommand> getCommands() {
 		return customCommands;
 	}
